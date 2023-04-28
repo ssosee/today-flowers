@@ -1,6 +1,7 @@
 package quokka.todayflowers.domain.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import quokka.todayflowers.domain.entity.Member;
@@ -15,6 +16,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
+    private final PasswordEncoder passwordEncoder;
 
     // 회원 가입
     @Override
@@ -27,8 +29,10 @@ public class MemberServiceImpl implements MemberService {
             return false;
         }
 
+        // 비밀번호 암호화
+        String encode = passwordEncoder.encode(password);
         // 회원 가입 수행
-        Member member = Member.createNewMember(userId, password, email);
+        Member member = Member.createNewMember(userId, encode, email);
         memberRepository.save(member);
 
         return true;
@@ -36,11 +40,16 @@ public class MemberServiceImpl implements MemberService {
 
     // 로그인
     @Override
-    public Long login(String userId, String password) {
-        Optional<Member> optionalMember = memberRepository.findByUserIdAndPassword(userId, password);
+    public Boolean login(String userId, String password) {
+        Optional<Member> optionalMember = memberRepository.findByUserId(userId);
         Member findMember = optionalMember.orElseThrow(() -> new BasicException(ConstMember.MEMBER_NOT_FOUND));
 
-        return findMember.getId();
+        boolean matches = passwordEncoder.matches(password, findMember.getPassword());
+        if(!matches) {
+            return false;
+        }
+
+        return true;
     }
 
     // 로그아웃

@@ -3,12 +3,6 @@ spring:
     activate:
       on-profile: local
 
-  # H2 Setting Info
-#  h2:
-#    console:
-#      enabled: true  # H2 Console
-#      path: /h2-console  # H2 Console
-  # Database Setting Info
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/today_flower?serverTimezone=UTC&useSSL=false

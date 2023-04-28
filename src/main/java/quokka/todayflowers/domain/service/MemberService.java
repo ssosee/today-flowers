@@ -6,7 +6,7 @@ public interface MemberService {
     // 회원가입
     Boolean join(String userId, String password, String email);
     // 로그인
-    Long login(String userId, String password);
+    Boolean login(String userId, String password);
     // 로그아웃
     void logout(String userId);
     // 회원탈퇴
