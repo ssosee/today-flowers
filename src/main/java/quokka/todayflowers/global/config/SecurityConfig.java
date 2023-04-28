@@ -12,6 +12,7 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -34,6 +35,7 @@ import java.nio.charset.StandardCharsets;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
+    private final UserDetailsService userDetailsService;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -53,31 +55,20 @@ public class SecurityConfig {
                         .usernameParameter("user_id")
                         .passwordParameter("password")
                         .defaultSuccessUrl("/home", true)
-                        .failureHandler(new AuthenticationFailureHandler() {
-                            @Override
-                            public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
-                                String errMessage = "";
-
-                                if("POST".equalsIgnoreCase(request.getMethod())) {
-                                    BufferedReader reader = request.getReader();
-                                    String str = reader.readLine();
-
-                                    if(str == null) errMessage = ConstMember.LOGIN_BLANK;
-                                }
-                                else if(exception instanceof BadCredentialsException) {
-                                    errMessage = ConstMember.LOGIN_FAIL;
-                                } else {
-                                    errMessage = "관리자에게 문의 주세요.";
-                                }
-
-                                errMessage = URLEncoder.encode(errMessage, StandardCharsets.UTF_8);
-
-                                response.sendRedirect("/user/login?error=true&exception="+errMessage);
-                            }
-                        })
+                        .failureHandler(authenticationFailureHandler()) // 로그인 실패 처리
                         .permitAll()
-                )
-                .logout(Customizer.withDefaults());
+                );
+
+        http.rememberMe()
+                .rememberMeParameter("remember")
+                .alwaysRemember(false)
+                .userDetailsService(userDetailsService);
+
+        http
+                .logout()
+                .logoutUrl("/logout-process")
+                .logoutSuccessUrl("/user/login")
+                .deleteCookies("remember-me");
 
         http
                 .sessionManagement()
@@ -97,5 +88,9 @@ public class SecurityConfig {
     public CookieCsrfTokenRepository cookieCsrfTokenRepository() {
         // httpOnly true를 사용한다.
         return new CookieCsrfTokenRepository();
+    }
+
+    @Bean AuthenticationFailureHandler authenticationFailureHandler() {
+        return new SimpleAuthenticationFailureHandler();
     }
 }

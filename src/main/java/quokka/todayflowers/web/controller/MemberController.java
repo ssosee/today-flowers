@@ -23,6 +23,7 @@ public class MemberController {
                             @RequestParam(value = "exception", required = false) String exception,
                             Model model) {
 
+        // 에러 정보를 model에 저장
         model.addAttribute("error", error);
         model.addAttribute("exception", exception);
 

@@ -21,11 +21,8 @@ public class MyMemberDetailService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-        if(!StringUtils.hasText(username)) {
-            throw new UsernameNotFoundException(ConstMember.MEMBER_NOT_FOUND);
-        }
-
         Optional<Member> optionalMember = memberRepository.findByUserId(username);
+        // DB에 회원 정보가 없을경우 예외 발생
         Member findMember = optionalMember.orElseThrow(() -> new BadCredentialsException(ConstMember.LOGIN_FAIL));
 
         return User.builder()

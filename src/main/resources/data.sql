@@ -1,1 +1,2 @@
 insert into member(user_id, password, role) values ('user', '$2a$10$lok4/duGF6yAJjAF4oSyhOZG.2uWr0CCorCZilInWKUuS/FCXMvZe', 'USER');
+insert into member(user_id, password, role) values ('admin', '$2a$10$lok4/duGF6yAJjAF4oSyhOZG.2uWr0CCorCZilInWKUuS/FCXMvZe', 'ADMIN');
