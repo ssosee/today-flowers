@@ -5,6 +5,14 @@ html, body {
     background: #ffffff;
 }
 
+body {
+    display: flex;
+    align-items: center;
+    padding-top: 40px;
+    padding-bottom: 40px;
+    background-color: #ffffff;
+}
+
 #container {
     display: flex;
     flex-direction: row;
@@ -18,28 +26,37 @@ html, body {
     text-align: center;
     background-color: #ffffff;
 }
+
+.form-signin {
+    max-width: 330px;
+    padding: 15px;
+}
+
 .input-form-box {
     border: 0px solid #ff0000;
     display: flex;
     margin-bottom: 5px;
 }
+
 .input-form-box > span {
     display: block;
     text-align: left;
     padding-top: 5px;
     min-width: 65px;
 }
+
 .button-login-box {
     margin: 10px 0;
 }
+
 #loginBoxTitle {
     color:#000000;
     font-weight: bold;
-    font-size: 32px;
+    font-size: 30px;
     text-transform: uppercase;
     padding: 5px;
     margin-bottom: 20px;
-    background: linear-gradient(to right, #270a09, #8ca6ce);
+    background: linear-gradient(to right, #2e2938, #b1a5c8);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }

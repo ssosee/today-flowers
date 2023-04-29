@@ -7,7 +7,9 @@ import org.springframework.transaction.annotation.Transactional;
 import quokka.todayflowers.domain.entity.Member;
 import quokka.todayflowers.domain.repository.MemberRepository;
 import quokka.todayflowers.global.constant.ConstMember;
+import quokka.todayflowers.global.convert.SimpleConvert;
 import quokka.todayflowers.global.exception.BasicException;
+import quokka.todayflowers.web.response.MyPageForm;
 
 import java.util.Optional;
 
@@ -17,6 +19,7 @@ import java.util.Optional;
 public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
+    private final SimpleConvert simpleConvert;
 
     // 회원 가입
     @Override
@@ -77,10 +80,29 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public Member findMember(String userId) {
+    public MyPageForm findMember(String userId) {
         Optional<Member> memberOptional = memberRepository.findByUserId(userId);
         Member findMember = memberOptional.orElse(null);
 
-        return findMember;
+        if(findMember == null) {
+            return null;
+        }
+
+        MyPageForm myPageForm = MyPageForm.builder()
+                .userId(findMember.getUserId())
+                .email(findMember.getEmail())
+                .hits(findMember.getHits())
+                .joinDate(simpleConvert.convertLocalDateTimeToString(findMember.getCreateDate()))
+                .build();
+
+        return myPageForm;
+    }
+
+    @Override
+    public void hitsUp(String userId) {
+        Optional<Member> memberOptional = memberRepository.findByUserId(userId);
+        Member findMember = memberOptional.orElseThrow(() -> new BasicException(ConstMember.MEMBER_NOT_FOUND));
+
+        findMember.changeHits(1L);
     }
 }

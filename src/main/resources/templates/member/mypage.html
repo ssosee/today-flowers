@@ -6,8 +6,45 @@
 
 <th:block layout:fragment="css"></th:block>
 <div layout:fragment="content">
-  <div th:class="container">
-    mypage 입니다.
+  <div th:class="container-lg">
+
+<!--    <div class="is-valid">-->
+<!--        <div th:if="${error}" class="alert alert-warning alert-dismissible fade show" role="alert">-->
+<!--            <span th:text="${exception}"></span>-->
+<!--            <button type="button" class="close" data-dismiss="alert" aria-label="Close">-->
+<!--                <span aria-hidden="true">&times;</span>-->
+<!--            </button>-->
+<!--        </div>-->
+<!--    </div>-->
+
+    <!--아이디-->
+    <div class="mb-3 row">
+      <label for="staticUserId" class="col-sm-2 col-form-label">🪪 아이디:</label>
+      <div class="col-sm-10">
+        <span type="text" readonly class="form-control-plaintext" id="staticUserId" th:text="${form.userId}"></span>
+      </div>
+    </div>
+    <!--이메일-->
+    <div class="mb-3 row">
+      <label for="staticEmail" class="col-sm-2 col-form-label">📧 이메일:</label>
+      <div class="col-sm-10">
+        <span type="text" readonly class="form-control-plaintext" id="staticEmail" th:text="${form.email}"></span>
+      </div>
+    </div>
+    <!--방문 횟수-->
+    <div class="mb-3 row">
+      <label for="staticHits" class="col-sm-2 col-form-label">👍 방문 횟수:</label>
+      <div class="col-sm-10">
+        <span type="text" readonly class="form-control-plaintext" id="staticHits" th:text="${form.hits}"></span>
+      </div>
+    </div>
+    <!--가입일시-->
+    <div class="mb-3 row">
+      <label for="staticJoinDate" class="col-sm-2 col-form-label">👨‍👩‍👧‍👦 가족이된 날:</label>
+      <div class="col-sm-10">
+        <span type="text" readonly class="form-control-plaintext" id="staticJoinDate" th:text="${form.joinDate}"></span>
+      </div>
+    </div>
   </div>
 </div>
 </html>

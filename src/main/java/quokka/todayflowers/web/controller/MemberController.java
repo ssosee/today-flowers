@@ -15,6 +15,7 @@ import quokka.todayflowers.domain.service.MemberService;
 import quokka.todayflowers.global.constant.ConstMember;
 import quokka.todayflowers.web.request.LoginForm;
 import quokka.todayflowers.web.request.SignupForm;
+import quokka.todayflowers.web.response.MyPageForm;
 
 @Controller
 @RequiredArgsConstructor
@@ -71,20 +72,14 @@ public class MemberController {
     // 내정보
     @GetMapping("/mypage")
     public String myPage(Model model) {
-
+        // 스프링시큐리티 컨테스트에서 userId 꺼내기
         SecurityContext context = SecurityContextHolder.getContext();
         Authentication authentication = context.getAuthentication();
         String name = authentication.getName();
 
-        Member member = memberService.findMember(name);
-
-        if(member == null) {
-            model.addAttribute("error", true);
-            model.addAttribute("exception", ConstMember.MEMBER_NOT_FOUND);
-
-            return "redirect:/member/home/"+name;
-        }
-        model.addAttribute("member", member);
+        // 회원 조회
+        MyPageForm form = memberService.findMember(name);
+        model.addAttribute("form", form);
 
         return "/member/mypage";
     }

@@ -1,6 +1,7 @@
 package quokka.todayflowers.domain.service;
 
 import quokka.todayflowers.domain.entity.Member;
+import quokka.todayflowers.web.response.MyPageForm;
 
 public interface MemberService {
     // 회원가입
@@ -14,5 +15,7 @@ public interface MemberService {
     // 아이디 찾기
     String findUserId(String email);
     // 회원 찾기
-    Member findMember(String userId);
+    MyPageForm findMember(String userId);
+    // 방문횟수 증가
+    void hitsUp(String userId);
 }

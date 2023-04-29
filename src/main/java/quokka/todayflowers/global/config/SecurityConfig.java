@@ -37,7 +37,8 @@ public class SecurityConfig {
                 .csrf().csrfTokenRepository(cookieCsrfTokenRepository()).and()
                 .authorizeHttpRequests(request -> request
                     .dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll()
-                    .requestMatchers("/user/login/**", "/home", "/user/signup", "/user/login-fail", "/css/**").permitAll()
+                    .requestMatchers("/user/login/**", "/home", "/user/signup", "/user/login-fail",
+                            "/css/**", "/image/**").permitAll()
                     .anyRequest().authenticated()
                 );
 

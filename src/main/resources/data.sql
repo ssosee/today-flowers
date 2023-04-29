@@ -1,2 +1,2 @@
-insert into member(user_id, password, role) values ('user', '$2a$10$lok4/duGF6yAJjAF4oSyhOZG.2uWr0CCorCZilInWKUuS/FCXMvZe', 'USER');
-insert into member(user_id, password, role) values ('admin', '$2a$10$lok4/duGF6yAJjAF4oSyhOZG.2uWr0CCorCZilInWKUuS/FCXMvZe', 'ADMIN');
+insert into member(create_date, hits, email, user_id, password, role) values ('2023-04-30 12:59:00', 0, 'howisitgoing@kakao.com', 'user', '$2a$10$lok4/duGF6yAJjAF4oSyhOZG.2uWr0CCorCZilInWKUuS/FCXMvZe', 'USER');
+insert into member(create_date, hits, email, user_id, password, role) values ('2023-04-30 12:59:00', 0, 'howisitgoing@kakao.com', 'admin', '$2a$10$lok4/duGF6yAJjAF4oSyhOZG.2uWr0CCorCZilInWKUuS/FCXMvZe', 'ADMIN');

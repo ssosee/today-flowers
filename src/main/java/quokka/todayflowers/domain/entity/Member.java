@@ -12,7 +12,7 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Member {
+public class Member extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -20,6 +20,7 @@ public class Member {
     private String password;
     private String email;
     private String role;
+    private Long hits; // 사이트 방문 횟수
     @OneToMany(mappedBy = "member")
     private List<FlowerLike> flowerLikes = new ArrayList<>();
 
@@ -31,5 +32,9 @@ public class Member {
         member.role = ConstMember.ROLE;
 
         return member;
+    }
+
+    public void changeHits(Long hits) {
+        this.hits += hits;
     }
 }
