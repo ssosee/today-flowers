@@ -14,6 +14,7 @@ public class BasicExHandler {
     @ExceptionHandler(BasicException.class)
     public ModelAndView exHandler(BasicException e) {
         ModelAndView mv = new ModelAndView();
+
         return mv;
     }
 

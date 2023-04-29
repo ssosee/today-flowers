@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -27,7 +28,7 @@
                     </div>
                     <br>
                     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
-                    <div class="input-form-box">
+                    <div class="input-form-box" sec:authorize="isAnonymous()">
                         <button type="submit" class="btn btn-primary btn-xs" style="width: 100%">로그인</button>
                     </div>
                     <div class="input-form-box">

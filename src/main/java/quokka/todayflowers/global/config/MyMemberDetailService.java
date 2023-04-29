@@ -14,6 +14,9 @@ import quokka.todayflowers.global.constant.ConstMember;
 
 import java.util.Optional;
 
+/**
+ * 스프링 시큐리티 사용시 DB 연동
+ */
 @Component
 @RequiredArgsConstructor
 public class MyMemberDetailService implements UserDetailsService {
@@ -22,7 +25,7 @@ public class MyMemberDetailService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
         Optional<Member> optionalMember = memberRepository.findByUserId(username);
-        // DB에 회원 정보가 없을경우 예외 발생
+        // DB에 회원 정보가 없을 경우 예외 발생
         Member findMember = optionalMember.orElseThrow(() -> new BadCredentialsException(ConstMember.LOGIN_FAIL));
 
         return User.builder()

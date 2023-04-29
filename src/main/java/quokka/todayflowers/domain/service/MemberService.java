@@ -13,4 +13,6 @@ public interface MemberService {
     void withdrawalMember(String userId, String password, String email);
     // 아이디 찾기
     String findUserId(String email);
+    // 회원 찾기
+    Member findMember(String userId);
 }

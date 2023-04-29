@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<head th:replace="~{fragment/config :: configFragment}"></head>
+  <body>
+    <!--  헤더 시작-->
+    <header th:replace="~{fragment/header :: headerFragment}"></header>
+    <!--컨텐츠 시작-->
+    <div layout:fragment="content"></div>
+    <!--푸터 시작-->
+    <th:block th:replace="~{fragment/footer :: footerFragment}"></th:block>
+  </body>
+</html>

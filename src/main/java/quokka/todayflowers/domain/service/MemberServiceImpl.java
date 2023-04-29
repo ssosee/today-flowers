@@ -75,4 +75,12 @@ public class MemberServiceImpl implements MemberService {
 
         return findMember.getUserId();
     }
+
+    @Override
+    public Member findMember(String userId) {
+        Optional<Member> memberOptional = memberRepository.findByUserId(userId);
+        Member findMember = memberOptional.orElse(null);
+
+        return findMember;
+    }
 }

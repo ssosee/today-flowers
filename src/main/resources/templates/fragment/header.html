@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<header th:fragment="headerFragment">
+    <div class="container">
+        <form action="/logout-process" method="post">
+            <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom">
+                <a href="/" class="d-flex align-items-center col-md-3 mb-2 mb-md-0 text-dark text-decoration-none">
+                    <svg class="bi me-2" width="40" height="32" role="img" aria-label="Bootstrap"><use xlink:href="#bootstrap"/></svg>
+                </a>
+
+                <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
+                    <li><a href="#" class="nav-link px-2 link-dark">🌻 오늘의 꽃</a></li>
+                    <li><a href="#" class="nav-link px-2 link-dark">🎂 생일의 꽃</a></li>
+                    <li><a href="#" class="nav-link px-2 link-dark">🐎 꽃말의 꽃</a></li>
+                    <li><a href="#" class="nav-link px-2 link-dark">📛 이름의 꽃</a></li>
+                </ul>
+                    <div class="col-md-3 text-end">
+                        <button type="submit" class="btn btn-outline-primary" sec:authorize="!isAuthenticated()">로그인</button>
+                        <button type="submit" class="btn btn-outline-primary" sec:authorize="isAuthenticated()">로그아웃</button>
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                        <input type="hidden" th:value="${userId}">
+                        <button type="button" class="btn btn-outline-primary" sec:authorize="isAuthenticated()" th:onclick="|location.href='@{/user/mypage/{userId} (userId=${userId})}'|">내정보</button>
+                        <button type="button" class="btn btn-outline-primary" sec:authorize="!isAuthenticated()" th:onclick="|location.href='@{/user/signup}'|">회원가입</button>
+                    </div>
+            </div>
+        </form>
+    </div>
+</header>
+</html>

@@ -7,25 +7,18 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
-import org.springframework.validation.annotation.Validated;
-import quokka.todayflowers.global.constant.ConstMember;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 
 /**
  * <a href="https://nahwasa.com/entry/%EC%8A%A4%ED%94%84%EB%A7%81%EB%B6%80%ED%8A%B8-30%EC%9D%B4%EC%83%81-Spring-Security-%EA%B8%B0%EB%B3%B8-%EC%84%B8%ED%8C%85-%EC%8A%A4%ED%94%84%EB%A7%81-%EC%8B%9C%ED%81%90%EB%A6%AC%ED%8B%B0">참고</a>
@@ -44,10 +37,11 @@ public class SecurityConfig {
                 .csrf().csrfTokenRepository(cookieCsrfTokenRepository()).and()
                 .authorizeHttpRequests(request -> request
                     .dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll()
-                    .requestMatchers("/user/login/**", "/user/home", "/user/signup", "/user/login-fail", "/css/**").permitAll()
+                    .requestMatchers("/user/login/**", "/home", "/user/signup", "/user/login-fail", "/css/**").permitAll()
                     .anyRequest().authenticated()
                 );
 
+        // 로그인 설정
         http
                 .formLogin(login -> login
                         .loginPage("/user/login")
@@ -59,17 +53,20 @@ public class SecurityConfig {
                         .permitAll()
                 );
 
+        // 자동 로그인 설정
         http.rememberMe()
                 .rememberMeParameter("remember")
                 .alwaysRemember(false)
                 .userDetailsService(userDetailsService);
 
+        // 로그아웃 설정
         http
                 .logout()
                 .logoutUrl("/logout-process")
                 .logoutSuccessUrl("/user/login")
                 .deleteCookies("remember-me");
 
+        // 세션 정책 설정
         http
                 .sessionManagement()
                 .maximumSessions(1)
@@ -90,6 +87,7 @@ public class SecurityConfig {
         return new CookieCsrfTokenRepository();
     }
 
+    // 로그인 실패 처리 핸들러
     @Bean AuthenticationFailureHandler authenticationFailureHandler() {
         return new SimpleAuthenticationFailureHandler();
     }
