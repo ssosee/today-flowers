@@ -122,4 +122,6 @@ public class MemberController {
 
         return "/member/findUser";
     }
+
+    // 비밀번호 초기화
 }
