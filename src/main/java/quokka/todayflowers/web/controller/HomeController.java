@@ -14,19 +14,8 @@ import quokka.todayflowers.domain.service.MemberService;
 @Controller
 @RequiredArgsConstructor
 public class HomeController {
-    private final MemberService memberService;
     @GetMapping("/home")
     public String home() {
-        SecurityContext context = SecurityContextHolder.getContext();
-        Authentication authentication = context.getAuthentication();
-        String userId = authentication.getName();
-
-        // 회원이면
-        if(!"anonymousUser".equalsIgnoreCase(userId)) {
-            // 방문 횟수 증가
-            memberService.hitsUp(userId);
-        }
-
         return "home";
     }
 }

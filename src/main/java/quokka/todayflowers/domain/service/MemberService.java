@@ -3,6 +3,8 @@ package quokka.todayflowers.domain.service;
 import quokka.todayflowers.domain.entity.Member;
 import quokka.todayflowers.web.response.MyPageForm;
 
+import java.util.List;
+
 public interface MemberService {
     // 회원가입
     Boolean join(String userId, String password, String email);
@@ -11,9 +13,9 @@ public interface MemberService {
     // 로그아웃
     void logout(String userId);
     // 회원탈퇴
-    void withdrawalMember(String userId, String password, String email);
+    void withdrawalMember(String userId);
     // 아이디 찾기
-    String findUserId(String email);
+    List<String> findUserId(String email);
     // 회원 찾기
     MyPageForm findMember(String userId);
     // 방문횟수 증가

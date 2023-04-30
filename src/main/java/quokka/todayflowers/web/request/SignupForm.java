@@ -15,4 +15,10 @@ public class SignupForm {
     private String password;
     @Email(message = "이메일 형식을 확인해주세요.")
     private String email;
+
+    public SignupForm(String userId, String password, String email) {
+        this.userId = userId;
+        this.password = password;
+        this.email = email;
+    }
 }

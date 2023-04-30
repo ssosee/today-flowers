@@ -4,20 +4,25 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import quokka.todayflowers.domain.entity.FlowerLike;
 import quokka.todayflowers.domain.entity.Member;
+import quokka.todayflowers.domain.repository.FlowerLikeRepository;
 import quokka.todayflowers.domain.repository.MemberRepository;
 import quokka.todayflowers.global.constant.ConstMember;
 import quokka.todayflowers.global.convert.SimpleConvert;
 import quokka.todayflowers.global.exception.BasicException;
 import quokka.todayflowers.web.response.MyPageForm;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
 @RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
+    private final FlowerLikeRepository flowerLikeRepository;
     private final PasswordEncoder passwordEncoder;
     private final SimpleConvert simpleConvert;
 
@@ -63,25 +68,34 @@ public class MemberServiceImpl implements MemberService {
 
     // 회원 삭제
     @Override
-    public void withdrawalMember(String userId, String password, String email) {
-        Optional<Member> optionalMember = memberRepository.findByUserIdAndPasswordAndEmail(userId, password, email);
+    public void withdrawalMember(String userId) {
+        Optional<Member> optionalMember = memberRepository.findByUserId(userId);
         Member findMember = optionalMember.orElseThrow(() -> new BasicException(ConstMember.MEMBER_NOT_FOUND));
+
+        List<FlowerLike> flowerLikes = flowerLikeRepository.findAllByMember(findMember);
+
         // 삭제
         memberRepository.delete(findMember);
+        flowerLikeRepository.deleteAll(flowerLikes);
     }
 
     // 회원 아이디 찾기
     @Override
-    public String findUserId(String email) {
-        Optional<Member> memberOptional = memberRepository.findByEmail(email);
-        Member findMember = memberOptional.orElseThrow(() -> new BasicException(ConstMember.MEMBER_NOT_FOUND));
+    public List<String> findUserId(String email) {
+        List<Member> findMembers = memberRepository.findByEmail(email);
 
-        return findMember.getUserId();
+        List<String> userIds = findMembers.stream()
+                .map(m -> m.getUserId())
+                .collect(Collectors.toList());
+
+        return userIds;
     }
 
+    // 내 정보
     @Override
     public MyPageForm findMember(String userId) {
-        Optional<Member> memberOptional = memberRepository.findByUserId(userId);
+
+        Optional<Member> memberOptional = memberRepository.findMemberAndFlowerLikeByUserId(userId);
         Member findMember = memberOptional.orElse(null);
 
         if(findMember == null) {
@@ -93,6 +107,7 @@ public class MemberServiceImpl implements MemberService {
                 .email(findMember.getEmail())
                 .hits(findMember.getHits())
                 .joinDate(simpleConvert.convertLocalDateTimeToString(findMember.getCreateDate()))
+                .likeCount(findMember.getFlowerLikes().stream().count())
                 .build();
 
         return myPageForm;

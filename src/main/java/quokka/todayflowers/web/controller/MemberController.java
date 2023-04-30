@@ -1,5 +1,6 @@
 package quokka.todayflowers.web.controller;
 
+import jakarta.validation.constraints.Email;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
@@ -13,9 +14,12 @@ import org.thymeleaf.extras.springsecurity6.util.SpringSecurityContextUtils;
 import quokka.todayflowers.domain.entity.Member;
 import quokka.todayflowers.domain.service.MemberService;
 import quokka.todayflowers.global.constant.ConstMember;
+import quokka.todayflowers.web.request.EmailForm;
 import quokka.todayflowers.web.request.LoginForm;
 import quokka.todayflowers.web.request.SignupForm;
 import quokka.todayflowers.web.response.MyPageForm;
+
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -68,6 +72,12 @@ public class MemberController {
     }
 
     // 회원 탈퇴
+    @PostMapping("/withdrawal")
+    public String withdrawal(@ModelAttribute("userId") String userId) {
+        memberService.withdrawalMember(userId);
+
+        return "redirect:/user/signup";
+    }
 
     // 내정보
     @GetMapping("/mypage")
@@ -75,14 +85,41 @@ public class MemberController {
         // 스프링시큐리티 컨테스트에서 userId 꺼내기
         SecurityContext context = SecurityContextHolder.getContext();
         Authentication authentication = context.getAuthentication();
-        String name = authentication.getName();
+        String userId = authentication.getName();
 
         // 회원 조회
-        MyPageForm form = memberService.findMember(name);
+        MyPageForm form = memberService.findMember(userId);
         model.addAttribute("form", form);
 
         return "/member/mypage";
     }
 
     // 회원아이디 찾기
+    @GetMapping("/find-userId")
+    public String findUserIdPage(@ModelAttribute("form") EmailForm form) {
+        return "/member/findUser";
+    }
+
+    // howisitgoing@kakao.com
+    // 회원아이디 찾기
+    @PostMapping("/find-userId")
+    public String findUserId(@Validated @ModelAttribute("form") EmailForm form,
+                             BindingResult bindingResult,
+                             Model model) {
+
+        if(bindingResult.hasErrors()) {
+            return "/member/findUser";
+        }
+
+        // 회원이 없으면
+        List<String> userIds = memberService.findUserId(form.getEmail());
+        if(userIds.size() == 0) {
+            bindingResult.reject("email_not_found", ConstMember.MEMBER_NOT_FOUND);
+            return "/member/findUser";
+        }
+
+        model.addAttribute("userIds", userIds);
+
+        return "/member/findUser";
+    }
 }

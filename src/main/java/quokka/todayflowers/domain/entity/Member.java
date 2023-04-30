@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import quokka.todayflowers.global.constant.ConstMember;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,6 +23,7 @@ public class Member extends BaseTimeEntity {
     private String email;
     private String role;
     private Long hits; // 사이트 방문 횟수
+    private LocalDateTime loginDate; // 로그인 시간
     @OneToMany(mappedBy = "member")
     private List<FlowerLike> flowerLikes = new ArrayList<>();
 
@@ -36,5 +39,10 @@ public class Member extends BaseTimeEntity {
 
     public void changeHits(Long hits) {
         this.hits += hits;
+    }
+
+    public void setLogin() {
+        this.hits += 1L;
+        this.loginDate = LocalDateTime.now();
     }
 }

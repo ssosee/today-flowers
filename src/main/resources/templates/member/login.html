@@ -31,7 +31,7 @@
                         <br>
                         <div class="form-switch">
                             <input class="form-check-input" type="checkbox" role="switch" name="remember" id="flexSwitchCheckDefault">
-                            <label class="form-check-label" for="flexSwitchCheckDefault"> 자동 로그인</label>
+                            <label class="form-check-label" for="flexSwitchCheckDefault"> 🔑 자동 로그인</label>
                         </div>
                         <br>
                         <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
@@ -40,6 +40,9 @@
                         </div>
                         <div class="input-form-box">
                             <button type="button" class="btn btn-xs" style="width: 100%; color: black; background-color: powderblue" th:onclick="|location.href='@{/user/signup}'|">회원가입</button>
+                        </div>
+                        <div class="input-form-box">
+                            <button type="button" class="btn btn-xs" style="width: 100%; color: black; background-color: plum" th:onclick="|location.href='@{/user/find-userId}'|">아이디 찾기</button>
                         </div>
                     </div>
                 </div>
