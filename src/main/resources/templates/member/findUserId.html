@@ -16,15 +16,16 @@
               <div th:errors="${form.email}"></div>
             </div>
 
+          <div style="margin-bottom: 30px">
+              <span style="font-size: 30px">📧 이메일로 가입한 아이디를 👀 조회합니다.</span>
+          </div>
+
             <!--이메일-->
             <div class="mb-3 row">
               <label for="inputEmail" class="col-sm-2 col-form-label">📧 이메일</label>
-              <div class="col-auto">
+              <div class="col-sm-10">
                 <input type="email" class="form-control" id="inputEmail" name="email" placeholder="name@example.com" th:field="${form.email}">
                 <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
-              </div>
-              <div class="col-auto">
-                <button type="submit" class="btn float-end btn-primary">아이디 찾기</button>
               </div>
             </div>
 
@@ -36,6 +37,12 @@
                     <strong><span type="text" readonly class="form-control-plaintext" id="staticUserId" th:text="${userId}"></span></strong>
                   </td>
               </tr>
+            </div>
+
+            <div class="mb-3 row">
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <button type="submit" class="btn float-end btn-primary">아이디 찾기</button>
+                </div>
             </div>
 
       </div>

@@ -8,16 +8,12 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import quokka.todayflowers.domain.service.MemberService;
 import quokka.todayflowers.global.constant.ConstMember;
-import quokka.todayflowers.web.request.FindPasswordForm;
-import quokka.todayflowers.web.request.FindUserIdForm;
-import quokka.todayflowers.web.request.LoginForm;
-import quokka.todayflowers.web.request.SignupForm;
+import quokka.todayflowers.web.request.*;
 import quokka.todayflowers.web.response.MyPageForm;
 
 import java.util.List;
@@ -49,7 +45,7 @@ public class MemberController {
 
     // 회원 가입
     @GetMapping("/signup")
-    public String signupPage(@ModelAttribute("form") SignupForm form) {
+    public String signup(@ModelAttribute("form") SignupForm form) {
         return "/member/signup";
     }
 
@@ -104,7 +100,7 @@ public class MemberController {
 
     // 회원아이디 찾기
     @GetMapping("/find-userId")
-    public String findUserIdPage(@ModelAttribute("form") FindUserIdForm form) {
+    public String findUserId(@ModelAttribute("form") FindUserIdForm form) {
         return "/member/findUserId";
     }
 
@@ -115,6 +111,7 @@ public class MemberController {
                              BindingResult bindingResult,
                              Model model) {
 
+        // 요청 데이터 검증
         if(bindingResult.hasErrors()) {
             return "/member/findUserId";
         }
@@ -131,26 +128,57 @@ public class MemberController {
         return "/member/findUserId";
     }
 
-    // 비밀번호 초기화
+    // 임시 비밀번호 발급
     @GetMapping("/find-password")
-    public String findPassword(@ModelAttribute("form") FindPasswordForm form) {
+    public String createTemporaryPassword(@ModelAttribute("form") FindPasswordForm form) {
         return "/member/findUserPassword";
     }
 
+    // 임시 비밀번호 발급
     @PostMapping("/send-email")
-    public String sendEmail(@Validated @ModelAttribute("form") FindPasswordForm form,
+    public String createTemporaryPassword(@Validated @ModelAttribute("form") FindPasswordForm form,
                             BindingResult bindingResult,
                             Model model) throws MessagingException {
 
-        if(StringUtils.hasText(form.getUserId()) && StringUtils.hasText(form.getEmail())) {
-            Boolean serviceResult = memberService.sendMailForFindPassword(form.getUserId(), adminEmail, form.getEmail());
-            if (!serviceResult) {
-                bindingResult.reject("send_email_fail", ConstMember.SEND_EMAIL_FAIL);
-                return "/member/findUserPassword";
-            }
+        // 요청 데이터 검증
+        if(bindingResult.hasErrors()) {
+            return "/member/findUserPassword";
         }
 
-        model.addAttribute("send_email_success", ConstMember.SEND_EMAIL_SUCCESS);
+        // 메일 전송(임시 비밀번호)
+        Boolean serviceResult = memberService.sendMailForCreateTemporaryPassword(form.getUserId(), adminEmail, form.getEmail());
+        if (!serviceResult) {
+            bindingResult.reject("send_email_fail", ConstMember.SEND_EMAIL_FAIL);
+            return "/member/findUserPassword";
+        }
+
+        model.addAttribute("sendEmailSuccess", ConstMember.SEND_EMAIL_SUCCESS);
         return "/member/findUserPassword";
+    }
+
+    // 비밀번호 변경
+    @GetMapping("/change-password")
+    public String changePassword(@ModelAttribute("form") ChangePasswordForm form) {
+        return "/member/changePassword";
+    }
+
+    @PostMapping("/change-password")
+    public String changePassword(@Validated @ModelAttribute("form") ChangePasswordForm form,
+                                 BindingResult bindingResult,
+                                 Model model) {
+
+        if(bindingResult.hasErrors()) {
+            return "/member/changePassword";
+        }
+
+        Boolean serviceResult = memberService.changePassword(form.getUserId(), form.getEmail(), form.getOldPassword(), form.getNewPassword());
+        if(!serviceResult) {
+            bindingResult.reject("change_password_fail", ConstMember.CHANGE_PASSWORD_FAIL);
+            return "/member/changePassword";
+        }
+
+
+        model.addAttribute("changePasswordSuccess", ConstMember.CHANGE_PASSWORD_SUCCESS);
+        return "/member/changePassword";
     }
 }

@@ -26,7 +26,7 @@
 
                     <button type="button" class="btn btn-outline-info" sec:authorize="!isAuthenticated()" th:onclick="|location.href='@{/user/signup}'|">회원가입</button>
                     <button type="button" class="btn btn-outline-secondary" sec:authorize="!isAuthenticated()" th:onclick="|location.href='@{/user/find-userId}'|">아이디 찾기</button>
-                    <button type="button" class="btn btn-outline-secondary" sec:authorize="!isAuthenticated()" th:onclick="|location.href='@{/user/find-password}'|">비밀번호 찾기</button>
+                    <button type="button" class="btn btn-outline-warning" sec:authorize="!isAuthenticated()" th:onclick="|location.href='@{/user/find-password}'|">비밀번호 찾기</button>
                 </div>
 
             </div>

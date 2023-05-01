@@ -11,6 +11,14 @@ public class MyPageForm {
     private String joinDate;
     private Long likeCount;
 
+    public MyPageForm() {
+        this.userId = "검색 결과가 없습니다.";
+        this.email = "검색 결과가 없습니다.";
+        this.hits = 0L;
+        this.joinDate = "검색 결과가 없습니다.";
+        this.likeCount = 0L;
+    }
+
     @Builder
     public MyPageForm(String userId, String email, Long hits, String joinDate, Long likeCount) {
         this.userId = userId;

@@ -11,8 +11,6 @@ public interface MemberService {
     Boolean join(String userId, String password, String email);
     // 로그인
     Boolean login(String userId, String password);
-    // 로그아웃
-    void logout(String userId);
     // 회원탈퇴
     Boolean withdrawalMember(String userId);
     // 아이디 찾기
@@ -21,6 +19,8 @@ public interface MemberService {
     MyPageForm findMember(String userId);
     // 방문횟수 증가
     void hitsUp(String userId);
-    // 인증 메일 전송(비밀번호 찾기)
-    Boolean sendMailForFindPassword(String userId, String FromEmail, String toEmail) throws MessagingException;
+    // 메일 전송(임시 비밀번호 생성)
+    Boolean sendMailForCreateTemporaryPassword(String userId, String FromEmail, String toEmail) throws MessagingException;
+    // 비밀번호 변경
+    Boolean changePassword(String userId, String email, String oldPassword, String newPassword);
 }

@@ -42,8 +42,6 @@ public class MemberServiceImpl implements MemberService {
 
     // 메일 관련 빈
     private final JavaMailSender javaMailSender;
-//    private final MimeMailMessage mimeMailMessage;
-//    private final MimeMessageHelper mimeMessageHelper;
     private final SpringTemplateEngine templateEngine;
     private final Context context;
 
@@ -71,7 +69,11 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public Boolean login(String userId, String password) {
         Optional<Member> optionalMember = memberRepository.findByUserId(userId);
-        Member findMember = optionalMember.get();
+        Member findMember = optionalMember.orElse(null);
+
+        if(findMember == null) {
+            return false;
+        }
 
         boolean matches = passwordEncoder.matches(password, findMember.getPassword());
         if(!matches || findMember == null) {
@@ -81,19 +83,16 @@ public class MemberServiceImpl implements MemberService {
         return true;
     }
 
-    // 로그아웃
-    @Override
-    public void logout(String userId) {
-
-    }
-
     // 회원 삭제
     @Override
     public Boolean withdrawalMember(String userId) {
         Optional<Member> optionalMember = memberRepository.findByUserId(userId);
-        Member findMember = optionalMember.orElseThrow(() -> new BasicException(ConstMember.MEMBER_NOT_FOUND));
+        Member findMember = optionalMember.orElse(null);
 
-        if(findMember == null) return false;
+        // 회원이 없으면
+        if(findMember == null) {
+            return false;
+        }
 
         List<FlowerLike> flowerLikes = flowerLikeRepository.findAllByMember(findMember);
 
@@ -120,11 +119,11 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public MyPageForm findMember(String userId) {
 
-        Optional<Member> memberOptional = memberRepository.findMemberAndFlowerLikeByUserId(userId);
-        Member findMember = memberOptional.orElse(null);
+        // 회원 검증
+        Member findMember = validationMemberByUserId(userId);
 
         if(findMember == null) {
-            return null;
+            return new MyPageForm();
         }
 
         MyPageForm myPageForm = MyPageForm.builder()
@@ -147,14 +146,12 @@ public class MemberServiceImpl implements MemberService {
         findMember.changeHits(1L);
     }
 
+    // 메일 전송(임시 비밀번호 생성)
     @Override
-    public Boolean sendMailForFindPassword(String userId, String fromEmail, String toEmail)  {
+    public Boolean sendMailForCreateTemporaryPassword(String userId, String fromEmail, String toEmail)  {
         try {
-            // 회원 조회
-            Optional<Member> optionalMember = memberRepository.findByUserIdAndEmail(userId, toEmail);
-            Member findMember = optionalMember.orElse(null);
-
-            // 회원이 없으면
+            // 회원 검증
+            Member findMember = validationMemberByUserIdAndEmail(userId, toEmail);
             if(findMember == null) {
                 return false;
             }
@@ -192,6 +189,56 @@ public class MemberServiceImpl implements MemberService {
         }
     }
 
+    @Override
+    public Boolean changePassword(String userId, String email, String oldPassword, String newPassword) {
+
+        // 회원 조회
+        Member findMember = validationMemberByUserIdAndEmail(userId, email);
+        if (findMember == null) {
+            return false;
+        }
+
+        // 비밀번호 확인
+        boolean matches = passwordEncoder.matches(oldPassword, findMember.getPassword());
+        if(!matches) {
+            return false;
+        }
+
+        // 비밀번호 변경
+        findMember.changePassword(passwordEncoder.encode(newPassword));
+
+        return true;
+    }
+
+    // 회원 검증
+    private Member validationMemberByUserId(String userId) {
+        // 회원 조회
+        Optional<Member> memberOptional = memberRepository.findMemberAndFlowerLikeByUserId(userId);
+        Member findMember = memberOptional.orElse(null);
+
+        // 회원이 없으면
+        if(findMember == null) {
+            return null;
+        }
+
+        return findMember;
+    }
+
+    // 회원 검증
+    private Member validationMemberByUserIdAndEmail(String userId, String toEmail) {
+        // 회원 조회
+        Optional<Member> optionalMember = memberRepository.findByUserIdAndEmail(userId, toEmail);
+        Member findMember = optionalMember.orElse(null);
+
+        // 회원이 없으면
+        if(findMember == null) {
+            return null;
+        }
+
+        return findMember;
+    }
+
+    // 임시 비밀번호 생성
     private String createAuthenticationNumber() {
         UUID uuid = UUID.randomUUID();
         return uuid.toString().substring(0, 8);
