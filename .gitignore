@@ -35,5 +35,6 @@ out/
 
 ### VS Code ###
 .vscode/
+
 # 메일 정보
 src/main/resources/mail-config.yml
