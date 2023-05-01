@@ -1,0 +1,16 @@
+spring:
+  mail:
+    default-encoding: UTF-8
+    host: smtp.gmail.com
+    port: 587
+    username: todayflowerdev@gmail.com
+    password: goppayiigwmiczcl
+    properties:
+      mail:
+        debug: true
+        mime.charset: UTF-8
+        transport.protocol: smtp
+        smtp:
+          auth: true
+          starttls:
+            enable: true
