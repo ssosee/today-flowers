@@ -36,4 +36,4 @@ out/
 ### VS Code ###
 .vscode/
 # 메일 정보
-spring.mail-config.yml
+src/main/resources/mail-config.yml
