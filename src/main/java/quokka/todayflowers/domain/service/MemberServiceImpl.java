@@ -1,9 +1,19 @@
 package quokka.todayflowers.domain.service;
 
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.MailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMailMessage;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
+import org.thymeleaf.context.Context;
+import org.thymeleaf.spring6.SpringTemplateEngine;
 import quokka.todayflowers.domain.entity.FlowerLike;
 import quokka.todayflowers.domain.entity.Member;
 import quokka.todayflowers.domain.repository.FlowerLikeRepository;
@@ -13,8 +23,12 @@ import quokka.todayflowers.global.convert.SimpleConvert;
 import quokka.todayflowers.global.exception.BasicException;
 import quokka.todayflowers.web.response.MyPageForm;
 
+import java.time.Instant;
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,6 +39,13 @@ public class MemberServiceImpl implements MemberService {
     private final FlowerLikeRepository flowerLikeRepository;
     private final PasswordEncoder passwordEncoder;
     private final SimpleConvert simpleConvert;
+
+    // 메일 관련 빈
+    private final JavaMailSender javaMailSender;
+//    private final MimeMailMessage mimeMailMessage;
+//    private final MimeMessageHelper mimeMessageHelper;
+    private final SpringTemplateEngine templateEngine;
+    private final Context context;
 
     // 회원 가입
     @Override
@@ -50,10 +71,10 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public Boolean login(String userId, String password) {
         Optional<Member> optionalMember = memberRepository.findByUserId(userId);
-        Member findMember = optionalMember.orElseThrow(() -> new BasicException(ConstMember.MEMBER_NOT_FOUND));
+        Member findMember = optionalMember.get();
 
         boolean matches = passwordEncoder.matches(password, findMember.getPassword());
-        if(!matches) {
+        if(!matches || findMember == null) {
             return false;
         }
 
@@ -68,15 +89,19 @@ public class MemberServiceImpl implements MemberService {
 
     // 회원 삭제
     @Override
-    public void withdrawalMember(String userId) {
+    public Boolean withdrawalMember(String userId) {
         Optional<Member> optionalMember = memberRepository.findByUserId(userId);
         Member findMember = optionalMember.orElseThrow(() -> new BasicException(ConstMember.MEMBER_NOT_FOUND));
+
+        if(findMember == null) return false;
 
         List<FlowerLike> flowerLikes = flowerLikeRepository.findAllByMember(findMember);
 
         // 삭제
         memberRepository.delete(findMember);
         flowerLikeRepository.deleteAll(flowerLikes);
+
+        return true;
     }
 
     // 회원 아이디 찾기
@@ -113,11 +138,62 @@ public class MemberServiceImpl implements MemberService {
         return myPageForm;
     }
 
+    // 방문 이력 증가
     @Override
     public void hitsUp(String userId) {
         Optional<Member> memberOptional = memberRepository.findByUserId(userId);
         Member findMember = memberOptional.orElseThrow(() -> new BasicException(ConstMember.MEMBER_NOT_FOUND));
 
         findMember.changeHits(1L);
+    }
+
+    @Override
+    public Boolean sendMailForFindPassword(String userId, String fromEmail, String toEmail)  {
+        try {
+            // 회원 조회
+            Optional<Member> optionalMember = memberRepository.findByUserIdAndEmail(userId, toEmail);
+            Member findMember = optionalMember.orElse(null);
+
+            // 회원이 없으면
+            if(findMember == null) {
+                return false;
+            }
+
+            // 메일 발신 로직
+            MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+            MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
+
+            // 제목 설정
+            mimeMessageHelper.setSubject(ConstMember.AUTHENTICATION_EMAIL_SUBJECT);
+            // 발신자
+            mimeMessageHelper.setFrom(fromEmail);
+            // 수신자
+            mimeMessageHelper.setTo(toEmail);
+
+            // 임시 비밀번호 생성
+            String authenticationNumber = createAuthenticationNumber();
+            // 템플릿에 전달할 데이터 설정
+            context.setVariable("authenticationNumber", authenticationNumber);
+
+            // html 생성
+            String html = templateEngine.process("/mail/authentication-mail", context);
+            mimeMessageHelper.setText(html, true);
+
+            // 메일 전송
+            javaMailSender.send(mimeMessage);
+
+            // 회원 비밀번호 임시 비밀번호로 변경
+            findMember.changePassword(passwordEncoder.encode(authenticationNumber));
+
+            return true;
+
+        } catch (MessagingException e) {
+            return false;
+        }
+    }
+
+    private String createAuthenticationNumber() {
+        UUID uuid = UUID.randomUUID();
+        return uuid.toString().substring(0, 8);
     }
 }

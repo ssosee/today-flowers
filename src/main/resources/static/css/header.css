@@ -1,14 +1,9 @@
-body {
-    margin-top: 120px;
-    margin-bottom: 120px;
-}
-header {
-    border: 4px solid yellowgreen;
-    position: fixed;
-    left: 0;
-    right: 0;
-    width: 100%;
-    height: 100px;
-    background-color: orange;
-    z-index: 4;
+.todayFlowerTitle {
+    color:#000000;
+    font-weight: bold;
+    font-size: 30px;
+    text-transform: uppercase;
+    background: linear-gradient(to right, #2e2938, #b1a5c8);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }

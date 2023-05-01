@@ -45,4 +45,8 @@ public class Member extends BaseTimeEntity {
         this.hits += 1L;
         this.loginDate = LocalDateTime.now();
     }
+
+    public void changePassword(String password) {
+        this.password = password;
+    }
 }

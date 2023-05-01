@@ -1,20 +1,21 @@
 package quokka.todayflowers.web.controller;
 
-import jakarta.validation.constraints.Email;
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.thymeleaf.extras.springsecurity6.util.SpringSecurityContextUtils;
-import quokka.todayflowers.domain.entity.Member;
 import quokka.todayflowers.domain.service.MemberService;
 import quokka.todayflowers.global.constant.ConstMember;
-import quokka.todayflowers.web.request.EmailForm;
+import quokka.todayflowers.web.request.FindPasswordForm;
+import quokka.todayflowers.web.request.FindUserIdForm;
 import quokka.todayflowers.web.request.LoginForm;
 import quokka.todayflowers.web.request.SignupForm;
 import quokka.todayflowers.web.response.MyPageForm;
@@ -26,6 +27,9 @@ import java.util.List;
 @RequestMapping("/user")
 public class MemberController {
     private final MemberService memberService;
+
+    @Value("${spring.mail.username}")
+    private String adminEmail;
 
     // 로그인
     @GetMapping("/login")
@@ -73,8 +77,12 @@ public class MemberController {
 
     // 회원 탈퇴
     @PostMapping("/withdrawal")
-    public String withdrawal(@ModelAttribute("userId") String userId) {
-        memberService.withdrawalMember(userId);
+    public String withdrawal(@ModelAttribute("userId") String userId, BindingResult bindingResult) {
+        Boolean serviceResult = memberService.withdrawalMember(userId);
+
+        if(!serviceResult) {
+            bindingResult.reject("user_not_found", ConstMember.MEMBER_NOT_FOUND);
+        }
 
         return "redirect:/user/signup";
     }
@@ -96,32 +104,53 @@ public class MemberController {
 
     // 회원아이디 찾기
     @GetMapping("/find-userId")
-    public String findUserIdPage(@ModelAttribute("form") EmailForm form) {
-        return "/member/findUser";
+    public String findUserIdPage(@ModelAttribute("form") FindUserIdForm form) {
+        return "/member/findUserId";
     }
 
     // howisitgoing@kakao.com
     // 회원아이디 찾기
     @PostMapping("/find-userId")
-    public String findUserId(@Validated @ModelAttribute("form") EmailForm form,
+    public String findUserId(@Validated @ModelAttribute("form") FindUserIdForm form,
                              BindingResult bindingResult,
                              Model model) {
 
         if(bindingResult.hasErrors()) {
-            return "/member/findUser";
+            return "/member/findUserId";
         }
 
         // 회원이 없으면
         List<String> userIds = memberService.findUserId(form.getEmail());
         if(userIds.size() == 0) {
             bindingResult.reject("email_not_found", ConstMember.MEMBER_NOT_FOUND);
-            return "/member/findUser";
+            return "/member/findUserId";
         }
 
         model.addAttribute("userIds", userIds);
 
-        return "/member/findUser";
+        return "/member/findUserId";
     }
 
     // 비밀번호 초기화
+    @GetMapping("/find-password")
+    public String findPassword(@ModelAttribute("form") FindPasswordForm form) {
+        return "/member/findUserPassword";
+    }
+
+    @PostMapping("/send-email")
+    public String sendEmail(@Validated @ModelAttribute("form") FindPasswordForm form,
+                            BindingResult bindingResult,
+                            Model model) throws MessagingException {
+
+        if(StringUtils.hasText(form.getUserId()) && StringUtils.hasText(form.getEmail())) {
+            Boolean serviceResult = memberService.sendMailForFindPassword(form.getUserId(), adminEmail, form.getEmail());
+            if (!serviceResult) {
+                bindingResult.reject("send_email_fail", ConstMember.SEND_EMAIL_FAIL);
+                return "/member/findUserPassword";
+            }
+        }
+
+        model.addAttribute("send_email_success", ConstMember.SEND_EMAIL_SUCCESS);
+        return "/member/findUserPassword";
+    }
 }

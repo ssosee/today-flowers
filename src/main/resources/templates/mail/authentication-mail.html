@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>오늘의 꽃 인증 메일</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!--공통으로 사용하는 css 파일-->
+    <link href="/docs/5.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
+            crossorigin="anonymous"></script>
+
+    <style>
+        .todayFlowerTitle {
+            color:#000000;
+            font-weight: bold;
+            font-size: 30px;
+            text-transform: uppercase;
+            background: linear-gradient(to right, #2e2938, #b1a5c8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body>
+    <div style="font-family: 'Apple SD Gothic Neo', 'sans-serif' !important; width: 540px; height: 600px; border-top: 4px solid mediumpurple; margin: 100px auto; padding: 30px 0; box-sizing: border-box;">
+        <h1 style="margin: 0; padding: 0 5px; font-size: 28px; font-weight: 400;">
+            <a href="http://localhost:8080/user/login">
+                <img src="http://localhost:8080/image/lavender_adobe_express.svg" class="bi me-2" width="46" height="38" alt="오늘의 꽃 SVG"></img>
+                <span class="todayFlowerTitle">오늘의 꽃</span><br />
+                <span style="color: mediumpurple">임시 비밀번호</span> 안내입니다.
+            </a>
+        </h1>
+        <p style="font-size: 16px; line-height: 26px; margin-top: 50px; padding: 0 5px;">
+            안녕하세요.<br />
+            요청하신 <strong>임시 비밀번호</strong>가 생성되었습니다.<br />
+            위에 <b style="color: mediumpurple;">'오늘의 꽃'</b>을 클릭하고, 임시 비밀번호로 로그인하세요.<br />
+            감사합니다. 🙏
+        </p>
+
+        <p style="font-size: 20px; margin: 40px 5px 20px; line-height: 28px;">
+            임시 비밀번호: <br />
+            <span style="font-size: 25px;" th:text="${authenticationNumber}"></span>
+        </p>
+    </div>
+</body>
+</html>
