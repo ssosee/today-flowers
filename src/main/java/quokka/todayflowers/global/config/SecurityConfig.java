@@ -38,7 +38,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(request -> request
                     .dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll()
                     .requestMatchers("/home",
-                            "/user/login/**", "/user/signup", "/user/login-fail", "/user/find-userId", "/user/find-password", "/user/find-password", "/user/send-email",
+                            "/user/login/**", "/user/signup", "/user/login-fail", "/user/find-userId", "/user/find-password",
                             "/css/**", "/image/**").permitAll()
                     .anyRequest().authenticated()
                 );

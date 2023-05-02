@@ -86,6 +86,7 @@ public class MemberServiceImpl implements MemberService {
     // 회원 삭제
     @Override
     public Boolean withdrawalMember(String userId) {
+        // 회원 조회
         Optional<Member> optionalMember = memberRepository.findByUserId(userId);
         Member findMember = optionalMember.orElse(null);
 
@@ -96,8 +97,9 @@ public class MemberServiceImpl implements MemberService {
 
         List<FlowerLike> flowerLikes = flowerLikeRepository.findAllByMember(findMember);
 
-        // 삭제
+        // 회원 삭제
         memberRepository.delete(findMember);
+        // 좋아요 삭제
         flowerLikeRepository.deleteAll(flowerLikes);
 
         return true;

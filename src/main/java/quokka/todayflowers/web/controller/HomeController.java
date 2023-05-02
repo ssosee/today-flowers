@@ -12,7 +12,6 @@ import quokka.todayflowers.domain.repository.MemberRepository;
 import quokka.todayflowers.domain.service.MemberService;
 
 @Controller
-@RequiredArgsConstructor
 public class HomeController {
     @GetMapping("/home")
     public String home() {

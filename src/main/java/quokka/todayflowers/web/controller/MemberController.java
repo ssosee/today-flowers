@@ -74,6 +74,7 @@ public class MemberController {
     // 회원 탈퇴
     @PostMapping("/withdrawal")
     public String withdrawal(@ModelAttribute("userId") String userId, BindingResult bindingResult) {
+        // 회원 탈퇴 로직
         Boolean serviceResult = memberService.withdrawalMember(userId);
 
         if(!serviceResult) {
@@ -104,7 +105,6 @@ public class MemberController {
         return "/member/findUserId";
     }
 
-    // howisitgoing@kakao.com
     // 회원아이디 찾기
     @PostMapping("/find-userId")
     public String findUserId(@Validated @ModelAttribute("form") FindUserIdForm form,
