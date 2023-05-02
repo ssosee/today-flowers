@@ -59,9 +59,8 @@ public class SaveTodayFlowerService {
 
     public FlowerDocumentData getTest() throws JAXBException {
         String uri = "https://apis.data.go.kr/1390804/NihhsTodayFlowerInfo01/selectTodayFlowerView01?servicekey=SxiFBkwFdvX0KlFjfLEWi6HYwn67iYE40MaNnxIA58ZigkRDrLljf1XLGnQb0Hh01BFX2kaw7PMJCvLlazNFBA==&dataNo=1";
-        RestTemplate rt = new RestTemplate();
-        rt.getMessageConverters().add(new MappingJackson2XmlHttpMessageConverter());
-        FlowerDocumentData documentData = rt.getForObject(uri, FlowerDocumentData.class);
+        restTemplate.getMessageConverters().stream().forEach(System.out::println);
+        FlowerDocumentData documentData = restTemplate.getForObject(uri, FlowerDocumentData.class);
 
         return documentData;
     }

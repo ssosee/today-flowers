@@ -18,7 +18,6 @@ public class Flower extends BaseTimeEntity {
     private Long id;
     private String name;
     private String flowerLang;
-    @Lob
     private String description;
     @Column(name = "`MONTH`")
     private Integer month;

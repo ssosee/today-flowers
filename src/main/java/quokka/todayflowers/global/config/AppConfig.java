@@ -30,11 +30,11 @@ public class AppConfig {
 
     @Bean
     public RestTemplate restTemplate() {
-        //RestTemplateBuilder restTemplateBuilder = new RestTemplateBuilder();
-        //RestTemplate restTemplate = restTemplateBuilder.build();
+        RestTemplateBuilder restTemplateBuilder = new RestTemplateBuilder();
+        RestTemplate restTemplate = restTemplateBuilder.build();
         //restTemplate.setMessageConverters(getMessageConverters());
 
-        return new RestTemplate();
+        return restTemplate;
     }
 
     private List<HttpMessageConverter<?>> getMessageConverters() {
