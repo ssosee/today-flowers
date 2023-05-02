@@ -38,3 +38,4 @@ out/
 
 # 메일 정보
 src/main/resources/mail-config.yml
+src/main/resources/flower-config.yml
