@@ -93,14 +93,21 @@ public class FlowerServiceImpl implements FlowerService {
         Optional<Member> optionalMember = memberRepository.findByUserId(userId);
         Member findMember = optionalMember.orElseThrow(() -> new BasicException(ConstMember.MEMBER_NOT_FOUND));
 
-        // 사용자가 좋아요 누른 꽃 생성
-        FlowerLike flowerLike = FlowerLike.createFlowerLike(findFlower, findMember);
 
-        // 연관관계 반영
-        findMember.changeFlowerLike(flowerLike);
+        Optional<FlowerLike> optionalFlowerLike = flowerLikeRepository.findByUserIdAndFlowerId(userId, flowerId);
+        if(optionalFlowerLike.isEmpty()) {
+            // 사용자가 좋아요 누른 꽃 생성
+            FlowerLike flowerLike = FlowerLike.createFlowerLike(findFlower, findMember);
+            // 연관관계 반영
+            findMember.changeFlowerLike(flowerLike);
+            // 사용자가 좋아요 누른 꽃 저장
+            flowerLikeRepository.save(flowerLike);
 
-        // 사용자가 좋아요 누른 꽃 저장
-        flowerLikeRepository.save(flowerLike);
+        } else {
+            FlowerLike flowerLike = optionalFlowerLike.get();
+            // 사용자가 좋아요 누른 꽃 삭제
+            flowerLikeRepository.delete(flowerLike);
+        }
 
         return findFlower.getTotalLike().toString();
     }

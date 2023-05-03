@@ -50,7 +50,7 @@
       <div class="py-4">
         <!-- 좋아요 버튼-->
         <div class="float-end">
-          <button sec:authorize="!isAuthenticated()" type="button" class="btn btn-outline-danger btn-like"
+          <button sec:authorize="isAuthenticated()" type="button" class="btn btn-outline-danger btn-like"
                   th:data-flower-id="${form.flowerId}"
                   th:data-like="${form.like}">
             <i th:classappend="${form.like} ? 'bi bi-heart-fill' : 'bi bi-heart'"></i>
@@ -82,11 +82,11 @@
                             beforeSend: function (xhr) {
                                 xhr.setRequestHeader(header, csrfToken)
                             },
-                            data: {
+                            data: JSON.stringify({
                                 "like": like,
                                 "flower_id": flowerId,
-                                //"_csrf": csrfToken
-                            },
+                                "_csrf": csrfToken
+                            }),
                             success: function(response) {
                                 // 요청이 성공적으로 완료되면 버튼의 텍스트를 변경합니다.
                                 // btn.html('<i class="bi bi-heart-fill"></i>')

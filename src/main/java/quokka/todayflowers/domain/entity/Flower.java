@@ -55,7 +55,8 @@ public class Flower extends BaseTimeEntity {
 
     // 좋아요 처리 로직
     public void totalLikeLogic(Boolean like) {
-        if(like) this.totalLike += 1;
+        // 좋아요를 누를때는 false, 로직 이후에는 true로 변경
+        if(!like) this.totalLike += 1;
         else this.totalLike -= 1;
     }
 
