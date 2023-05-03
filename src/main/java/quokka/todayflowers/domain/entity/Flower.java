@@ -43,6 +43,16 @@ public class Flower extends BaseTimeEntity {
         return flower;
     }
 
+    // 조회수 증가 로직
+    public void increaseHits() {
+        this.hits += 1;
+    }
+
+    // 좋아요 처리 로직
+    public void totalLikeLogic(Boolean like) {
+        if(like) this.totalLike += 1;
+        else this.totalLike -= 1;
+    }
 
     // 연관관계 편의 메소드
     public void changeFlowerPhoto(FlowerPhoto flowerPhoto) {

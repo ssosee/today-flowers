@@ -49,4 +49,10 @@ public class Member extends BaseTimeEntity {
     public void changePassword(String password) {
         this.password = password;
     }
+
+    // 연관관계 편의 메소드
+    public void changeFlowerLike(FlowerLike flowerLike) {
+        flowerLikes.add(flowerLike);
+        flowerLike.setMember(this);
+    }
 }

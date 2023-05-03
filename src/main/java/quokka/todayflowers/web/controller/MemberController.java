@@ -12,6 +12,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import quokka.todayflowers.domain.service.MemberService;
+import quokka.todayflowers.global.common.SimpleCommonMethod;
 import quokka.todayflowers.global.constant.ConstMember;
 import quokka.todayflowers.web.request.*;
 import quokka.todayflowers.web.response.MyPageForm;
@@ -23,6 +24,7 @@ import java.util.List;
 @RequestMapping("/user")
 public class MemberController {
     private final MemberService memberService;
+    private final SimpleCommonMethod simpleCommonMethod;
 
     @Value("${spring.mail.username}")
     private String adminEmail;
@@ -88,9 +90,7 @@ public class MemberController {
     @GetMapping("/mypage")
     public String myPage(Model model) {
         // 스프링시큐리티 컨테스트에서 userId 꺼내기
-        SecurityContext context = SecurityContextHolder.getContext();
-        Authentication authentication = context.getAuthentication();
-        String userId = authentication.getName();
+        String userId = simpleCommonMethod.getCurrentUserId();
 
         // 회원 조회
         MyPageForm form = memberService.findMember(userId);

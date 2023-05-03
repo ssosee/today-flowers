@@ -91,7 +91,8 @@ public class SecurityConfig {
     }
 
     // 로그인 실패 처리 핸들러
-    @Bean AuthenticationFailureHandler authenticationFailureHandler() {
+    @Bean
+    public AuthenticationFailureHandler authenticationFailureHandler() {
         return new SimpleAuthenticationFailureHandler();
     }
 }

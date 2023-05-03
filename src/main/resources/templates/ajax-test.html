@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+  <form id="frm">
+    name : <input type="text" name="name" id="name"><br>
+    age : <input type="text" name="age" id="age">
+  </form>
+  <button id="btn2">serialize</button>
+  <div id="result"></div>
+
+<script>
+  $('#btn2').on('click', function(){
+    $.ajax({
+      url: "serialize",
+      type: "POST",
+      data: $("#frm").serialize(),
+      success: function(data){
+        $('#result').text(data);
+      },
+      error: function(){
+        alert("serialize err");
+      }
+    });
+  });
+</script>
+</body>
+</html>
