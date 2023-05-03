@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +26,9 @@ public class Flower extends BaseTimeEntity {
     @Column(name = "`DAY`")
     private Integer day;
     private String reference;
+    @Column(nullable = false)
     private Long totalLike;
+    @Column(nullable = false)
     private Long hits; // 조회수
     @OneToMany(mappedBy = "flower")
     private List<FlowerPhoto> flowerPhotos = new ArrayList<>();
@@ -39,6 +42,8 @@ public class Flower extends BaseTimeEntity {
         flower.month = month;
         flower.day = day;
         flower.reference = reference;
+        flower.hits = 0L;
+        flower.totalLike = 0L;
 
         return flower;
     }

@@ -28,7 +28,7 @@ public class SaveTodayFlowerService {
 
     public void saveFlowerDetailData() {
 
-        for(int i = 124; i <= 124; i++) {
+        for(int i = 125; i <= 130; i++) {
             String uri = "https://apis.data.go.kr/1390804/NihhsTodayFlowerInfo01/selectTodayFlowerView01?servicekey=SxiFBkwFdvX0KlFjfLEWi6HYwn67iYE40MaNnxIA58ZigkRDrLljf1XLGnQb0Hh01BFX2kaw7PMJCvLlazNFBA==&dataNo="+i;
             FlowerDocumentData documentData = restTemplate.getForObject(uri, FlowerDocumentData.class);
             FlowerRootData root = documentData.getRoot();

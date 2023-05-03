@@ -34,12 +34,14 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
         http
+                //.csrf().disable()
                 .csrf().csrfTokenRepository(cookieCsrfTokenRepository()).and()
                 .authorizeHttpRequests(request -> request
                     .dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll()
                     .requestMatchers("/home",
                             "/user/login/**", "/user/signup", "/user/login-fail", "/user/find-userId", "/user/find-password",
                             "/today-flower/today",
+                            "/flower/like",
                             "/css/**", "/image/**").permitAll()
                     .anyRequest().authenticated()
                 );

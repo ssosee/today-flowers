@@ -7,7 +7,6 @@
 <th:block layout:fragment="css"></th:block>
 <div layout:fragment="content">
   <div th:class="container-lg">
-<!--    <form action="" th:action th:object="${form}" method="post">-->
 
       <div class="py-5 px-4">
       <!--꽃 이름-->
@@ -17,7 +16,7 @@
 
       <!-- 조회수 -->
       <div class="py-4 mb-3">
-        <div th:text="|👀 조회수: ${form.hits}|"></div>
+        <div th:text="|조회수: ${form.hits}|"></div>
       </div>
 
       <!-- 캐러셀 이미지 -->
@@ -51,43 +50,54 @@
       <div class="py-4">
         <!-- 좋아요 버튼-->
         <div class="float-end">
-          <button type="button" class="btn btn-outline-danger btn-like">
-            <i class="bi bi-heart"></i>
+          <button sec:authorize="!isAuthenticated()" type="button" class="btn btn-outline-danger btn-like"
+                  th:data-flower-id="${form.flowerId}"
+                  th:data-like="${form.like}">
+            <i th:classappend="${form.like} ? 'bi bi-heart-fill' : 'bi bi-heart'"></i>
+<!--              <input type="hidden" id="flower_id" th:field="${form.flowerId}">-->
+<!--              <input type="hidden" id="like" th:field="${form.like}">-->
+<!--              <input type="hidden" formaction="/flower/like" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">-->
           </button>
-            <span name="flower_id" th:content="${form.flowerId}"></span>
 
-            <script th:inline="javascript">
-                    $(document).ready(function () {
-                        $('.btn-like').click(function (e) {
-                            e.preventDefault();
-                            let flower_id = $('#flower_id');
-                            let url = '/flower/like';
-                            var token = $("meta[name='_csrf']").attr("content");
-                            var header = $("meta[name='_csrf_header']").attr("content");
+            <script>
+                $(document).ready(function() {
+                    // 좋아요 버튼 클릭 시
+                    $('.btn-like').on('click', function() {
+                        var btn = $(this);
+                        var flowerId = btn.data('flower-id');
+                        //var userId = ; // 사용자 ID를 여기에 입력하세요.
+                        var like = btn.data('like');
+                        var header = $("meta[name='_csrf_header']").attr("content");
+                        var csrfToken = $("meta[name='_csrf']").attr("content"); // CSRF 토큰을 여기에서 가져옵니다.
 
-                            $.ajax({
-                                type: 'POST',
-                                url: url,
-                                data: {
-                                    post_id: $("#flower_id"),
-                                    like: $("#like")
-                                },
-                                success: function (response) {
-                                    if (response['status'] == 'liked') {
-                                        $('.btn-like[data-id=' + flower_id + ']').addClass('btn-liked');
-                                        like = false;
-                                    } else {
-                                        $('.btn-like[data-id=' + flower_id + ']').removeClass('btn-liked');
-                                        like = true;
-                                    }
-                                    $('.like-count[data-id=' + flower_id + ']').text(response['like_count']);
-                                },
-                                error: function (response) {
-                                    console.log('error', response);
-                                }
-                            });
+                        console.log(flowerId+", "+like);
+
+                        // Ajax 요청 전송
+                        $.ajax({
+                            type: "POST",
+                            async: true, //비동기 여부
+                            url: "/flower/like",
+                            dataType: "json",
+                            contentType: "application/json;charset=utf-8",
+                            beforeSend: function (xhr) {
+                                xhr.setRequestHeader(header, csrfToken)
+                            },
+                            data: {
+                                "like": like,
+                                "flower_id": flowerId,
+                                //"_csrf": csrfToken
+                            },
+                            success: function(response) {
+                                // 요청이 성공적으로 완료되면 버튼의 텍스트를 변경합니다.
+                                // btn.html('<i class="bi bi-heart-fill"></i>')
+                                console.log(response)
+                            },
+                            error: function(jqXHR, textStatus, errorThrown) {
+                                console.log(textStatus, errorThrown);
+                            }
                         });
                     });
+                });
             </script>
 
         </div>
@@ -105,8 +115,6 @@
       </div>
 
     </div>
-
-<!--    </form>-->
   </div>
 </div>
 </html>
