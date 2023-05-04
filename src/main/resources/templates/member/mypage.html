@@ -15,6 +15,7 @@
             <span type="text" readonly class="form-control-plaintext" id="staticUserId" th:text="${form.userId}"></span>
           </div>
         </div>
+
         <!--이메일-->
         <div class="mb-3 row">
           <label for="staticEmail" class="col-sm-2 col-form-label">📧 이메일:</label>
@@ -22,6 +23,7 @@
             <span type="text" readonly class="form-control-plaintext" id="staticEmail" th:text="${form.email}"></span>
           </div>
         </div>
+
         <!--방문 횟수-->
         <div class="mb-3 row">
           <label for="staticLikeCount" class="col-sm-2 col-form-label">💜 좋아요 횟수:</label>
@@ -29,6 +31,7 @@
               <span type="text" readonly class="form-control-plaintext" id="staticLikeCount" th:text="${form.likeCount}"></span>
           </div>
         </div>
+
         <!--방문 횟수-->
         <div class="mb-3 row">
           <label for="staticHits" class="col-sm-2 col-form-label">👀 방문 횟수:</label>
@@ -36,6 +39,7 @@
             <span type="text" readonly class="form-control-plaintext" id="staticHits" th:text="${form.hits}"></span>
           </div>
         </div>
+
         <!--가입일시-->
         <div class="mb-3 row">
           <label for="staticJoinDate" class="col-sm-2 col-form-label">👨‍👩‍👧‍👦 가족이된 날:</label>
@@ -53,7 +57,7 @@
                             비밀번호 변경
                         </button>
                         <!--회원 탈퇴-->
-                        <button type="button" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
                             오늘의 꽃 탈퇴
                         </button>
                     </div>

@@ -10,13 +10,13 @@
 
       <div class="py-5 px-4">
       <!--꽃 이름-->
-      <h2 class="pb-3 border-bottom">🤗 오늘의 꽃은 <strong style="color: tomato" class="todayFlowerName" th:text="${form.name}"></strong>입니다.<br />
-        <strong style="color: tomato" th:text="${form.name}"></strong>의 꽃말은 <strong style="color: dodgerblue" th:text="${form.flowerLang}"></strong> 입니다.
+      <h2 class="pb-3 border-bottom">🤗 오늘의 꽃은 <strong style="color: tomato; font-size: 29px" class="todayFlowerName" th:text="${form.name}"></strong>입니다.<br />
+        <strong style="color: tomato; font-size: 29px" th:text="${form.name}"></strong>의 꽃말은 <strong style="color: dodgerblue; font-size: 29px" th:text="${form.flowerLang}"></strong> 입니다.
       </h2>
 
       <!-- 조회수 -->
-      <div class="py-4 mb-3">
-        <div th:text="|조회수: ${form.hits}|"></div>
+      <div class="py-4 mb-1">
+        <div th:text="|👀 조회수: ${form.hits}|"></div>
       </div>
 
       <!-- 캐러셀 이미지 -->
@@ -48,16 +48,26 @@
       </div>
 
       <div class="py-4">
-        <!-- 좋아요 버튼-->
+        <!-- 좋아요 버튼 비회원-->
         <div class="float-end">
-          <button sec:authorize="isAuthenticated()" type="button" class="btn btn-outline-danger btn-like"
-                  th:data-flower-id="${form.flowerId}"
-                  th:data-like="${form.like}">
-              <i id="like-heart" th:classappend="${form.like} ? 'bi bi-heart-fill' : 'bi bi-heart'">
-                  <!-- 전체 좋아요 수 -->
-                  <span id="totalLikeSpan" class="float-end" th:text="|&nbsp;좋아요 ${form.totalLike}개|"></span>
-              </i>
-          </button>
+            <button type="button" sec:authorize="!isAuthenticated()" class="btn btn-outline-danger btn-like" disabled
+                    th:data-flower-id="${form.flowerId}"
+                    th:data-like="${form.like}">
+                <span th:classappend="${form.like} ? 'bi bi-heart-fill' : 'bi bi-heart'">
+                    <!-- 전체 좋아요 수 -->
+                    <span class="float-end" th:text="|&nbsp;좋아요 ${form.totalLike}개|"></span>
+                </span>
+            </button>
+
+              <!-- 좋아요 버튼 회원-->
+            <button type="button" sec:authorize="isAuthenticated()" class="btn btn-outline-danger btn-like"
+                      th:data-flower-id="${form.flowerId}"
+                      th:data-like="${form.like}">
+                <span id="like-heart" th:classappend="${form.like} ? 'bi bi-heart-fill' : 'bi bi-heart'">
+                      <!-- 전체 좋아요 수 -->
+                      <span id="totalLikeSpan" class="float-end" th:text="|&nbsp;좋아요 ${form.totalLike}개|"></span>
+                </span>
+            </button>
 
             <script>
                 $(document).ready(function() {
@@ -110,13 +120,23 @@
                 });
             </script>
 
+            </div>
         </div>
-      </div>
 
-      <!-- 설명 -->
-      <h2 class="py-4 pb-3 border-bottom">💬 이야기</h2>
-      <div class="py-4 mb-3">
-          <span th:text="${form.description}"></span>
+          <div class="py-4 pb-3">
+              <a href="/user/signup" style="text-decoration: none; color: black">
+                  <div sec:authorize="!isAuthenticated()" class="float-end">
+                      <strong>👉 회원가입</strong><span>하고 ❤️ 좋아요 누르기</span>
+                  </div>
+              </a>
+          </div>
+
+          <!-- 설명 -->
+          <h2 class="py-4 pb-3 border-bottom">💬 이야기</h2>
+          <div class="py-4 mb-3">
+              <span th:text="${form.description}"></span>
+          </div>
+
       </div>
 
     </div>
