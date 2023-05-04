@@ -41,7 +41,6 @@ public class SecurityConfig {
                     .requestMatchers("/home",
                             "/user/login/**", "/user/signup", "/user/login-fail", "/user/find-userId", "/user/find-password",
                             "/today-flower/today",
-                            "/flower/like",
                             "/css/**", "/image/**").permitAll()
                     .anyRequest().authenticated()
                 );

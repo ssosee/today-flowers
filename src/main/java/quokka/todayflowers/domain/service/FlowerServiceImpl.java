@@ -16,6 +16,7 @@ import quokka.todayflowers.global.common.SimpleCommonMethod;
 import quokka.todayflowers.global.constant.ConstFlower;
 import quokka.todayflowers.global.constant.ConstMember;
 import quokka.todayflowers.global.exception.BasicException;
+import quokka.todayflowers.web.response.FlowerLikeResponse;
 import quokka.todayflowers.web.response.TodayFlowerForm;
 
 import java.time.LocalDateTime;
@@ -79,11 +80,16 @@ public class FlowerServiceImpl implements FlowerService {
 
     // 좋아요
     @Override
-    public String likeFlower(Long flowerId, Boolean like) {
+    public FlowerLikeResponse likeFlower(Long flowerId, Boolean like) {
 
         // 꽃 조회
         Optional<Flower> optionalFlower = flowerRepository.findById(flowerId);
         Flower findFlower = optionalFlower.orElseThrow(() -> new BasicException(ConstFlower.FLOWER_NOT_FOUND));
+
+        // 반대로 변경
+        // false이면 true로 반환해야함(좋아요를 누른 것)
+        // true이면 false로 반환(좋아요 취소를 누른 것)
+        like = !like;
         // 좋아요 증감
         findFlower.totalLikeLogic(like);
 
@@ -93,8 +99,9 @@ public class FlowerServiceImpl implements FlowerService {
         Optional<Member> optionalMember = memberRepository.findByUserId(userId);
         Member findMember = optionalMember.orElseThrow(() -> new BasicException(ConstMember.MEMBER_NOT_FOUND));
 
-
+        // 좋아요 누른 꽃 조회
         Optional<FlowerLike> optionalFlowerLike = flowerLikeRepository.findByUserIdAndFlowerId(userId, flowerId);
+        // 좋아요 누른 꽃이 없다면
         if(optionalFlowerLike.isEmpty()) {
             // 사용자가 좋아요 누른 꽃 생성
             FlowerLike flowerLike = FlowerLike.createFlowerLike(findFlower, findMember);
@@ -102,14 +109,19 @@ public class FlowerServiceImpl implements FlowerService {
             findMember.changeFlowerLike(flowerLike);
             // 사용자가 좋아요 누른 꽃 저장
             flowerLikeRepository.save(flowerLike);
-
         } else {
             FlowerLike flowerLike = optionalFlowerLike.get();
             // 사용자가 좋아요 누른 꽃 삭제
             flowerLikeRepository.delete(flowerLike);
         }
 
-        return findFlower.getTotalLike().toString();
+        FlowerLikeResponse response = FlowerLikeResponse.builder()
+                .message(ConstFlower.FLOWER_FOUND)
+                .totalLikeCount(findFlower.getTotalLike())
+                .like(like)
+                .build();
+
+        return response;
     }
 }
 

@@ -10,8 +10,8 @@
 
       <div class="py-5 px-4">
       <!--꽃 이름-->
-      <h2 class="pb-3 border-bottom">🤗 오늘의 꽃은 <strong class="todayFlowerName" th:text="${form.name}"></strong>입니다.<br />
-        <strong th:text="${form.name}"></strong>의 꽃말은 <strong th:text="${form.flowerLang}"></strong> 입니다.
+      <h2 class="pb-3 border-bottom">🤗 오늘의 꽃은 <strong style="color: tomato" class="todayFlowerName" th:text="${form.name}"></strong>입니다.<br />
+        <strong style="color: tomato" th:text="${form.name}"></strong>의 꽃말은 <strong style="color: dodgerblue" th:text="${form.flowerLang}"></strong> 입니다.
       </h2>
 
       <!-- 조회수 -->
@@ -53,10 +53,10 @@
           <button sec:authorize="isAuthenticated()" type="button" class="btn btn-outline-danger btn-like"
                   th:data-flower-id="${form.flowerId}"
                   th:data-like="${form.like}">
-            <i th:classappend="${form.like} ? 'bi bi-heart-fill' : 'bi bi-heart'"></i>
-<!--              <input type="hidden" id="flower_id" th:field="${form.flowerId}">-->
-<!--              <input type="hidden" id="like" th:field="${form.like}">-->
-<!--              <input type="hidden" formaction="/flower/like" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">-->
+              <i id="like-heart" th:classappend="${form.like} ? 'bi bi-heart-fill' : 'bi bi-heart'">
+                  <!-- 전체 좋아요 수 -->
+                  <span id="totalLikeSpan" class="float-end" th:text="|&nbsp;좋아요 ${form.totalLike}개|"></span>
+              </i>
           </button>
 
             <script>
@@ -65,12 +65,9 @@
                     $('.btn-like').on('click', function() {
                         var btn = $(this);
                         var flowerId = btn.data('flower-id');
-                        //var userId = ; // 사용자 ID를 여기에 입력하세요.
                         var like = btn.data('like');
                         var header = $("meta[name='_csrf_header']").attr("content");
                         var csrfToken = $("meta[name='_csrf']").attr("content"); // CSRF 토큰을 여기에서 가져옵니다.
-
-                        console.log(flowerId+", "+like);
 
                         // Ajax 요청 전송
                         $.ajax({
@@ -79,18 +76,31 @@
                             url: "/flower/like",
                             dataType: "json",
                             contentType: "application/json;charset=utf-8",
+                            // csrf 전송
                             beforeSend: function (xhr) {
                                 xhr.setRequestHeader(header, csrfToken)
                             },
                             data: JSON.stringify({
                                 "like": like,
                                 "flower_id": flowerId,
-                                "_csrf": csrfToken
                             }),
                             success: function(response) {
                                 // 요청이 성공적으로 완료되면 버튼의 텍스트를 변경합니다.
-                                // btn.html('<i class="bi bi-heart-fill"></i>')
-                                console.log(response)
+                                let resTotalLike = response.total_like_count;
+                                let resLike = response.like;
+
+                                console.log(resTotalLike);
+                                console.log(resLike);
+
+                                $('#totalLikeSpan').html("&nbsp;좋아요 "+resTotalLike+"개");
+                                btn.data('like', resLike);
+
+                                if(resLike) {
+                                    $('#like-heart').removeClass('bi bi-heart').addClass('bi bi-heart-fill');
+                                } else {
+                                    $('#like-heart').removeClass('bi bi-heart-fill').addClass('bi bi-heart');
+                                }
+
                             },
                             error: function(jqXHR, textStatus, errorThrown) {
                                 console.log(textStatus, errorThrown);
@@ -103,13 +113,8 @@
         </div>
       </div>
 
-      <!-- 전체 좋아요 수 -->
-        <div class="py-4">
-          <span class="float-end" th:text="|좋아요 ${form.totalLike}개|"></span>
-        </div>
-
       <!-- 설명 -->
-      <h2 class="pb-3 border-bottom">💬 이야기</h2>
+      <h2 class="py-4 pb-3 border-bottom">💬 이야기</h2>
       <div class="py-4 mb-3">
           <span th:text="${form.description}"></span>
       </div>

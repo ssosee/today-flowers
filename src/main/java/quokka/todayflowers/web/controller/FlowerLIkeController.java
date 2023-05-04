@@ -19,8 +19,8 @@ public class FlowerLIkeController {
     // 좋아요
     @PostMapping(value = "/like")
     public ResponseEntity<FlowerLikeResponse> flowerLike(@RequestBody FlowerLikeForm form) {
-        String totalFlowerLikeCount = flowerService.likeFlower(form.getFlowerId(), form.getLike());
+        FlowerLikeResponse flowerLikeResponse = flowerService.likeFlower(form.getFlowerId(), form.getLike());
 
-        return new ResponseEntity<>(new FlowerLikeResponse(ConstFlower.FLOWER_FOUND, totalFlowerLikeCount), HttpStatus.OK);
+        return new ResponseEntity<>(flowerLikeResponse, HttpStatus.OK);
     }
 }

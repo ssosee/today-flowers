@@ -9,11 +9,13 @@ import lombok.Data;
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class FlowerLikeResponse {
     private String message;
-    private String totalLikeCount;
+    private Long totalLikeCount;
+    private Boolean like;
 
     @Builder
-    public FlowerLikeResponse(String message, String totalLikeCount) {
+    public FlowerLikeResponse(String message, Long totalLikeCount, Boolean like) {
         this.message = message;
         this.totalLikeCount = totalLikeCount;
+        this.like = like;
     }
 }
