@@ -16,6 +16,7 @@ import quokka.todayflowers.global.common.SimpleCommonMethod;
 import quokka.todayflowers.global.constant.ConstFlower;
 import quokka.todayflowers.global.constant.ConstMember;
 import quokka.todayflowers.global.exception.BasicException;
+import quokka.todayflowers.web.response.BirthFlowerForm;
 import quokka.todayflowers.web.response.FlowerLikeResponse;
 import quokka.todayflowers.web.response.TodayFlowerForm;
 
@@ -43,7 +44,9 @@ public class FlowerServiceImpl implements FlowerService {
         Optional<Flower> optionalFlower = flowerRepository.findFlowerAndFlowerPhotosByMonthAndDay(month, day);
         Flower findFlower = optionalFlower.orElse(null);
 
-        if (findFlower == null) return TodayFlowerForm.builder().build();
+        if (findFlower == null) {
+            return null;
+        }
 
         // 조회수 증가
         findFlower.increaseHits();
@@ -76,6 +79,53 @@ public class FlowerServiceImpl implements FlowerService {
                 .build();
 
         return todayFlowerForm;
+    }
+
+    // 생일의 꽃 조회
+    @Override
+    public BirthFlowerForm findBirthFlower(String birth) {
+        Integer month = Integer.parseInt(birth.substring(2, 4));
+        Integer day = Integer.parseInt(birth.substring(4, 6));
+
+        Optional<Flower> optionalFlower = flowerRepository.findFlowerAndFlowerPhotosByMonthAndDay(month, day);
+        Flower findFlower = optionalFlower.orElse(null);
+
+        // 생일의 꽃이 없을 경우
+        if(findFlower == null) {
+            return null;
+        }
+
+        // 조회수 증가
+        findFlower.increaseHits();
+
+        // 스프링시큐리티 컨테스트에서 userId 꺼내기
+        String userId = simpleCommonMethod.getCurrentUserId();
+
+        // 회원이 꽃에 좋아요 눌렀는지 확인
+        Optional<FlowerLike> optionalFlowerLike = flowerLikeRepository.findByUserIdAndFlowerId(userId, findFlower.getId());
+        FlowerLike findFlowerLike = optionalFlowerLike.orElse(null);
+
+        Boolean like = false;
+        // 좋아요
+        if(findFlowerLike != null) {
+            like = true;
+        }
+
+        // dto로 변환
+        BirthFlowerForm birthFlowerForm = BirthFlowerForm.builder()
+                .flowerId(findFlower.getId())
+                .flowerLang(findFlower.getFlowerLang())
+                .photoPath(findFlower.getFlowerPhotos().stream()
+                        .map(fp -> fp.getPath()).collect(Collectors.toList()))
+                .totalLike(findFlower.getTotalLike())
+                .name(findFlower.getName())
+                .hits(findFlower.getHits())
+                .description(findFlower.getDescription())
+                .like(like)
+                .userId(userId)
+                .build();
+
+        return birthFlowerForm;
     }
 
     // 좋아요

@@ -1,15 +1,18 @@
 package quokka.todayflowers.web.response;
 
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import lombok.Builder;
 import lombok.Data;
 
 import java.util.List;
 
 /**
- * 오늘의 꽃 폼
+ * 생일의 꽃 폼
  */
 @Data
-public class TodayFlowerForm {
+public class BirthFlowerForm {
     private Long flowerId;
     private String name; // 이름
     private String flowerLang; // 꽃말
@@ -23,9 +26,12 @@ public class TodayFlowerForm {
     // 좋아요 상태
     private Boolean like;
 
+    @NotBlank(message = "생년월일을 입력해주세요.")
+    @Pattern(regexp = "^\\d{6}$", message = "생년월일을 확인해주세요.")
+    private String birth;
 
     @Builder
-    public TodayFlowerForm(Long flowerId, String name, String flowerLang, String description, Long totalLike, Long hits, List<String> photoPath, String userId, Boolean like) {
+    public BirthFlowerForm(Long flowerId, String name, String flowerLang, String description, Long totalLike, Long hits, List<String> photoPath, String userId, Boolean like) {
         this.flowerId = flowerId;
         this.name = name;
         this.flowerLang = flowerLang;
@@ -33,7 +39,6 @@ public class TodayFlowerForm {
         this.totalLike = totalLike;
         this.hits = hits;
         this.photoPath = photoPath;
-        this.userId = userId;
         this.like = like;
     }
 }

@@ -16,7 +16,7 @@ public class FlowerLIkeController {
 
     private final FlowerService flowerService;
 
-    // 좋아요
+    // 좋아요 클릭
     @PostMapping(value = "/like")
     public ResponseEntity<FlowerLikeResponse> flowerLike(@RequestBody FlowerLikeForm form) {
         FlowerLikeResponse flowerLikeResponse = flowerService.likeFlower(form.getFlowerId(), form.getLike());

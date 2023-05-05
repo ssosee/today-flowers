@@ -10,7 +10,7 @@
     <div layout:fragment="content">
 
         <div class="container px-4 py-5" id="custom-cards">
-            <h2 class="pb-2 border-bottom">👋 반갑습니다.<br>🪻 <strong class="todayFlowerTitle" style="font-size: 30px">오늘의 꽃</strong>입니다.</h2>
+            <h2 class="pb-2 border-bottom">👋 반갑습니다.<br>🗓️ <strong class="todayFlowerTitle" style="font-size: 30px">오늘의 꽃</strong>입니다.</h2>
             <!--오늘의 꽃-->
             <div class="row row-cols-1 row-cols-lg-3 align-items-stretch g-4 py-5">
                 <div class="col">
@@ -18,7 +18,7 @@
                         <div class="card card-cover h-100 overflow-hidden text-bg-dark rounded-4 shadow-lg"
                              style="background-image: url('/image/flower-today.jpg');">
                             <div class="d-flex flex-column h-100 p-5 pb-3 text-white text-shadow-1">
-                                <h3 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">🪻오늘의 꽃 입니다.</h3>
+                                <h3 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">🗓️ 오늘의 꽃 입니다.</h3>
                                 <ul class="d-flex list-unstyled mt-auto">
                                     <li class="d-flex align-items-center me-3">
                                         <svg class="bi me-2" width="1em" height="1em"><use xlink:href="#geo-fill"/></svg>
@@ -36,62 +36,68 @@
 
                 <!--생일의 꽃-->
                 <div class="col">
-                    <div class="card card-cover h-100 overflow-hidden text-bg-dark rounded-4 shadow-lg"
-                         style="background-image: url('/image/flower-birth.jpg');">
-                        <div class="d-flex flex-column h-100 p-5 pb-3 text-white text-shadow-1">
-                            <h3 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">🎂 생일이라구요?</h3>
-                            <ul class="d-flex list-unstyled mt-auto">
-                                <li class="d-flex align-items-center me-3">
-                                    <svg class="bi me-2" width="1em" height="1em"><use xlink:href="#geo-fill"/></svg>
-                                    <small>Pakistan</small>
-                                </li>
-                                <li class="d-flex align-items-center">
-                                    <svg class="bi me-2" width="1em" height="1em"><use xlink:href="#calendar3"/></svg>
-                                    <small>4d</small>
-                                </li>
-                            </ul>
+                    <a href="/today-flower/birth" style="text-decoration: none">
+                        <div class="card card-cover h-100 overflow-hidden text-bg-dark rounded-4 shadow-lg"
+                             style="background-image: url('/image/flower-birth.jpg');">
+                            <div class="d-flex flex-column h-100 p-5 pb-3 text-white text-shadow-1">
+                                <h3 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">🎂 생일이라구요?</h3>
+                                <ul class="d-flex list-unstyled mt-auto">
+                                    <li class="d-flex align-items-center me-3">
+                                        <svg class="bi me-2" width="1em" height="1em"><use xlink:href="#geo-fill"/></svg>
+                                        <small>Pakistan</small>
+                                    </li>
+                                    <li class="d-flex align-items-center">
+                                        <svg class="bi me-2" width="1em" height="1em"><use xlink:href="#calendar3"/></svg>
+                                        <small>4d</small>
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
-                    </div>
+                    </a>
                 </div>
 
                 <!--꽃말의 꽃-->
                 <div class="col">
-                    <div class="card card-cover h-100 overflow-hidden text-bg-dark rounded-4 shadow-lg"
-                         style="background-image: url('/image/flower-lang.jpg');">
-                        <div class="d-flex flex-column h-100 p-5 pb-3 text-shadow-1">
-                            <h3 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">🐎 히이잉~ 꽃말이 궁금하죠?</h3>
-                            <ul class="d-flex list-unstyled mt-auto">
-                                <li class="d-flex align-items-center me-3">
-                                    <svg class="bi me-2" width="1em" height="1em"><use xlink:href="#geo-fill"/></svg>
-                                    <small>California</small>
-                                </li>
-                                <li class="d-flex align-items-center">
-                                    <svg class="bi me-2" width="1em" height="1em"><use xlink:href="#calendar3"/></svg>
-                                    <small>5d</small>
-                                </li>
-                            </ul>
+                    <a href="/today-flower/lang" style="text-decoration: none">
+                        <div class="card card-cover h-100 overflow-hidden text-bg-dark rounded-4 shadow-lg"
+                             style="background-image: url('/image/flower-lang.jpg');">
+                            <div class="d-flex flex-column h-100 p-5 pb-3 text-shadow-1">
+                                <h3 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">🐎 히이잉~ 꽃말이 궁금하죠?</h3>
+                                <ul class="d-flex list-unstyled mt-auto">
+                                    <li class="d-flex align-items-center me-3">
+                                        <svg class="bi me-2" width="1em" height="1em"><use xlink:href="#geo-fill"/></svg>
+                                        <small>California</small>
+                                    </li>
+                                    <li class="d-flex align-items-center">
+                                        <svg class="bi me-2" width="1em" height="1em"><use xlink:href="#calendar3"/></svg>
+                                        <small>5d</small>
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
-                    </div>
+                    </a>
                 </div>
 
                 <!--이름의 꽃-->
                 <div class="col">
-                    <div class="card card-cover h-100 overflow-hidden text-bg-dark rounded-4 shadow-lg"
-                         style="background-image: url('/image/flower-name.jpg');">
-                        <div class="d-flex flex-column h-100 p-5 pb-3 text-shadow-1">
-                            <h3 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">📛 꽃 이름으로 찾아볼까요?</h3>
-                            <ul class="d-flex list-unstyled mt-auto">
-                                <li class="d-flex align-items-center me-3">
-                                    <svg class="bi me-2" width="1em" height="1em"><use xlink:href="#geo-fill"/></svg>
-                                    <small>California</small>
-                                </li>
-                                <li class="d-flex align-items-center">
-                                    <svg class="bi me-2" width="1em" height="1em"><use xlink:href="#calendar3"/></svg>
-                                    <small>5d</small>
-                                </li>
-                            </ul>
+                    <a href="/today-flower/name" style="text-decoration: none">
+                        <div class="card card-cover h-100 overflow-hidden text-bg-dark rounded-4 shadow-lg"
+                             style="background-image: url('/image/flower-name.jpg');">
+                            <div class="d-flex flex-column h-100 p-5 pb-3 text-shadow-1">
+                                <h3 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">📛 꽃 이름으로 찾아볼까요?</h3>
+                                <ul class="d-flex list-unstyled mt-auto">
+                                    <li class="d-flex align-items-center me-3">
+                                        <svg class="bi me-2" width="1em" height="1em"><use xlink:href="#geo-fill"/></svg>
+                                        <small>California</small>
+                                    </li>
+                                    <li class="d-flex align-items-center">
+                                        <svg class="bi me-2" width="1em" height="1em"><use xlink:href="#calendar3"/></svg>
+                                        <small>5d</small>
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
-                    </div>
+                    </a>
                 </div>
 
             </div>
