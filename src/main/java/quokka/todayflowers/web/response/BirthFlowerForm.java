@@ -40,5 +40,6 @@ public class BirthFlowerForm {
         this.hits = hits;
         this.photoPath = photoPath;
         this.like = like;
+        this.userId = userId;
     }
 }

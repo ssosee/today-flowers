@@ -26,6 +26,7 @@ public class SaveTodayFlowerService {
     private final FlowerPhotoRepository flowerPhotoRepository;
     private final RestTemplate restTemplate;
 
+
     public void saveFlowerDetailData() {
 
         for(int i = 125; i <= 130; i++) {
@@ -52,8 +53,8 @@ public class SaveTodayFlowerService {
 
             flowerPhotos.stream().forEach(flower::changeFlowerPhoto);
 
-            flowerRepository.save(flower);
-            flowerPhotoRepository.saveAll(flowerPhotos);
+            //flowerRepository.save(flower);
+            //flowerPhotoRepository.saveAll(flowerPhotos);
         }
     }
 

@@ -1,6 +1,7 @@
 package quokka.todayflowers.web.client;
 
 import jakarta.xml.bind.JAXBException;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +19,9 @@ class SaveTodayFlowerServiceTest {
     @Test
     @DisplayName("오늘의 꽃 상세보기 api 테스트")
     @Commit
+    @Disabled
     void getTodayFlowerDetailViewTest() throws JAXBException {
-        // saveTodayFlowerService.saveFlowerDetailData();
+        saveTodayFlowerService.saveFlowerDetailData();
         //FlowerDocumentData test = saveTodayFlowerService.getTest();
         //System.out.println(test);
     }

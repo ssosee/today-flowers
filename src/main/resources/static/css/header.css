@@ -2,7 +2,7 @@
     color:#000000;
     font-weight: bold;
     font-size: 35px;
-    text-transform: uppercase;
+    /*text-transform: uppercase;*/
     background: linear-gradient(to right, #2e2938, #b1a5c8);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;

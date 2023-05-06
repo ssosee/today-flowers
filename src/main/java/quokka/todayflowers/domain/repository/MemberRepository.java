@@ -14,7 +14,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     List<Member> findByEmail(String email);
     Optional<Member> findByUserIdAndEmail(String userId, String email);
     @Query("select m from Member m" +
-            " join fetch m.flowerLikes fl" +
+            " left join fetch m.flowerLikes fl" +
             " where m.userId = :userId")
     Optional<Member> findMemberAndFlowerLikeByUserId(@Param("userId") String userId);
 }

@@ -33,6 +33,7 @@ public class Member extends BaseTimeEntity {
         member.password = password;
         member.email = email;
         member.role = ConstMember.ROLE;
+        member.hits = 0L;
 
         return member;
     }

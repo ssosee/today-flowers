@@ -1,9 +1,8 @@
 package quokka.todayflowers.domain.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import quokka.todayflowers.domain.entity.Flower;
@@ -18,9 +17,11 @@ import quokka.todayflowers.global.constant.ConstMember;
 import quokka.todayflowers.global.exception.BasicException;
 import quokka.todayflowers.web.response.BirthFlowerForm;
 import quokka.todayflowers.web.response.FlowerLikeResponse;
+import quokka.todayflowers.web.response.FlowerListForm;
 import quokka.todayflowers.web.response.TodayFlowerForm;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -126,6 +127,50 @@ public class FlowerServiceImpl implements FlowerService {
                 .build();
 
         return birthFlowerForm;
+    }
+
+    @Override
+    public List<FlowerListForm> findFlowerList(Pageable pageable) {
+        Page<Flower> findFlower = flowerRepository.findFlowerByOrderByNameDesc(pageable);
+        List<Flower> content = findFlower.getContent();
+
+        List<FlowerListForm> flowerListFormList = content.stream()
+                .map(c -> FlowerListForm.builder()
+                        .id(c.getId())
+                        .lang(c.getFlowerLang())
+                        .path(c.getFlowerPhotos().get(0).getPath()) // 사진 1개만 표시
+                        .totalLike(c.getTotalLike())
+                        .name(c.getName())
+                        .totalElements(findFlower.getTotalElements())
+                        .totalPage(findFlower.getTotalPages())
+                        .number(findFlower.getNumber())
+                        .build()
+                )
+                .collect(Collectors.toList());
+
+        return flowerListFormList;
+    }
+
+    @Override
+    public List<FlowerListForm> findLangFlowerList(Pageable pageable, String lang) {
+        Page<Flower> findFlower = flowerRepository.findFlowerByFlowerLangContainingOrderByFlowerLang(pageable, lang);
+        List<Flower> content = findFlower.getContent();
+
+        List<FlowerListForm> flowerListFormList = content.stream()
+                .map(c -> FlowerListForm.builder()
+                        .id(c.getId())
+                        .lang(c.getFlowerLang())
+                        .name(c.getName())
+                        .path(c.getFlowerPhotos().get(0).getPath())
+                        .totalLike(c.getTotalLike())
+                        .totalElements(findFlower.getTotalElements())
+                        .totalPage(findFlower.getTotalPages())
+                        .number(findFlower.getNumber())
+                        .build()
+                )
+                .collect(Collectors.toList());
+
+        return flowerListFormList;
     }
 
     // 좋아요

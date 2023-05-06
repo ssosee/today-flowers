@@ -6,36 +6,104 @@
 
 <th:block layout:fragment="css"></th:block>
 <div layout:fragment="content">
+<form th:object="${form}">
   <div th:class="container-lg">
-    <div class="py-4 px-4">
-        <h2 class="py-4 pb-3 border-bottom">목록</h2>
-        <input th:text="" placeholder="꽃말을 입력해주세요."></input>
-        <button>버튼</button>
-        <table class="table">
-            <!--테이블 컬럼명-->
-            <thead class="table-light">
-            <tr>
-              <th scope="col">번호</th>
-              <th scope="col">이름</th>
-              <th scope="col">꽃말</th>
-              <th scope="col">사진</th>
-              <th scope="col">좋아요</th>
-            </tr>
-            </thead>
 
-            <!--테이블 내용-->
-            <tbody>
-            <tr>
-              <th scope="row">1</th>
-              <td>Mark</td>
-              <td>Otto</td>
-              <td>@mdo</td>
-              <td>@mdo</td>
-            </tr>
-            </tbody>
-
-        </table>
+    <!--글로벌 에러 생성-->
+    <div class="is-valid">
+      <div th:if="${#fields.hasGlobalErrors()}"><span class="is-valid" th:each="err : ${#fields.globalErrors()}" th:text="${err}">전체 오류 메시지</span></div>
+      <div th:errors="${form.lang}"></div>
     </div>
+
+    <div class="pt-3 pb-3 px-4">
+      <!-- 생년월일 -->
+      <div class="mb-3 row">
+          <label for="inputLang" class="col-sm-2 col-form-label">🐎 꽃말:</label>
+          <div class="col-sm-10">
+              <input type="text" class="form-control" id="inputLang" name="search" placeholder="사랑" th:name="${form.lang}">
+          </div>
+      </div>
+
+      <!--생년월일 전송-->
+      <div class="mb-3 row">
+          <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+              <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" formaction="/today-flower/lang-list" formmethod="post">
+              <input type="submit" class="btn float-end btn-success" formaction="/today-flower/lang-list" formmethod="post" value="검색">
+          </div>
+      </div>
+    </div>
+
+      <div class="px-4 py-4" id="custom-cards">
+          <h2 class="pb-2 border-bottom">👋 반갑습니다.<br>🗓️ <strong class="todayFlowerTitle" style="font-size: 30px">오늘의 꽃</strong>입니다.</h2>
+
+          <!--오늘의 꽃-->
+          <div th:each="fl, flStat : ${flowerList}" class="row row-cols-1 row-cols-lg-3 align-items-stretch g-4 py-5">
+              <div class="col">
+                  <a href="/today-flower/today" style="text-decoration: none">
+                      <div class="card card-cover h-100 overflow-hidden text-bg-dark rounded-4 shadow-lg"
+                      th:style="'background-image: url("' + ${fl.path} + '");'">
+
+                      <div class="d-flex flex-column h-100 p-5 pb-3 text-white text-shadow-1">
+                              <h3 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">🗓️ 오늘의 꽃 입니다.</h3>
+                              <ul class="d-flex list-unstyled mt-auto">
+                                  <li class="d-flex align-items-center me-3">
+                                      <svg class="bi me-2" width="1em" height="1em"><use xlink:href="#geo-fill"/></svg>
+                                      <small>Earth</small>
+                                  </li>
+                                  <li class="d-flex align-items-center">
+                                      <svg class="bi me-2" width="1em" height="1em"><use xlink:href="#calendar3"/></svg>
+                                      <small>3d</small>
+                                  </li>
+                              </ul>
+                          </div>
+                      </div>
+                  </a>
+              </div>
+          </div>
+
+      </div>
+
+
+<!--    <div class="py-4 px-4">-->
+<!--        <h2 class="py-4 pb-3 border-bottom">목록</h2>-->
+<!--        -->
+<!--        <table class="table table-hover">-->
+<!--            &lt;!&ndash;테이블 컬럼명&ndash;&gt;-->
+
+<!--            <style>-->
+<!--                th, td {-->
+<!--                    text-align: center;-->
+<!--                }-->
+<!--            </style>-->
+<!--            -->
+<!--            <thead class="table-light">-->
+<!--                <tr>-->
+<!--                  <th scope="col">번호</th>-->
+<!--                  <th scope="col">이름</th>-->
+<!--                  <th scope="col">꽃말</th>-->
+<!--                  <th scope="col">사진</th>-->
+<!--                  <th scope="col">좋아요</th>-->
+<!--                </tr>-->
+<!--            </thead>-->
+
+<!--            &lt;!&ndash;테이블 내용&ndash;&gt;-->
+<!--            <tbody>-->
+<!--                <tr th:each="fl, flStat : ${flowerList}">-->
+<!--                  <th scope="row" th:text="${flStat.count}">번호</th>-->
+<!--                  <td th:text="${fl.name}">이름</td>-->
+<!--                  <td th:text="${fl.lang}">꽃말</td>-->
+<!--                  <td>-->
+<!--                      <img style="max-width: 50%; height: auto" th:src="${fl.path}" alt="꽃 이미지">-->
+<!--                  </td>-->
+<!--                  <td th:text="${fl.totalLike}">@mdo</td>-->
+<!--                </tr>-->
+<!--            </tbody>-->
+
+<!--        </table>-->
+<!--    </div>-->
+
+
   </div>
+</form>
 </div>
 </html>
