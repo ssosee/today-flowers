@@ -20,8 +20,25 @@ public class TodayFlowerController {
     private final FlowerService flowerService;
 
     // 오늘의 꽃
-    @GetMapping("/today")
-    public String todayFlower(Model model) {
+    @GetMapping(value = {"/today", "/today/{flower_id}"})
+    public String todayFlower(@PathVariable(value = "flower_id", required = false) Long flowerId,
+                              Model model) {
+
+        // 아이디가 path에 있을 경우
+        if(flowerId != null) {
+            TodayFlowerForm todayFlower = flowerService.findFlower(flowerId);
+
+            // 아이디에 맞는 꽃이 없는 경우
+            if(todayFlower == null) {
+                model.addAttribute("error", ConstFlower.FLOWER_NOT_FOUND);
+                return "/flower/today/todayFlower";
+            }
+
+            model.addAttribute("form", todayFlower);
+
+            return "/flower/today/todayFlower";
+        }
+
         // 오늘의 꽃 조회
         TodayFlowerForm todayFlower = flowerService.findTodayFlower();
         model.addAttribute("form", todayFlower);

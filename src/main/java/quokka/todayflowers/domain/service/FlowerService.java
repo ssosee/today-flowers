@@ -12,6 +12,8 @@ import java.util.List;
 public interface FlowerService {
     // 오늘의 꽃 조회
     TodayFlowerForm findTodayFlower();
+    // 오늘의 꽃 아이디로 조회
+    TodayFlowerForm findFlower(Long flowerId);
     // 생일의 꽃 조회
     BirthFlowerForm findBirthFlower(String birth);
     // 꽃말의 꽃 조회

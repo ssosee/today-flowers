@@ -6,6 +6,6 @@ import lombok.Data;
 
 @Data
 public class LangFlowerForm {
-    @Pattern(regexp = "/^[ㄱ-ㅎㅏ-ㅣ가-힣]*$/")
-    private String lang = "";
+    @Pattern(regexp = "^[가-힣]*$", message = "한글만 입력 가능합니다.")
+    private String lang;
 }

@@ -11,9 +11,4 @@ import lombok.Data;
 public class FlowerLikeForm {
     private Long flowerId;
     private Boolean like;
-
-    public FlowerLikeForm(Long flowerId, Boolean like) {
-        this.flowerId = flowerId;
-        this.like = like;
-    }
 }

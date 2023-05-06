@@ -82,6 +82,51 @@ public class FlowerServiceImpl implements FlowerService {
         return todayFlowerForm;
     }
 
+    @Override
+    public TodayFlowerForm findFlower(Long flowerId) {
+
+        // 아이디로 꽃 조회
+        Optional<Flower> optionalFlower = flowerRepository.findById(flowerId);
+        Flower findFlower = optionalFlower.orElse(null);
+
+        // 꽃이 없으면
+        if(findFlower == null) {
+            return null;
+        }
+
+        // 조회수 증가
+        findFlower.increaseHits();
+
+        // 스프링시큐리티 컨테스트에서 userId 꺼내기
+        String userId = simpleCommonMethod.getCurrentUserId();
+
+        // 회원이 꽃에 좋아요 눌렀는지 확인
+        Optional<FlowerLike> optionalFlowerLike = flowerLikeRepository.findByUserIdAndFlowerId(userId, findFlower.getId());
+        FlowerLike findFlowerLike = optionalFlowerLike.orElse(null);
+
+        Boolean like = false;
+        // 좋아요
+        if(findFlowerLike != null) {
+            like = true;
+        }
+
+        // dto로 변환
+        TodayFlowerForm todayFlowerForm = TodayFlowerForm.builder()
+                .flowerId(findFlower.getId())
+                .flowerLang(findFlower.getFlowerLang())
+                .photoPath(findFlower.getFlowerPhotos().stream()
+                        .map(fp -> fp.getPath()).collect(Collectors.toList()))
+                .totalLike(findFlower.getTotalLike())
+                .name(findFlower.getName())
+                .hits(findFlower.getHits())
+                .description(findFlower.getDescription())
+                .userId(userId)
+                .like(like)
+                .build();
+
+        return todayFlowerForm;
+    }
+
     // 생일의 꽃 조회
     @Override
     public BirthFlowerForm findBirthFlower(String birth) {
