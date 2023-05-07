@@ -177,6 +177,12 @@ public class MemberServiceImpl implements MemberService {
             // 회원 비밀번호 임시 비밀번호로 변경
             findMember.changePassword(passwordEncoder.encode(authenticationNumber));
 
+            // 만약 계정이 잠겨 있는 경우
+            if(findMember.getLoginFailCount() >= 5) {
+                // 계정 잠금 해제
+                findMember.initLoginFailCount();
+            }
+
             return true;
 
         } catch (MessagingException e) {
@@ -184,6 +190,7 @@ public class MemberServiceImpl implements MemberService {
         }
     }
 
+    // 비밀번호 변경
     @Override
     public Boolean changePassword(String userId, String email, String oldPassword, String newPassword) {
 

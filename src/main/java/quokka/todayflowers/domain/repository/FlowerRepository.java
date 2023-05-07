@@ -11,17 +11,28 @@ import quokka.todayflowers.domain.entity.Flower;
 
 import java.util.Optional;
 
+/**
+ * 컬렉션은 지연로딩으로 조회
+ * hibernate.default_batch_fetch_size로 최적화
+ * (컬렉션은 WHERE IN(? ? ... ? ?)으로 조회한다.)
+ */
 public interface FlowerRepository extends JpaRepository<Flower, Long> {
-    @Query("select f from Flower f" +
-            " join fetch f.flowerPhotos fp" +
-            " where f.month = :month" +
-            " and f.day = :day")
-    Optional<Flower> findFlowerAndFlowerPhotosByMonthAndDay(@Param("month") Integer month, @Param("day") Integer day);
+    @EntityGraph(attributePaths = {"flowerPhotos"})
+    Optional<Flower> findFlowerByMonthAndDay(Integer month, Integer day);
 
-    // 컬렉션은 지연로딩으로 조회
-    // hibernate.default_batch_fetch_size로 최적화
-    Page<Flower> findFlowerByOrderByNameDesc(Pageable pageable);
+    @EntityGraph(attributePaths = {"flowerPhotos"})
+    Optional<Flower> findFlowerById(Long id);
 
-    // 꽃말로 조회
+    // 꽃 이름 오름차순 조회
+    Page<Flower> findFlowerByOrderByName(Pageable pageable);
+
+    // 꽃말 오름차순 조회
+    Page<Flower> findFlowerByOrderByFlowerLang(Pageable pageable);
+
+    // 꽃말로 오름차순 조회
     Page<Flower> findFlowerByFlowerLangContainingOrderByFlowerLang(Pageable pageable, String lang);
+    // 꽃 이름으로 오름차순 조회
+    Page<Flower> findFlowerByNameContainingOrderByName(Pageable pageable, String name);
+    // 좋아요 많은 순서대로 조회
+    Page<Flower> findFlowerByOrderByTotalLikeDesc(Pageable pageable);
 }

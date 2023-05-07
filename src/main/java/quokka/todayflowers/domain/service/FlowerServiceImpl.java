@@ -34,6 +34,7 @@ public class FlowerServiceImpl implements FlowerService {
     private final SimpleCommonMethod simpleCommonMethod;
     private final FlowerLikeRepository flowerLikeRepository;
 
+    // 쿼리 3개 발생
     @Override
     public TodayFlowerForm findTodayFlower() {
         // 현재 시간 조회
@@ -42,7 +43,7 @@ public class FlowerServiceImpl implements FlowerService {
         int month = now.getMonthValue();
 
         // 오늘의 꽃 조회
-        Optional<Flower> optionalFlower = flowerRepository.findFlowerAndFlowerPhotosByMonthAndDay(month, day);
+        Optional<Flower> optionalFlower = flowerRepository.findFlowerByMonthAndDay(month, day);
         Flower findFlower = optionalFlower.orElse(null);
 
         if (findFlower == null) {
@@ -82,11 +83,12 @@ public class FlowerServiceImpl implements FlowerService {
         return todayFlowerForm;
     }
 
+    // 쿼리 3개 발생
     @Override
     public TodayFlowerForm findFlower(Long flowerId) {
 
         // 아이디로 꽃 조회
-        Optional<Flower> optionalFlower = flowerRepository.findById(flowerId);
+        Optional<Flower> optionalFlower = flowerRepository.findFlowerById(flowerId);
         Flower findFlower = optionalFlower.orElse(null);
 
         // 꽃이 없으면
@@ -133,7 +135,7 @@ public class FlowerServiceImpl implements FlowerService {
         Integer month = Integer.parseInt(birth.substring(2, 4));
         Integer day = Integer.parseInt(birth.substring(4, 6));
 
-        Optional<Flower> optionalFlower = flowerRepository.findFlowerAndFlowerPhotosByMonthAndDay(month, day);
+        Optional<Flower> optionalFlower = flowerRepository.findFlowerByMonthAndDay(month, day);
         Flower findFlower = optionalFlower.orElse(null);
 
         // 생일의 꽃이 없을 경우
@@ -174,6 +176,7 @@ public class FlowerServiceImpl implements FlowerService {
         return birthFlowerForm;
     }
 
+    // 꽃 리스트 DTO로 변환
     @Override
     public List<FlowerListForm> getFlowerList(List<Flower> flowerList) {
 
@@ -190,24 +193,6 @@ public class FlowerServiceImpl implements FlowerService {
 
         return flowerListFormList;
     }
-
-    @Override
-    public List<FlowerListForm> getFlowerListByLang(List<Flower> flowerList, String lang) {
-
-        List<FlowerListForm> flowerListFormList = flowerList.stream()
-                .map(fl -> FlowerListForm.builder()
-                        .id(fl.getId())
-                        .lang(fl.getFlowerLang())
-                        .name(fl.getName())
-                        .path(fl.getFlowerPhotos().get(0).getPath())
-                        .totalLike(fl.getTotalLike())
-                        .build()
-                )
-                .collect(Collectors.toList());
-
-        return flowerListFormList;
-    }
-
 
 
     // 좋아요
@@ -247,6 +232,7 @@ public class FlowerServiceImpl implements FlowerService {
             flowerLikeRepository.delete(flowerLike);
         }
 
+        // DTO 변환
         FlowerLikeResponse response = FlowerLikeResponse.builder()
                 .message(ConstFlower.FLOWER_FOUND)
                 .totalLikeCount(findFlower.getTotalLike())

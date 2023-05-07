@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default_layout}">
+
+<th:block layout:fragment="css"></th:block>
+<div layout:fragment="content">
+<!--<form th:object="${form}">-->
+  <div th:class="container">
+
+    <!--글로벌 에러 생성-->
+<!--    <div class="is-valid">-->
+<!--      <div th:if="${#fields.hasGlobalErrors()}"><span class="is-valid" th:each="err : ${#fields.globalErrors()}" th:text="${err}">전체 오류 메시지</span></div>-->
+<!--    </div>-->
+
+    <!--카드 시작-->
+    <div class="px-4 py-5" id="custom-cards">
+      <h2 class="pb-2 border-bottom">❤️ 좋아요. 좋아요. 좋아요.<br /><strong class="todayFlowerTitle" style="font-size: 30px">꽃</strong> 좋아요.</h2>
+
+      <!-- 꽃 목록 -->
+      <div class="row row-cols-1 row-cols-lg-3 align-items-stretch g-4 pt-5">
+          <div th:each="fl, flStat : ${flowerList}" class="col pb-4">
+              <a th:href="@{/today-flower/today/{param} (param=${fl.id})}" style="text-decoration: none">
+                  <!--&quot;는 " 이다.-->
+                <div class="card card-cover h-100 overflow-hidden text-bg-dark rounded-4 shadow-lg"
+                  th:style="'background-image: url(&quot;' + ${fl.path} + '&quot;);'">
+                      <div class="d-flex flex-column h-100 p-5 pb-3 text-white text-shadow-1">
+                            <!--꽃 이름-->
+                            <h3 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold" style="text-shadow:3px 3px 3px #000;">
+                              꽃 이름은
+                              <strong><span style="text-shadow:3px 3px 3px #000; font-size: 35px;" th:text="${fl.name}"></span></strong>
+                            </h3><br />
+                            <!--꽃말-->
+                            <h4 style="text-shadow:3px 3px 3px #000;">
+                                꽃말은
+                                <strong><span style="text-shadow:3px 3px 3px #000; font-size: 26px;" th:text="${fl.lang}"></span></strong>
+                            </h4>
+                            <li class="d-flex align-items-center">
+                              <small style="text-shadow:2px 2px 2px #000;" th:text="|❤️ 좋아요 ${fl.totalLike} 개|"></small>
+                            </li>
+                      </div>
+                </div>
+              </a>
+          </div>
+      </div>
+    </div>
+    <!-- 카드 끝 -->
+    <!--페이지네이션 시작  -->
+    <nav aria-label="Page navigation">
+      <ul class="pb-4 pagination justify-content-center">
+          <li th:class="${currentPage == 0} ? 'page-item disabled' : 'page-item'">
+              <a class="page-link" th:href="@{/today-flower/like-rank-list(page=0)}">&laquo;</a>
+          </li>
+          <li th:each="page : ${#numbers.sequence(0, totalPages - 1)}" th:class="${currentPage == page} ? 'page-item active' : 'page-item'">
+              <a class="page-link" th:href="@{/today-flower/like-rank-list(page=${page})}" th:text="${page+1}"></a>
+          </li>
+          <li th:class="${currentPage == totalPages - 1} ? 'page-item disabled' : 'page-item'">
+              <a class="page-link" th:href="@{/today-flower/like-rank-list(page=${totalPages - 1})}">&raquo;</a>
+          </li>
+      </ul>
+    </nav>
+
+  </div>
+<!--</form>-->
+</div>
+</html>

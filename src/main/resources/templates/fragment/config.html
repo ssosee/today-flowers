@@ -5,7 +5,6 @@
 <head th:fragment="configFragment">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <mete name="view-transition" content="same-origin" />
     <meta name="_csrf" th:content="${_csrf.token}"/>
     <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
 
@@ -18,8 +17,6 @@
     <link rel="stylesheet" th:href="@{/css/feature.css}">
     <link rel="stylesheet" th:href="@{/css/header.css}">
     <link rel="stylesheet" th:href="@{/css/body.css}">
-    <link rel="stylesheet" th:href="@{/css/lang-pagination.css}">
-
 
     <!-- jQuery 링크 -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -32,6 +29,6 @@
 </head>
     <!-- 컨텐츠페이지의 CSS 영역이 들어감 -->
     <th:block layout:fragment="css"></th:block>
-    <!-- 컨텐츠페이지의 스크립트 영역이 들어감 -->
+    <!-- 컨텐츠 페이지의 스크립트 영역이 들어감 -->
     <th:block layout:fragment="script"></th:block>
 </html>

@@ -14,9 +14,10 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import quokka.todayflowers.global.config.handler.SimpleAuthenticationFailureHandler;
+import quokka.todayflowers.global.config.handler.SimpleAuthenticationSuccessHandler;
 
 import java.io.IOException;
 
@@ -29,17 +30,21 @@ import java.io.IOException;
 public class SecurityConfig {
 
     private final UserDetailsService userDetailsService;
+    // 로그인 실패 처리 핸들러
+    private final SimpleAuthenticationFailureHandler simpleAuthenticationFailureHandler;
+    // 로그인 성공 처리 핸들러
+    private final SimpleAuthenticationSuccessHandler simpleAuthenticationSuccessHandler;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
         http
-                //.csrf().disable()
                 .csrf().csrfTokenRepository(cookieCsrfTokenRepository()).and()
                 .authorizeHttpRequests(request -> request
                     .dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll()
                     .requestMatchers("/home",
-                            "/user/login/**", "/user/signup", "/user/login-fail", "/user/find-userId", "/user/find-password",
+                            "/user/invalid",
+                            "/user/login/**", "/user/signup", "/user/login-fail", "/user/find-userId", "/user/find-password", "/user/send-email",
                             "/today-flower/today",
                             "/css/**", "/image/**").permitAll()
                     .anyRequest().authenticated()
@@ -50,10 +55,10 @@ public class SecurityConfig {
                 .formLogin(login -> login
                         .loginPage("/user/login")
                         .loginProcessingUrl("/login-process")
-                        .usernameParameter("user_id")
+                        .usernameParameter("userId")
                         .passwordParameter("password")
-                        .defaultSuccessUrl("/home", true)
-                        .failureHandler(authenticationFailureHandler()) // 로그인 실패 처리
+                        .successHandler(simpleAuthenticationSuccessHandler)
+                        .failureHandler(simpleAuthenticationFailureHandler) // 로그인 실패 처리
                         .permitAll()
                 );
 
@@ -73,9 +78,10 @@ public class SecurityConfig {
         // 세션 정책 설정
         http
                 .sessionManagement()
+                .sessionFixation().changeSessionId() // 세션 고정 보호 로그인할때 마다 JSESSIONID를 변경
                 .maximumSessions(1)
-                .maxSessionsPreventsLogin(false) // 현재 사용자 로그인, 기존 사용자 로그아웃
-                .expiredUrl("/invalid");
+                .maxSessionsPreventsLogin(false) // 기존 사용자 로그아웃, 현재 사용자 로그인
+                .expiredUrl("/user/invalid");
 
         return http.build();
     }
@@ -89,11 +95,5 @@ public class SecurityConfig {
     public CookieCsrfTokenRepository cookieCsrfTokenRepository() {
         // httpOnly true를 사용한다.
         return new CookieCsrfTokenRepository();
-    }
-
-    // 로그인 실패 처리 핸들러
-    @Bean
-    public AuthenticationFailureHandler authenticationFailureHandler() {
-        return new SimpleAuthenticationFailureHandler();
     }
 }

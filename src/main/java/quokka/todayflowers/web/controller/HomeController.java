@@ -13,6 +13,8 @@ import quokka.todayflowers.domain.service.MemberService;
 
 @Controller
 public class HomeController {
+
+    // 홈
     @GetMapping("/home")
     public String home() {
         return "home";

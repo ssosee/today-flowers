@@ -34,13 +34,11 @@ public class MemberController {
     public String loginPage(@ModelAttribute("form") LoginForm form,
                             @RequestParam(value = "error", required = false) String error,
                             @RequestParam(value = "exception", required = false) String exception,
-                            @RequestParam(value = "status", required = false) String status,
                             Model model) {
 
         // 에러 정보를 model에 저장
         model.addAttribute("error", error);
         model.addAttribute("exception", exception);
-        model.addAttribute("status", status);
 
         return "/member/login";
     }
@@ -180,5 +178,16 @@ public class MemberController {
 
         model.addAttribute("changePasswordSuccess", ConstMember.CHANGE_PASSWORD_SUCCESS);
         return "/member/changePassword";
+    }
+
+    // 로그인 만료
+    @GetMapping("/invalid")
+    public String invalid(@ModelAttribute("form") LoginForm form, Model model) {
+
+        // 에러 정보를 model에 저장
+        model.addAttribute("error", true);
+        model.addAttribute("exception", ConstMember.INVALID_LOGIN);
+
+        return "/member/login";
     }
 }

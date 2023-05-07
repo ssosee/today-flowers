@@ -2,6 +2,7 @@ package quokka.todayflowers.global.config;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -42,9 +43,13 @@ public class MyMemberDetailService implements UserDetailsService {
                 .build();
     }
 
-    private static void loginProcess(Member findMember) {
+    private void loginProcess(Member findMember) throws UsernameNotFoundException {
+        // 로그인 5회 이상 실패한 계정인 경우
+        if(findMember.getLoginFailCount() >= 5) {
+            throw new InternalAuthenticationServiceException(ConstMember.LOCK_MEMBER);
+        }
         // 로그인 이력이 없으면
-        if(findMember.getLoginDate() == null) {
+        else if(findMember.getLoginDate() == null) {
             findMember.setLogin();
         } else {
             // 방문횟수 증가

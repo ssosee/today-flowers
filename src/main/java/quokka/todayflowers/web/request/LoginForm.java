@@ -10,9 +10,4 @@ public class LoginForm {
     private String userId;
     @NotBlank(message = "비밀번호를 입력해주세요.")
     private String password;
-
-    public LoginForm(String userId, String password) {
-        this.userId = userId;
-        this.password = password;
-    }
 }

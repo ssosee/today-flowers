@@ -15,10 +15,4 @@ public class FindPasswordForm {
     private String email;
     // 서버에서 생성하는 임시 비밀번호
     private String authenticationNumber;
-
-    public FindPasswordForm(String userId, String email, String authenticationNumber, String password) {
-        this.userId = userId;
-        this.email = email;
-        this.authenticationNumber = authenticationNumber;
-    }
 }

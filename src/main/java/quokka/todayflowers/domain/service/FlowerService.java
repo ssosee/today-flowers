@@ -17,13 +17,8 @@ public interface FlowerService {
     TodayFlowerForm findFlower(Long flowerId);
     // 생일의 꽃 조회
     BirthFlowerForm findBirthFlower(String birth);
-    // 꽃말의 꽃 조회
-
-    // 꽃 리스트 조회
+    // 꽃 리스트 DTO로 변환
     List<FlowerListForm> getFlowerList(List<Flower> flowerList);
-    // 꽃말로 꽃 리스트 조회
-    List<FlowerListForm> getFlowerListByLang(List<Flower> flowerList, String lang);
-
     // 좋아요
     FlowerLikeResponse likeFlower(Long flowerId, Boolean like);
 }

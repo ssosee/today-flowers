@@ -17,11 +17,4 @@ public class ChangePasswordForm {
     private String oldPassword;
     @NotBlank(message = "새로운 비밀번호를 입력해주세요.")
     private String newPassword;
-
-    public ChangePasswordForm(String userId, String email, String oldPassword, String newPassword) {
-        this.userId = userId;
-        this.email = email;
-        this.oldPassword = oldPassword;
-        this.newPassword = newPassword;
-    }
 }

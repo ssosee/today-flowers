@@ -9,8 +9,4 @@ public class FindUserIdForm {
     @NotBlank(message = "이메일을 입력해주세요.")
     @Email(message = "이메일을 확인해주세요.")
     private String email;
-
-    public FindUserIdForm(String email) {
-        this.email = email;
-    }
 }

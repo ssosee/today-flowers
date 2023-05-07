@@ -24,6 +24,8 @@ public class Member extends BaseTimeEntity {
     private String role;
     private Long hits; // 사이트 방문 횟수
     private LocalDateTime loginDate; // 로그인 시간
+    private LocalDateTime lockDate; // 계정 잠긴 시간
+    private Integer loginFailCount; // 로그인 실패 횟수
     @OneToMany(mappedBy = "member")
     private List<FlowerLike> flowerLikes = new ArrayList<>();
 
@@ -34,6 +36,7 @@ public class Member extends BaseTimeEntity {
         member.email = email;
         member.role = ConstMember.ROLE;
         member.hits = 0L;
+        member.loginFailCount = 0;
 
         return member;
     }
@@ -42,13 +45,32 @@ public class Member extends BaseTimeEntity {
         this.hits += hits;
     }
 
+    // 로그인
     public void setLogin() {
         this.hits += 1L;
         this.loginDate = LocalDateTime.now();
+        initLoginFailCount();
     }
 
+    // 비밀번호 변경
     public void changePassword(String password) {
         this.password = password;
+    }
+
+    // 로그인 실패 횟수 증가
+    public void increaseLoginFailCount() {
+        // 로그인 실패 횟수가 5회 미만이면 실패 횟수 증가
+        if(this.loginFailCount < 5) {
+            this.loginFailCount += 1;
+        } else {
+            this.lockDate = LocalDateTime.now();
+        }
+    }
+
+    // 로그인 실패 카운트 초기화
+    public void initLoginFailCount() {
+        this.loginFailCount = 0;
+        this.lockDate = null;
     }
 
     // 연관관계 편의 메소드
