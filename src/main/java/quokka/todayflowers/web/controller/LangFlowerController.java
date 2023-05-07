@@ -1,6 +1,7 @@
 package quokka.todayflowers.web.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
@@ -8,6 +9,8 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import quokka.todayflowers.domain.entity.Flower;
+import quokka.todayflowers.domain.repository.FlowerRepository;
 import quokka.todayflowers.domain.service.FlowerService;
 import quokka.todayflowers.web.request.LangFlowerForm;
 import quokka.todayflowers.web.response.FlowerListForm;
@@ -20,14 +23,21 @@ import java.util.List;
 public class LangFlowerController {
 
     private final FlowerService flowerService;
+    private final FlowerRepository flowerRepository;
 
     @GetMapping("/lang-list")
     public String langFlowerList(@ModelAttribute("form") LangFlowerForm form,
-                                 @PageableDefault(size = 5) Pageable pageable,
+                                 @PageableDefault(size = 6) Pageable pageable,
                                  Model model) {
 
-        List<FlowerListForm> flowerList = flowerService.findFlowerList(pageable);
-        model.addAttribute("flowerList", flowerList);
+        // 전체 꽃 조회
+        Page<Flower> pageFlower = flowerRepository.findFlowerByOrderByNameDesc(pageable);
+        // DTO 변환
+        List<FlowerListForm> flowerList = flowerService.getFlowerList(pageFlower.getContent());
+
+        model.addAttribute("flowerList", flowerList); // 페이지에 들어갈 내용
+        model.addAttribute("currentPage", pageFlower.getNumber()); // 현재 페이지
+        model.addAttribute("totalPages", pageFlower.getTotalPages()); // 전체 페이지
 
         return "/flower/lang/flowerList";
     }
@@ -35,11 +45,16 @@ public class LangFlowerController {
     @PostMapping("/lang-list")
     public String findLangFlowerList(@Validated @ModelAttribute("form") LangFlowerForm form,
                                      BindingResult bindingResult,
-                                     @PageableDefault(size = 5) Pageable pageable,
+                                     @PageableDefault(size = 6) Pageable pageable,
                                      Model model) {
+        // 꽃말로 꽃 조회
+        Page<Flower> pageFlower = flowerRepository.findFlowerByFlowerLangContainingOrderByFlowerLang(pageable, form.getLang());
+        // DTO로 변환
+        List<FlowerListForm> flowerList = flowerService.getFlowerListByLang(pageFlower.getContent(), form.getLang());
 
-        List<FlowerListForm> flowerList = flowerService.findLangFlowerList(pageable, form.getLang());
-        model.addAttribute("flowerList", flowerList);
+        model.addAttribute("flowerList", flowerList); // 페이지에 들어갈 내용
+        model.addAttribute("currentPage", pageFlower.getNumber()); // 현재 페이지
+        model.addAttribute("totalPages", pageFlower.getTotalPages()); // 전체 페이지
 
         return "/flower/lang/flowerList";
     }

@@ -17,7 +17,7 @@ class SaveTodayFlowerServiceTest {
     SaveTodayFlowerService saveTodayFlowerService;
 
     @Test
-    @DisplayName("오늘의 꽃 상세보기 api 테스트")
+    @DisplayName("오늘의 꽃 상세보기 api 데이터 저장")
     @Commit
     @Disabled
     void getTodayFlowerDetailViewTest() throws JAXBException {

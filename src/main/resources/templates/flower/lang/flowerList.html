@@ -38,8 +38,8 @@
       <h2 class="pb-2 border-bottom">🙋🏻‍♀️ 반갑습니다.<br>🌸 <strong class="todayFlowerTitle" style="font-size: 30px">오늘의 꽃</strong>입니다.</h2>
 
       <!-- 꽃 목록 -->
-      <div th:each="fl, flStat : ${flowerList}" class="row row-cols-1 row-cols-lg-3 align-items-stretch g-4 pt-5">
-          <div class="col pb-4">
+      <div class="row row-cols-1 row-cols-lg-3 align-items-stretch g-4 pt-5">
+          <div th:each="fl, flStat : ${flowerList}" thclass="col pb-4">
               <a th:href="@{/today-flower/today/{param} (param=${fl.id})}" style="text-decoration: none">
                   <!--&quot;는 " 이다.-->
                   <div class="card card-cover h-100 overflow-hidden text-bg-dark rounded-4 shadow-lg"
@@ -61,8 +61,22 @@
               </a>
           </div>
       </div>
-
     </div>
+    <!-- 카드 끝 -->
+    <!--페이지네이션 시작  -->
+    <nav aria-label="Page navigation">
+      <ul class="pb-4 pagination justify-content-center">
+          <li th:class="${currentPage == 0} ? 'page-item disabled' : 'page-item'">
+              <a class="page-link" th:href="@{/today-flower/lang-list(page=0)}">&laquo;</a>
+          </li>
+          <li th:each="page : ${#numbers.sequence(0, totalPages-1)}" th:class="${currentPage == page} ? 'page-item active' : 'page-item'">
+              <a class="page-link" th:href="@{/today-flower/lang-list(page=${page})}" th:text="${page+1}"></a>
+          </li>
+          <li th:class="${currentPage == totalPages-1} ? 'page-item disabled' : 'page-item'">
+              <a class="page-link" th:href="@{/today-flower/lang-list(page=${totalPages-1})}">&raquo;</a>
+          </li>
+      </ul>
+    </nav>
 
   </div>
 </form>

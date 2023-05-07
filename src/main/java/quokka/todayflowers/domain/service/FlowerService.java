@@ -1,6 +1,7 @@
 package quokka.todayflowers.domain.service;
 
 import org.springframework.data.domain.Pageable;
+import quokka.todayflowers.domain.entity.Flower;
 import quokka.todayflowers.web.request.LangFlowerForm;
 import quokka.todayflowers.web.response.BirthFlowerForm;
 import quokka.todayflowers.web.response.FlowerLikeResponse;
@@ -19,9 +20,9 @@ public interface FlowerService {
     // 꽃말의 꽃 조회
 
     // 꽃 리스트 조회
-    List<FlowerListForm> findFlowerList(Pageable pageable);
+    List<FlowerListForm> getFlowerList(List<Flower> flowerList);
     // 꽃말로 꽃 리스트 조회
-    List<FlowerListForm> findLangFlowerList(Pageable pageable, String lang);
+    List<FlowerListForm> getFlowerListByLang(List<Flower> flowerList, String lang);
 
     // 좋아요
     FlowerLikeResponse likeFlower(Long flowerId, Boolean like);

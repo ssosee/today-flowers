@@ -175,20 +175,15 @@ public class FlowerServiceImpl implements FlowerService {
     }
 
     @Override
-    public List<FlowerListForm> findFlowerList(Pageable pageable) {
-        Page<Flower> findFlower = flowerRepository.findFlowerByOrderByNameDesc(pageable);
-        List<Flower> content = findFlower.getContent();
+    public List<FlowerListForm> getFlowerList(List<Flower> flowerList) {
 
-        List<FlowerListForm> flowerListFormList = content.stream()
-                .map(c -> FlowerListForm.builder()
-                        .id(c.getId())
-                        .lang(c.getFlowerLang())
-                        .path(c.getFlowerPhotos().get(0).getPath()) // 사진 1개만 표시
-                        .totalLike(c.getTotalLike())
-                        .name(c.getName())
-                        .totalElements(findFlower.getTotalElements())
-                        .totalPage(findFlower.getTotalPages())
-                        .number(findFlower.getNumber())
+        List<FlowerListForm> flowerListFormList = flowerList.stream()
+                .map(fl -> FlowerListForm.builder()
+                        .id(fl.getId())
+                        .lang(fl.getFlowerLang())
+                        .path(fl.getFlowerPhotos().get(0).getPath()) // 사진 1개만 표시
+                        .totalLike(fl.getTotalLike())
+                        .name(fl.getName())
                         .build()
                 )
                 .collect(Collectors.toList());
@@ -197,26 +192,23 @@ public class FlowerServiceImpl implements FlowerService {
     }
 
     @Override
-    public List<FlowerListForm> findLangFlowerList(Pageable pageable, String lang) {
-        Page<Flower> findFlower = flowerRepository.findFlowerByFlowerLangContainingOrderByFlowerLang(pageable, lang);
-        List<Flower> content = findFlower.getContent();
+    public List<FlowerListForm> getFlowerListByLang(List<Flower> flowerList, String lang) {
 
-        List<FlowerListForm> flowerListFormList = content.stream()
-                .map(c -> FlowerListForm.builder()
-                        .id(c.getId())
-                        .lang(c.getFlowerLang())
-                        .name(c.getName())
-                        .path(c.getFlowerPhotos().get(0).getPath())
-                        .totalLike(c.getTotalLike())
-                        .totalElements(findFlower.getTotalElements())
-                        .totalPage(findFlower.getTotalPages())
-                        .number(findFlower.getNumber())
+        List<FlowerListForm> flowerListFormList = flowerList.stream()
+                .map(fl -> FlowerListForm.builder()
+                        .id(fl.getId())
+                        .lang(fl.getFlowerLang())
+                        .name(fl.getName())
+                        .path(fl.getFlowerPhotos().get(0).getPath())
+                        .totalLike(fl.getTotalLike())
                         .build()
                 )
                 .collect(Collectors.toList());
 
         return flowerListFormList;
     }
+
+
 
     // 좋아요
     @Override
