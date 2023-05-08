@@ -34,6 +34,6 @@ public class SimpleAuthenticationSuccessHandler implements AuthenticationSuccess
         // 로그인 실패 초기화
         findMember.initLoginFailCount();
 
-        response.sendRedirect("/home");
+        response.sendRedirect("/");
     }
 }
