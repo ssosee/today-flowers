@@ -23,6 +23,7 @@ import quokka.todayflowers.global.constant.ConstFlower;
 import quokka.todayflowers.web.request.FlowerLikeForm;
 import quokka.todayflowers.web.response.FlowerLikeResponse;
 import quokka.todayflowers.web.response.FlowerListForm;
+import quokka.todayflowers.web.response.PageDto;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -49,6 +50,7 @@ public class FlowerLIkeController {
     // 사용자가 누른 좋아요 목록
     @GetMapping("/like-list")
     public String flowerLikeList(@PageableDefault(size = 6) Pageable pageable, Model model) {
+
         String userId = simpleCommonMethod.getCurrentUserId();
 
         Page<FlowerLike> pageFlowerLike = flowerLikeRepository.findByUserId(pageable, userId);
@@ -59,9 +61,17 @@ public class FlowerLIkeController {
             return "member/likeFlowerList";
         }
 
-        model.addAttribute("flowerList", flowerList);
-        model.addAttribute("totalPages", pageFlowerLike.getTotalPages());
-        model.addAttribute("currentPage", pageFlowerLike.getNumber());
+        // 일정 범위의 페이지네이션을 보여주기 위한 변수
+        int currentPage = pageFlowerLike.getNumber();
+        int totalPages = pageFlowerLike.getTotalPages();
+        // 시작 페이지 끝 페이지 계산
+        PageDto pageDto = simpleCommonMethod.getPageDto(totalPages, currentPage);
+
+        model.addAttribute("flowerList", flowerList); // 페이지에 들어갈 내용
+        model.addAttribute("currentPage", currentPage); // 현재 페이지
+        model.addAttribute("totalPages", pageFlowerLike.getTotalPages()); // 전체 페이지
+        model.addAttribute("startPage", pageDto.getStartPage()); // 시작 페이지
+        model.addAttribute("endPage", pageDto.getEndPage()); // 끝 페이지
 
         return "member/likeFlowerList";
     }

@@ -3,6 +3,7 @@ package quokka.todayflowers.global.common;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import quokka.todayflowers.web.response.PageDto;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -49,5 +50,56 @@ public class SimpleCommonMethod {
         }
 
         return date;
+    }
+
+    public PageDto getPageDto(int totalPages, int currentPage) {
+
+        int startPage = 0;
+        int endPage = 0;
+
+        /**
+         * 전체 페이지가 5이하 이면
+         * 모든 페이지 번호를 표시한다.
+         */
+        if (totalPages <= 5) {
+            startPage = 0;
+
+            // 전체 페이지가 1 이하이면
+            // << [1] >> 이렇게 표시 한다.
+            endPage = totalPages - 1;
+
+            return PageDto.builder()
+                    .startPage(startPage)
+                    .endPage(endPage)
+                    .build();
+        }
+
+        /**
+         * 전체 페이지가 5이상 이면
+         * 현재 페이지에 따라 일정 범위의 페이지만 표시한다.
+         */
+
+        // 현재 페이지가 2페이지 이하이면
+        if (currentPage <= 2) {
+            startPage = 0;
+            endPage = 4;
+        }
+
+        // 현재 페이지가 마지막 3페이지 이하에 있으면
+        else if (currentPage >= totalPages - 3) {
+            startPage = totalPages - 5;
+            endPage = totalPages - 1;
+        }
+
+        // 그외 currentPage를 중심으로 앞뒤로 2페이지씩 범위를 잡아서 보여준다.
+        else {
+            startPage = currentPage - 2;
+            endPage = currentPage + 2;
+        }
+
+        return PageDto.builder()
+                .startPage(startPage)
+                .endPage(endPage)
+                .build();
     }
 }
