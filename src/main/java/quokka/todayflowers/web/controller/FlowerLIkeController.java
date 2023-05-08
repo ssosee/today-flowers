@@ -56,12 +56,13 @@ public class FlowerLIkeController {
 
         if(flowerList.isEmpty()) {
             model.addAttribute("error", "좋아요를 누른 꽃이 없습니다!");
+            return "member/likeFlowerList";
         }
 
         model.addAttribute("flowerList", flowerList);
         model.addAttribute("totalPages", pageFlowerLike.getTotalPages());
         model.addAttribute("currentPage", pageFlowerLike.getNumber());
 
-        return "/member/likeFlowerList";
+        return "member/likeFlowerList";
     }
 }

@@ -40,7 +40,7 @@ public class MemberController {
         model.addAttribute("error", error);
         model.addAttribute("exception", exception);
 
-        return "/member/login";
+        return "member/login";
     }
 
     // 회원 가입
@@ -55,7 +55,7 @@ public class MemberController {
 
         // 요청메시지 검증
         if(bindingResult.hasErrors()) {
-            return "/member/signup";
+            return "member/signup";
         }
 
         // 회원가입 로직 수행
@@ -65,7 +65,7 @@ public class MemberController {
         if(!serviceResult) {
             // 글로벌 오류 생성
             bindingResult.reject("duplicate_user_id", ConstMember.DUPLICATE_USER_ID);
-            return "/member/signup";
+            return "member/signup";
         }
 
         return "redirect:/home";
@@ -94,7 +94,7 @@ public class MemberController {
         MyPageForm form = memberService.findMember(userId);
         model.addAttribute("form", form);
 
-        return "/member/mypage";
+        return "member/mypage";
     }
 
     // 회원아이디 찾기
@@ -111,25 +111,25 @@ public class MemberController {
 
         // 요청 데이터 검증
         if(bindingResult.hasErrors()) {
-            return "/member/findUserId";
+            return "member/findUserId";
         }
 
         // 회원이 없으면
         List<String> userIds = memberService.findUserId(form.getEmail());
         if(userIds.size() == 0) {
             bindingResult.reject("email_not_found", ConstMember.MEMBER_NOT_FOUND);
-            return "/member/findUserId";
+            return "member/findUserId";
         }
 
         model.addAttribute("userIds", userIds);
 
-        return "/member/findUserId";
+        return "member/findUserId";
     }
 
     // 임시 비밀번호 발급
     @GetMapping("/find-password")
     public String createTemporaryPassword(@ModelAttribute("form") FindPasswordForm form) {
-        return "/member/findUserPassword";
+        return "member/findUserPassword";
     }
 
     // 임시 비밀번호 발급
@@ -140,18 +140,18 @@ public class MemberController {
 
         // 요청 데이터 검증
         if(bindingResult.hasErrors()) {
-            return "/member/findUserPassword";
+            return "member/findUserPassword";
         }
 
         // 메일 전송(임시 비밀번호)
         Boolean serviceResult = memberService.sendMailForCreateTemporaryPassword(form.getUserId(), adminEmail, form.getEmail());
         if (!serviceResult) {
             bindingResult.reject("send_email_fail", ConstMember.SEND_EMAIL_FAIL);
-            return "/member/findUserPassword";
+            return "member/findUserPassword";
         }
 
         model.addAttribute("sendEmailSuccess", ConstMember.SEND_EMAIL_SUCCESS);
-        return "/member/findUserPassword";
+        return "member/findUserPassword";
     }
 
     // 비밀번호 변경
@@ -166,18 +166,18 @@ public class MemberController {
                                  Model model) {
 
         if(bindingResult.hasErrors()) {
-            return "/member/changePassword";
+            return "member/changePassword";
         }
 
         Boolean serviceResult = memberService.changePassword(form.getUserId(), form.getEmail(), form.getOldPassword(), form.getNewPassword());
         if(!serviceResult) {
             bindingResult.reject("change_password_fail", ConstMember.CHANGE_PASSWORD_FAIL);
-            return "/member/changePassword";
+            return "member/changePassword";
         }
 
 
         model.addAttribute("changePasswordSuccess", ConstMember.CHANGE_PASSWORD_SUCCESS);
-        return "/member/changePassword";
+        return "member/changePassword";
     }
 
     // 로그인 만료
@@ -188,6 +188,6 @@ public class MemberController {
         model.addAttribute("error", true);
         model.addAttribute("exception", ConstMember.INVALID_LOGIN);
 
-        return "/member/login";
+        return "member/login";
     }
 }

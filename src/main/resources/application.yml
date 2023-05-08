@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: prod1
+    active: local
   config:
     import:
       - 'classpath:mail-config.yml'

@@ -41,7 +41,7 @@ public class LangFlowerController {
         model.addAttribute("currentPage", pageFlower.getNumber()); // 현재 페이지
         model.addAttribute("totalPages", pageFlower.getTotalPages()); // 전체 페이지
 
-        return "/flower/lang/langFlowerList";
+        return "flower/lang/langFlowerList";
     }
 
     // 꽃말로 꽃 조회
@@ -58,13 +58,13 @@ public class LangFlowerController {
         // 꽃말을 가진 꽃이 없으면
         if(pageFlower.getContent().isEmpty()) {
             bindingResult.reject("lang_flower_not_found", "'"+form.getLang() + ConstFlower.LANG_FLOWER_NOT_FOUND);
-            return "/flower/lang/langFlowerList";
+            return "flower/lang/langFlowerList";
         }
 
         model.addAttribute("flowerList", flowerList); // 페이지에 들어갈 내용
         model.addAttribute("currentPage", pageFlower.getNumber()); // 현재 페이지
         model.addAttribute("totalPages", pageFlower.getTotalPages()); // 전체 페이지
 
-        return "/flower/lang/langFlowerList";
+        return "flower/lang/langFlowerList";
     }
 }

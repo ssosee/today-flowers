@@ -44,7 +44,7 @@ public class NameFlowerController {
         model.addAttribute("totalPages", pageFlower.getTotalPages());
         model.addAttribute("currentPage", pageFlower.getNumber());
 
-        return "/flower/name/nameFlowerList";
+        return "flower/name/nameFlowerList";
 
     }
 
@@ -62,7 +62,7 @@ public class NameFlowerController {
 
         if(flowerList.isEmpty()) {
             bindingResult.reject("name_flower_not_found", "'" + form.getName() + ConstFlower.NAME_FLOWER_NOT_FOUND);
-            return "/flower/name/nameFlowerList";
+            return "flower/name/nameFlowerList";
         }
 
         model.addAttribute("flowerList", flowerList);
@@ -70,6 +70,6 @@ public class NameFlowerController {
         model.addAttribute("currentPage", pageFlower.getNumber());
 
 
-        return "/flower/name/nameFlowerList";
+        return "flower/name/nameFlowerList";
     }
 }

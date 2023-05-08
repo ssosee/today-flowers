@@ -24,7 +24,7 @@ public class BirthFlowerController {
     @GetMapping("/birth")
     public String birthFlower(@ModelAttribute("form") BirthFlowerForm form) {
 
-        return "/flower/birth/birthFlower";
+        return "flower/birth/birthFlower";
     }
 
     @PostMapping("/birth")
@@ -33,7 +33,7 @@ public class BirthFlowerController {
                                   Model model) {
         // 요청 데이터 검증
         if(bindingResult.hasErrors()) {
-            return "/flower/birth/birthFlower";
+            return "flower/birth/birthFlower";
         }
 
         // 생일의 꽃 조회
@@ -42,11 +42,11 @@ public class BirthFlowerController {
         // 생일의 꽃이 없으면
         if(birthFlower == null) {
             bindingResult.reject("birth_flower_not_found", ConstFlower.BIRTH_FLOWER_NOT_FOUND);
-            return "/flower/birth/birthFlower";
+            return "flower/birth/birthFlower";
         }
 
         model.addAttribute("form", birthFlower);
 
-        return "/flower/birth/birthFlower";
+        return "flower/birth/birthFlower";
     }
 }

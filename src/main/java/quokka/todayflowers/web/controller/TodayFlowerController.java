@@ -31,18 +31,18 @@ public class TodayFlowerController {
             // 아이디에 맞는 꽃이 없는 경우
             if(todayFlower == null) {
                 model.addAttribute("error", ConstFlower.FLOWER_NOT_FOUND);
-                return "/flower/today/todayFlower";
+                return "flower/today/todayFlower";
             }
 
             model.addAttribute("form", todayFlower);
 
-            return "/flower/today/todayFlower";
+            return "flower/today/todayFlower";
         }
 
         // 오늘의 꽃 조회
         TodayFlowerForm todayFlower = flowerService.findTodayFlower();
         model.addAttribute("form", todayFlower);
 
-        return "/flower/today/todayFlower";
+        return "flower/today/todayFlower";
     }
 }

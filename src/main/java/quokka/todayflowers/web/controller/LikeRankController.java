@@ -35,6 +35,6 @@ public class LikeRankController {
         model.addAttribute("currentPage", pageFlower.getNumber());
         model.addAttribute("totalPages", pageFlower.getTotalPages());
 
-        return "/flower/like-rank/likeRankFlowerList";
+        return "flower/like-rank/likeRankFlowerList";
     }
 }
