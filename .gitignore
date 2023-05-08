@@ -39,4 +39,5 @@ out/
 # 메일 정보
 src/main/resources/mail-config.yml
 src/main/resources/flower-config.yml
-src/main/resources/application-prod.yml
+src/main/resources/application-prod1.yml
+src/main/resources/application-prod2.yml
