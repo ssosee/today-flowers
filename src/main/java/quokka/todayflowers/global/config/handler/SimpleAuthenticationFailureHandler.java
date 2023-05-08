@@ -44,10 +44,19 @@ public class SimpleAuthenticationFailureHandler implements AuthenticationFailure
             return;
         }
 
-
         // 아이디로 회원 조회
         Optional<Member> optionalMember = memberRepository.findByUserId(userId);
         Member findMember = optionalMember.orElse(null);
+
+        // 존재하지 않는 회원이 없는 경우
+        if(findMember == null) {
+            errMessage = ConstMember.LOGIN_FAIL;
+            // 에러 메시지 UTF_8로 변환
+            errMessage = URLEncoder.encode(errMessage, StandardCharsets.UTF_8);
+            // 에러 메시지 url에 포함
+            response.sendRedirect("/user/login?error=true&exception="+errMessage);
+            return;
+        }
 
         // 아이디 혹은 비밀번호가 틀릴 경우
         if(exception instanceof BadCredentialsException) {
