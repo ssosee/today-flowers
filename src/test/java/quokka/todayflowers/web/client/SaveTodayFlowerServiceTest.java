@@ -20,7 +20,7 @@ class SaveTodayFlowerServiceTest {
     @DisplayName("오늘의 꽃 상세보기 api 데이터 저장")
     @Commit
     @Disabled
-    void getTodayFlowerDetailViewTest() throws JAXBException {
+    void getTodayFlowerDetailViewTest() {
         //saveTodayFlowerService.saveFlowerDetailData();
         //FlowerDocumentData test = saveTodayFlowerService.getTest();
         //System.out.println(test);

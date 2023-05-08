@@ -16,14 +16,14 @@ class FlowerServiceImplTest {
     @Autowired
     FlowerService flowerService;
 
-//    @Test
-//    @Disabled
-//    void test() {
+    @Test
+    @Disabled
+    void test() {
 //        PageRequest pageRequest = PageRequest.of(0, 5);
 //        List<FlowerListForm> flowerList = flowerService.getFlowerList();
 //        assertAll(
 //                () -> assertFalse(flowerList.isEmpty()),
 //                () -> assertEquals(flowerList.size(), 5)
 //        );
-//    }
+    }
 }
