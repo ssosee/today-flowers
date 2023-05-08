@@ -21,7 +21,7 @@ class SaveTodayFlowerServiceTest {
     @Commit
     @Disabled
     void getTodayFlowerDetailViewTest() throws JAXBException {
-        saveTodayFlowerService.saveFlowerDetailData();
+        //saveTodayFlowerService.saveFlowerDetailData();
         //FlowerDocumentData test = saveTodayFlowerService.getTest();
         //System.out.println(test);
     }
