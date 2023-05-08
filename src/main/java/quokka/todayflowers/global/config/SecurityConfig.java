@@ -44,7 +44,7 @@ public class SecurityConfig {
                     .dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll()
                     .requestMatchers(
                             "/profile",
-                            "/home",
+                            "/",
                             "/user/invalid",
                             "/user/login/**", "/user/signup", "/user/login-fail", "/user/find-userId", "/user/find-password", "/user/send-email",
                             "/today-flower/today",
