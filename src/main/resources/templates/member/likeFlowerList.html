@@ -11,32 +11,13 @@
 
     <!--글로벌 에러 생성-->
     <div class="is-valid">
-      <div th:if="${#fields.hasGlobalErrors()}"><span class="is-valid" th:each="err : ${#fields.globalErrors()}" th:text="${err}">전체 오류 메시지</span></div>
-      <div th:errors="${form.lang}"></div>
+      <div th:if="${error}"><span class="is-valid" th:text="${error}">오류 메시지</span></div>
     </div>
 
-    <div class="pt-3 px-4">
-      <!-- 꽃말 -->
-      <div class="mb-3 row">
-          <label for="inputLang" class="col-sm-2 col-form-label">🐴 꽃말:</label>
-          <div class="col-sm-10">
-              <input type="text" class="form-control" id="inputLang" name="search" placeholder="사랑" th:field="${form.lang}">
-          </div>
-      </div>
-
-      <!-- 꽃말 전송-->
-      <div class="mb-3 row">
-          <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-              <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" formaction="/today-flower/lang-list" formmethod="post">
-              <input type="submit" class="btn float-end btn-success" formaction="/today-flower/lang-list" formmethod="post" value="검색">
-          </div>
-      </div>
-    </div>
-
-    <div th:unless="${#fields.hasGlobalErrors()}">
+    <div th:unless="${error}">
         <!--카드 시작-->
         <div class="px-4 py-5" id="custom-cards">
-            <h2 class="pb-2 border-bottom">😁 안녕하세요.<br>🐴 <strong class="todayFlowerTitle" style="font-size: 30px">꽃말의 꽃</strong>입니다.</h2>
+            <h2 class="pb-2 border-bottom">당신이 🫰 좋아한 <strong class="todayFlowerTitle" style="font-size: 30px">꽃</strong> 입니다.</h2>
 
             <!-- 꽃 목록 시작-->
             <div class="row row-cols-1 row-cols-lg-3 align-items-stretch g-4 pt-5">
@@ -79,13 +60,13 @@
         <nav aria-label="Page navigation">
             <ul class="pb-4 pagination justify-content-center">
                 <li th:class="${currentPage == 0} ? 'page-item disabled' : 'page-item'">
-                    <a class="page-link" th:href="@{/today-flower/lang-list(page=0)}">&laquo;</a>
+                    <a class="page-link" th:href="@{/flower/like-list(page=0)}">&laquo;</a>
                 </li>
                 <li th:each="page : ${#numbers.sequence(0, totalPages-1)}" th:class="${currentPage == page} ? 'page-item active' : 'page-item'">
-                    <a class="page-link" th:href="@{/today-flower/lang-list(page=${page})}" th:text="${page+1}"></a>
+                    <a class="page-link" th:href="@{/flower/like-list(page=${page})}" th:text="${page+1}"></a>
                 </li>
                 <li th:class="${currentPage == totalPages-1} ? 'page-item disabled' : 'page-item'">
-                    <a class="page-link" th:href="@{/today-flower/lang-list(page=${totalPages-1})}">&raquo;</a>
+                    <a class="page-link" th:href="@{/flower/like-list(page=${totalPages-1})}">&raquo;</a>
                 </li>
             </ul>
         </nav>

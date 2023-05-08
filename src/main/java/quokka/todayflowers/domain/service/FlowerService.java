@@ -21,4 +21,5 @@ public interface FlowerService {
     List<FlowerListForm> getFlowerList(List<Flower> flowerList);
     // 좋아요
     FlowerLikeResponse likeFlower(Long flowerId, Boolean like);
+
 }

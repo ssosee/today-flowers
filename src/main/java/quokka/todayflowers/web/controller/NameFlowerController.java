@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import quokka.todayflowers.domain.entity.Flower;
 import quokka.todayflowers.domain.repository.FlowerRepository;
 import quokka.todayflowers.domain.service.FlowerService;
+import quokka.todayflowers.global.constant.ConstFlower;
 import quokka.todayflowers.web.request.NameFlowerForm;
 import quokka.todayflowers.web.response.FlowerListForm;
 
@@ -58,6 +59,11 @@ public class NameFlowerController {
         Page<Flower> pageFlower = flowerRepository.findFlowerByNameContainingOrderByName(pageable, form.getName());
         // DTO로 변환
         List<FlowerListForm> flowerList = flowerService.getFlowerList(pageFlower.getContent());
+
+        if(flowerList.isEmpty()) {
+            bindingResult.reject("name_flower_not_found", "'" + form.getName() + ConstFlower.NAME_FLOWER_NOT_FOUND);
+            return "/flower/name/nameFlowerList";
+        }
 
         model.addAttribute("flowerList", flowerList);
         model.addAttribute("totalPages", pageFlower.getTotalPages());

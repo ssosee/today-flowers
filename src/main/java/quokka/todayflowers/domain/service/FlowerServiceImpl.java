@@ -187,6 +187,7 @@ public class FlowerServiceImpl implements FlowerService {
                         .path(fl.getFlowerPhotos().get(0).getPath()) // 사진 1개만 표시
                         .totalLike(fl.getTotalLike())
                         .name(fl.getName())
+                        .hits(fl.getHits())
                         .build()
                 )
                 .collect(Collectors.toList());

@@ -88,6 +88,7 @@ public class MemberServiceImpl implements MemberService {
             return false;
         }
 
+        // 사용자가 누른 좋아요 꽃 목록
         List<FlowerLike> flowerLikes = flowerLikeRepository.findAllByMember(findMember);
 
         // 회원 삭제

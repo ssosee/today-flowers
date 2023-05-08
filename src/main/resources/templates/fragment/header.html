@@ -23,7 +23,7 @@
                     <div class="pb-1">
                         <button type="submit" class="btn btn-outline-primary mb-1" style="width: 115px" sec:authorize="!isAuthenticated()">로그인</button>
                         <button type="submit" class="btn btn-outline-primary mb-1" style="width: 115px" sec:authorize="isAuthenticated()">로그아웃</button>
-                        <button type="button" class="btn btn-outline-primary mb-1" style="width: 115px" sec:authorize="isAuthenticated()" th:onclick="|location.href='@{/user/mypage}'|">내정보</button>
+                        <button type="button" class="btn btn-outline-primary mb-1" style="width: 115px" sec:authorize="isAuthenticated()" th:onclick="|location.href='@{/user/mypage}'|">내 정보</button>
                         <button type="button" class="btn btn-outline-info mb-1" style="width: 115px" sec:authorize="!isAuthenticated()" th:onclick="|location.href='@{/user/signup}'|">회원가입</button>
                     </div>
                     <div class="pb-1">

@@ -6,9 +6,39 @@
     <div class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
       <p class="col-md-4 mb-0 text-muted">데이터 출처: <a href="https://www.nihhs.go.kr/usr/main/mainPage.do" class="text-muted" style="text-decoration: none">농촌진흥청 국립원예특작과학원</a></p>
 
-      <a href="https://first-parakeet-792.notion.site/1738d950a1ba45fb9d7510964c9e6a05" class="col-md-4 d-flex align-items-center justify-content-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">
+      <a class="col-md-4 d-flex align-items-center justify-content-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none"
+         data-bs-toggle="modal" data-bs-target="#staticGiveDrop">
         <img src="/image/flower_adobe_express.svg" class="bi me-2" width="46" height="38" alt="오늘의 꽃2 SVG"></img>
       </a>
+
+      <!-- Modal 시작 -->
+      <div class="modal fade" id="staticGiveDrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="staticGiveDropLabel">❤️ 후원 안내 ❤️</h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              👋 안녕하세요. <br />
+              <strong>🪻 오늘의 꽃</strong> 😊 개발자 입니다. <br /><br />
+              만약 <b>후원</b>을 원하시면 <b>후원하기</b> 버튼을 눌러주세요.<br />
+              <b>💪 든든한 후원자님</b> 덕분에<br />
+              🍤🥘🌮🍔🍕🍖 맛있는 음식을 😋 먹으면서 🧑‍💻 개발할 수 있을거에요!!<br /><br />
+              만약 오늘 저녁에 🍗 <b>치킨</b>을 드시고 싶으면, <b><br />
+              오늘 저녁은 치킨이닭</b> 버튼을 눌러주세요.<br /><br />
+              감사합니다.^^<br /><br />
+              개발자 드림.<br /><br />
+            </div>
+            <div class="modal-footer">
+              <button type="submit" class="btn btn-success" style="width: 170px" th:onclick="|location.href='@{https://qr.kakaopay.com/Ej7lFoZEz}'|">💰후원하기</button>
+              <button type="button" class="btn btn-warning" style="width: 182px" data-bs-dismiss="modal">오늘 저녁은 🍗치킨이닭</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Modal 종료 -->
+
 
       <ul class="nav col-md-4 justify-content-end">
         <li class="nav-item"><a href="mailto:howisitgoing@kakao.com" class="nav-link px-2 text-muted">Email</a></li>

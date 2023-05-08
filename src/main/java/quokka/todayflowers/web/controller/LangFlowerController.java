@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import quokka.todayflowers.domain.entity.Flower;
 import quokka.todayflowers.domain.repository.FlowerRepository;
 import quokka.todayflowers.domain.service.FlowerService;
+import quokka.todayflowers.global.constant.ConstFlower;
 import quokka.todayflowers.web.request.LangFlowerForm;
 import quokka.todayflowers.web.response.FlowerListForm;
 
@@ -53,6 +54,12 @@ public class LangFlowerController {
         Page<Flower> pageFlower = flowerRepository.findFlowerByFlowerLangContainingOrderByFlowerLang(pageable, form.getLang());
         // DTO로 변환
         List<FlowerListForm> flowerList = flowerService.getFlowerList(pageFlower.getContent());
+
+        // 꽃말을 가진 꽃이 없으면
+        if(pageFlower.getContent().isEmpty()) {
+            bindingResult.reject("lang_flower_not_found", "'"+form.getLang() + ConstFlower.LANG_FLOWER_NOT_FOUND);
+            return "/flower/lang/langFlowerList";
+        }
 
         model.addAttribute("flowerList", flowerList); // 페이지에 들어갈 내용
         model.addAttribute("currentPage", pageFlower.getNumber()); // 현재 페이지
