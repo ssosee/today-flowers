@@ -76,13 +76,13 @@
         <nav aria-label="Page navigation">
             <ul class="pb-4 pagination justify-content-center">
                 <li th:class="${currentPage == 0} ? 'page-item disabled' : 'page-item'">
-                    <a class="page-link" th:href="@{/today-flower/name-list(page=0)}">&laquo;</a>
+                    <a class="page-link" th:href="@{/today-flower/name-list(page=0, name=${form.name})}">&laquo;</a>
                 </li>
                 <li th:each="page : ${#numbers.sequence(startPage, endPage)}" th:class="${currentPage == page} ? 'page-item active' : 'page-item'">
-                    <a class="page-link" th:href="@{/today-flower/name-list(page=${page})}" th:text="${page+1}"></a>
+                    <a class="page-link" th:href="@{/today-flower/name-list(page=${page}, name=${form.name})}" th:text="${page + 1}"></a>
                 </li>
-                <li th:class="${currentPage == totalPages-1} ? 'page-item disabled' : 'page-item'">
-                    <a class="page-link" th:href="@{/today-flower/name-list(page=${totalPages-1})}">&raquo;</a>
+                <li th:class="${currentPage == totalPages - 1} ? 'page-item disabled' : 'page-item'">
+                    <a class="page-link" th:href="@{/today-flower/name-list(page=${totalPages - 1}, name=${form.name})}">&raquo;</a>
                 </li>
             </ul>
         </nav>

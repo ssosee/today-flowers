@@ -13,7 +13,7 @@ public class SignupForm {
     @NotBlank(message = "아이디를 입력해주세요.")
     @Pattern(regexp = "^[a-zA-Z0-9]*$", message = "아이디는 영문 대/소문자와 숫자만 가능합니다.")
     private String userId;
-    @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*#?&])[A-Za-z\\d@$!%*#?&]{8,}$", message = "8자리 이상, 영어 대/소문자, 숫자, 특수문자가 각각 1개 이상 포함해야 합니다.")
+    @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*#?&])[A-Za-z\\d@$!%*#?&]{8,14}$", message = "8자리 이상 14자리 이하, 영어 대/소문자, 숫자, 특수문자가 각각 1개 이상 포함해야 합니다.")
     private String password;
     @Email(message = "이메일을 확인해주세요.")
     private String email;
