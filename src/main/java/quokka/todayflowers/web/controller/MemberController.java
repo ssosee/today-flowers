@@ -46,7 +46,7 @@ public class MemberController {
     // 회원 가입
     @GetMapping("/signup")
     public String signup(@ModelAttribute("form") SignupForm form) {
-        return "/member/signup";
+        return "member/signup";
     }
 
     // 회원 가입
@@ -100,7 +100,7 @@ public class MemberController {
     // 회원아이디 찾기
     @GetMapping("/find-userId")
     public String findUserId(@ModelAttribute("form") FindUserIdForm form) {
-        return "/member/findUserId";
+        return "member/findUserId";
     }
 
     // 회원아이디 찾기
@@ -157,7 +157,7 @@ public class MemberController {
     // 비밀번호 변경
     @GetMapping("/change-password")
     public String changePassword(@ModelAttribute("form") ChangePasswordForm form) {
-        return "/member/changePassword";
+        return "member/changePassword";
     }
 
     @PostMapping("/change-password")
