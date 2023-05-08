@@ -68,7 +68,7 @@ public class MemberController {
             return "member/signup";
         }
 
-        return "redirect:/home";
+        return "redirect:/";
     }
 
     // 회원 탈퇴
