@@ -41,3 +41,5 @@ src/main/resources/mail-config.yml
 src/main/resources/flower-config.yml
 src/main/resources/application-prod1.yml
 src/main/resources/application-prod2.yml
+
+.travis.yml
