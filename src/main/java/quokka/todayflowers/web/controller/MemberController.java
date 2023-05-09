@@ -11,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import quokka.todayflowers.domain.entity.Member;
 import quokka.todayflowers.domain.service.MemberService;
 import quokka.todayflowers.global.common.SimpleCommonMethod;
 import quokka.todayflowers.global.constant.ConstMember;
@@ -18,6 +19,8 @@ import quokka.todayflowers.web.request.*;
 import quokka.todayflowers.web.response.MyPageForm;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 @Controller
 @RequiredArgsConstructor
@@ -58,8 +61,14 @@ public class MemberController {
             return "member/signup";
         }
 
+        // 비밀번호 일치 로직
+        if(!form.getPassword1().equals(form.getPassword2())) {
+            bindingResult.reject("password_not_same", ConstMember.PASSWORD_NOT_SAME);
+            return "member/signup";
+        }
+
         // 회원가입 로직 수행
-        Boolean serviceResult = memberService.join(form.getUserId(), form.getPassword(), form.getEmail());
+        Boolean serviceResult = memberService.join(form.getUserId(), form.getPassword1(), form.getEmail());
 
         // 회원가입이 불가능 하면
         if(!serviceResult) {
@@ -136,19 +145,23 @@ public class MemberController {
     @PostMapping("/send-email")
     public String createTemporaryPassword(@Validated @ModelAttribute("form") FindPasswordForm form,
                             BindingResult bindingResult,
-                            Model model) throws MessagingException {
+                            Model model) throws MessagingException, ExecutionException, InterruptedException {
 
         // 요청 데이터 검증
         if(bindingResult.hasErrors()) {
             return "member/findUserPassword";
         }
 
-        // 메일 전송(임시 비밀번호)
-        Boolean serviceResult = memberService.sendMailForCreateTemporaryPassword(form.getUserId(), adminEmail, form.getEmail());
-        if (!serviceResult) {
-            bindingResult.reject("send_email_fail", ConstMember.SEND_EMAIL_FAIL);
+        // 회원 조회
+        Member findMember = memberService.validationMemberByUserIdAndEmail(form.getUserId(), form.getEmail());
+        if (findMember == null) {
+            bindingResult.reject("send_email_fail", ConstMember.MEMBER_NOT_FOUND);
             return "member/findUserPassword";
         }
+
+        // 메일 전송(임시 비밀번호)
+        memberService.sendMailForCreateTemporaryPassword(form.getUserId(), adminEmail, form.getEmail());
+
 
         model.addAttribute("sendEmailSuccess", ConstMember.SEND_EMAIL_SUCCESS);
         return "member/findUserPassword";

@@ -3,17 +3,23 @@ package quokka.todayflowers.domain.service;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring6.SpringTemplateEngine;
+import quokka.todayflowers.domain.entity.EmailLog;
+import quokka.todayflowers.domain.entity.EmailType;
 import quokka.todayflowers.domain.entity.FlowerLike;
 import quokka.todayflowers.domain.entity.Member;
+import quokka.todayflowers.domain.repository.EmailLogRepository;
 import quokka.todayflowers.domain.repository.FlowerLikeRepository;
 import quokka.todayflowers.domain.repository.MemberRepository;
+import quokka.todayflowers.global.constant.ConstEmail;
 import quokka.todayflowers.global.constant.ConstMember;
 import quokka.todayflowers.global.common.SimpleConvert;
 import quokka.todayflowers.global.exception.BasicException;
@@ -22,6 +28,9 @@ import quokka.todayflowers.web.response.MyPageForm;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.Callable;
+import java.util.concurrent.Future;
+import java.util.concurrent.FutureTask;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,8 +39,10 @@ import java.util.stream.Collectors;
 public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
     private final FlowerLikeRepository flowerLikeRepository;
+    private final EmailLogRepository emailLogRepository;
     private final PasswordEncoder passwordEncoder;
     private final SimpleConvert simpleConvert;
+
 
     // 메일 관련 빈
     private final JavaMailSender javaMailSender;
@@ -40,8 +51,7 @@ public class MemberServiceImpl implements MemberService {
 
     // 회원 가입
     @Override
-    public Boolean join(String userId, String password, String email) {
-
+    public Boolean join(String userId, String password1, String email) {
         Optional<Member> optionalMember = memberRepository.findByUserId(userId);
 
         // 해당 아이디로 이미 회원이 있다면
@@ -50,7 +60,7 @@ public class MemberServiceImpl implements MemberService {
         }
 
         // 비밀번호 암호화
-        String encode = passwordEncoder.encode(password);
+        String encode = passwordEncoder.encode(password1);
         // 회원 가입 수행
         Member member = Member.createNewMember(userId, encode, email);
         memberRepository.save(member);
@@ -143,15 +153,17 @@ public class MemberServiceImpl implements MemberService {
     }
 
     // 메일 전송(임시 비밀번호 생성)
+    @Async("emailAsyncExecutor")
     @Override
-    public Boolean sendMailForCreateTemporaryPassword(String userId, String fromEmail, String toEmail)  {
-        try {
-            // 회원 검증
-            Member findMember = validationMemberByUserIdAndEmail(userId, toEmail);
-            if(findMember == null) {
-                return false;
-            }
+    public void sendMailForCreateTemporaryPassword(String userId, String fromEmail, String toEmail) {
 
+        // 회원 검증
+        Member findMember = validationMemberByUserIdAndEmail(userId, toEmail);
+        if (findMember == null) {
+            return;
+        }
+
+        try {
             // 메일 발신 로직
             MimeMessage mimeMessage = javaMailSender.createMimeMessage();
             MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
@@ -179,15 +191,17 @@ public class MemberServiceImpl implements MemberService {
             findMember.changePassword(passwordEncoder.encode(authenticationNumber));
 
             // 만약 계정이 잠겨 있는 경우
-            if(findMember.getLoginFailCount() >= 5) {
+            if (findMember.getLoginFailCount() >= 5) {
                 // 계정 잠금 해제
                 findMember.initLoginFailCount();
             }
 
-            return true;
+            EmailLog emailLog = EmailLog.createEmailLog(EmailType.CHANGE_PASSWORD, ConstEmail.SUCCESS, findMember);
+            emailLogRepository.save(emailLog);
 
         } catch (MessagingException e) {
-            return false;
+            EmailLog emailLog = EmailLog.createEmailLog(EmailType.CHANGE_PASSWORD, ConstEmail.FAIL, findMember);
+            emailLogRepository.save(emailLog);
         }
     }
 
@@ -228,7 +242,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     // 회원 검증
-    private Member validationMemberByUserIdAndEmail(String userId, String toEmail) {
+    public Member validationMemberByUserIdAndEmail(String userId, String toEmail) {
         // 회원 조회
         Optional<Member> optionalMember = memberRepository.findByUserIdAndEmail(userId, toEmail);
         Member findMember = optionalMember.orElse(null);
