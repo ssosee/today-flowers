@@ -10,6 +10,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.servlet.ModelAndView;
 import quokka.todayflowers.global.constant.ConstFlower;
 import quokka.todayflowers.global.constant.ConstMember;
@@ -20,5 +21,4 @@ public class BasicExHandler {
     public ResponseEntity<String> exHandler(BasicException e) {
         return new ResponseEntity<>(ConstFlower.FLOWER_NOT_FOUND, HttpStatus.NOT_FOUND);
     }
-
 }

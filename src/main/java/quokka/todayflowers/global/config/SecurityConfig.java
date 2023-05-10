@@ -16,6 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.web.filter.CorsFilter;
 import quokka.todayflowers.global.config.handler.SimpleAuthenticationFailureHandler;
 import quokka.todayflowers.global.config.handler.SimpleAuthenticationSuccessHandler;
 
@@ -34,11 +35,13 @@ public class SecurityConfig {
     private final SimpleAuthenticationFailureHandler simpleAuthenticationFailureHandler;
     // 로그인 성공 처리 핸들러
     private final SimpleAuthenticationSuccessHandler simpleAuthenticationSuccessHandler;
+    private final CorsFilter corsFilter;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
         http
+                .addFilter(corsFilter)
                 .csrf().csrfTokenRepository(cookieCsrfTokenRepository()).and()
                 .authorizeHttpRequests(request -> request
                     .dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll()
@@ -48,6 +51,7 @@ public class SecurityConfig {
                             "/user/invalid",
                             "/user/login/**", "/user/signup", "/user/login-fail", "/user/find-userId", "/user/find-password", "/user/send-email",
                             "/today-flower/today",
+                            "/kakao/user/**",
                             "/css/**", "/image/**").permitAll()
                     .anyRequest().authenticated()
                 );

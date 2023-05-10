@@ -42,4 +42,5 @@ src/main/resources/flower-config.yml
 src/main/resources/application-prod1.yml
 src/main/resources/application-prod2.yml
 src/main/resources/kakao-api-config.yml
-src/main/resources/application-oauth.yml
+src/main/resources/application-oauth-local.yml
+src/main/resources/application-oauth-prod.yml

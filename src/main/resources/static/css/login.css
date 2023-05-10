@@ -49,6 +49,19 @@ body {
     padding: 5px;
     /*margin: 10px 0;*/
 }
+.button-login-signup {
+    margin-top: 3px;
+    width: 100%;
+    height: 40px;
+    color: black;
+}
+.button-login-kakao {
+    margin-top: 3px;
+    width: 100%;
+    height: 40px;
+    background-image: url("/image/kakao-login/ko/kakao_login_large_wide.png");
+    background-size: cover
+}
 
 #loginBoxTitle {
     color:#000000;

@@ -4,3 +4,4 @@ spring:
   config:
     import:
       - 'classpath:mail-config.yml'
+      - 'classpath:kakao-api-config.yml'

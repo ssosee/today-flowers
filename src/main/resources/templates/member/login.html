@@ -64,15 +64,19 @@
                         <!--로그인 버튼-->
                         <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
                         <div class="button-login-box" sec:authorize="isAnonymous()">
-                            <button type="submit" class="btn btn-primary" style="width: 100%">로그인</button>
+                            <button type="submit" class="btn btn-primary button-login-signup" style="color: #ffffff">로그인</button>
                         </div>
                         <!-- 회원가입 버튼 -->
                         <div class="button-login-box">
-                            <button type="button" class="btn" style="width: 100%; color: black; background-color: powderblue" th:onclick="|location.href='@{/user/signup}'|">10초 회원가입</button>
+                            <button type="button" class="btn button-login-signup" style="background-color: powderblue" th:onclick="|location.href='@{/user/signup}'|">10초 회원가입</button>
+                        </div>
+                        <!-- 카카오톡 회원가입 버튼 -->
+                        <div class="button-login-box">
+                            <button type="button" class="btn button-login-kakao" th:onclick="|location.href='@{/kakao/user/login}'|"></button>
                         </div>
                         <!-- 아이디 찾기 버튼 -->
                         <div class="button-login-box">
-                            <button type="button" class="btn" style="width: 100%; color: black; background-color: plum" th:onclick="|location.href='@{/user/find-userId}'|">아이디 찾기</button>
+                            <button type="button" class="btn button-login-signup" style="background-color: plum" th:onclick="|location.href='@{/user/find-userId}'|">아이디 찾기</button>
                         </div>
                     </div>
                 </div>

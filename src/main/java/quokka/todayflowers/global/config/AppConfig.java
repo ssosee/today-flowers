@@ -3,6 +3,7 @@ package quokka.todayflowers.global.config;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 import quokka.todayflowers.global.common.SimpleCommonMethod;
 import quokka.todayflowers.global.common.SimpleConvert;
