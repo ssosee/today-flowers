@@ -95,6 +95,7 @@ public class KakaoLoginServiceImpl implements KakaoLoginService {
         HttpEntity request = new HttpEntity(httpHeaders);
 
         ResponseEntity<String> exchange = restTemplate.exchange(kakaoUserHost, HttpMethod.GET, request, String.class);
-        System.out.println(exchange);
+
+
     }
 }
