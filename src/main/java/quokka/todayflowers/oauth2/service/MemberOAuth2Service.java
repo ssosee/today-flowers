@@ -17,12 +17,13 @@ public class MemberOAuth2Service {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public Boolean join(String userId, String socialName, String password1, String email, SocialType socialType) {
+    public Member joinOrGetMember(String userId, String socialName, String password1, String email, SocialType socialType) {
+
         Optional<Member> optionalMember = memberRepository.findByUserIdAndSocialType(userId, socialType);
 
         // 해당 아이디로 이미 회원이 있다면
         if(optionalMember.isPresent()) {
-            return false;
+            return optionalMember.get();
         }
 
         // 비밀번호 암호화
@@ -31,6 +32,6 @@ public class MemberOAuth2Service {
         Member member = Member.createSocialMember(userId, socialName, encode, email, socialType);
         memberRepository.save(member);
 
-        return true;
+        return member;
     }
 }

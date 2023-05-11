@@ -83,7 +83,7 @@ public class MemberController {
             return "member/signup";
         }
 
-        return "redirect:/";
+        return "redirect:/user/login";
     }
 
     // 회원 탈퇴
