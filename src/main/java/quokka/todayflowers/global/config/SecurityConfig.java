@@ -54,7 +54,7 @@ public class SecurityConfig {
                                 "/user/login/**", "/user/signup", "/user/login-fail", "/user/find-userId", "/user/find-password", "/user/send-email",
                                 "/today-flower/today",
                                 "/kakao/user/**",
-                                "/css/**", "/image/**").permitAll()
+                                "/css/**", "/image/**", "/favicon.ico", "/resources/**", "/error").permitAll()
                         .anyRequest().authenticated()
                 );
 
