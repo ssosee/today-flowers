@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import quokka.todayflowers.domain.entity.Flower;
 import quokka.todayflowers.domain.entity.FlowerLike;
 import quokka.todayflowers.domain.entity.Member;
+import quokka.todayflowers.domain.entity.SocialType;
 import quokka.todayflowers.domain.repository.FlowerLikeRepository;
 import quokka.todayflowers.domain.repository.FlowerRepository;
 import quokka.todayflowers.domain.repository.MemberRepository;
@@ -159,6 +160,9 @@ public class FlowerServiceImpl implements FlowerService {
             like = true;
         }
 
+        // 회원 조회(시큐리티 컨텍스트에 userId가 있기 때문에 Member는 항상 존재)
+        Optional<Member> findMember = memberRepository.findByUserId(userId);
+
         // dto로 변환
         BirthFlowerForm birthFlowerForm = BirthFlowerForm.builder()
                 .flowerId(findFlower.getId())
@@ -170,7 +174,7 @@ public class FlowerServiceImpl implements FlowerService {
                 .hits(findFlower.getHits())
                 .description(findFlower.getDescription())
                 .like(like)
-                .userId(userId)
+                .userId(findMember.get().getSocialType().equals(SocialType.NONE) ? userId : findMember.get().getSocialName())
                 .build();
 
         return birthFlowerForm;

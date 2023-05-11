@@ -2,7 +2,6 @@ package quokka.todayflowers.global.config;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -14,8 +13,6 @@ import quokka.todayflowers.domain.repository.MemberRepository;
 import quokka.todayflowers.global.common.MemberGlobalService;
 import quokka.todayflowers.global.constant.ConstMember;
 
-import java.time.Duration;
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 /**
@@ -24,7 +21,7 @@ import java.util.Optional;
 @Component
 @RequiredArgsConstructor
 @Transactional
-public class MyMemberDetailService implements UserDetailsService {
+public class CustomMemberDetailService implements UserDetailsService {
     private final MemberRepository memberRepository;
     private final MemberGlobalService memberGlobalService;
 

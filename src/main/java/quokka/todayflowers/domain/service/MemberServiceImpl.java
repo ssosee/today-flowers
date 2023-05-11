@@ -59,7 +59,7 @@ public class MemberServiceImpl implements MemberService {
         // 비밀번호 암호화
         String encode = passwordEncoder.encode(password1);
         // 회원 가입 수행
-        Member member = Member.createNewMember(userId, encode, email, socialType);
+        Member member = Member.createNewMember(userId, encode, email);
         memberRepository.save(member);
 
         return true;

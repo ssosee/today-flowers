@@ -20,6 +20,7 @@ public class SimpleCommonMethod {
         return userId;
     }
 
+
     // 월, 일 반환
     public Map<Integer, List<Integer>> getSimpleDate() {
 

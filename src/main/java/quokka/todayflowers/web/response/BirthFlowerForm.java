@@ -26,7 +26,6 @@ public class BirthFlowerForm {
     // 좋아요 상태
     private Boolean like;
 
-    @NotBlank(message = "생년월일을 입력해주세요.")
     @Pattern(regexp = "^\\d{6}$", message = "생년월일을 확인해주세요.")
     private String birth;
 

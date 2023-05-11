@@ -32,7 +32,7 @@ public class Member extends BaseTimeEntity {
     @OneToMany(mappedBy = "member")
     private List<FlowerLike> flowerLikes = new ArrayList<>();
 
-    public static Member createNewMember(String userId, String password, String email, SocialType socialType) {
+    public static Member createNewMember(String userId, String password, String email) {
         Member member = new Member();
 
         member.userId = userId;
@@ -41,14 +41,15 @@ public class Member extends BaseTimeEntity {
         member.role = ConstMember.ROLE;
         member.hits = 0L;
         member.loginFailCount = 0;
-        member.socialType = socialType;
+        member.socialType = SocialType.NONE;
 
         return member;
     }
 
     // 소셜 로그인 회원 생성
     public static Member createSocialMember(String userId, String socialName, String password, String email, SocialType socialType) {
-        Member member = createNewMember(userId, password, email, socialType);
+        Member member = createNewMember(userId, password, email);
+        member.socialType = socialType;
         member.socialName = socialName;
 
         return member;
