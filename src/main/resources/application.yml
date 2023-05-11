@@ -1,6 +1,10 @@
 spring:
   profiles:
     active: local
+    include:
+      - oauth-local
   config:
     import:
       - 'classpath:mail-config.yml'
+      - 'classpath:kakao-api-config.yml'
+

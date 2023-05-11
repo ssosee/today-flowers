@@ -1,19 +1,17 @@
-package quokka.todayflowers.external.api;
+package quokka.todayflowers.external.api.flower.service;
 
-import jakarta.annotation.PostConstruct;
 import jakarta.xml.bind.JAXBException;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.converter.xml.MappingJackson2XmlHttpMessageConverter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import quokka.todayflowers.domain.entity.Flower;
 import quokka.todayflowers.domain.entity.FlowerPhoto;
 import quokka.todayflowers.domain.repository.FlowerPhotoRepository;
 import quokka.todayflowers.domain.repository.FlowerRepository;
-import quokka.todayflowers.external.api.response.FlowerDocumentData;
-import quokka.todayflowers.external.api.response.FlowerResultData;
-import quokka.todayflowers.external.api.response.FlowerRootData;
+import quokka.todayflowers.external.api.flower.response.FlowerRootData;
+import quokka.todayflowers.external.api.flower.response.FlowerDocumentData;
+import quokka.todayflowers.external.api.flower.response.FlowerResultData;
 
 import java.util.ArrayList;
 import java.util.List;

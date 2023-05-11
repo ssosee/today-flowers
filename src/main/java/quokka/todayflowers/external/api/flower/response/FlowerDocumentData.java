@@ -1,4 +1,4 @@
-package quokka.todayflowers.external.api.response;
+package quokka.todayflowers.external.api.flower.response;
 
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import lombok.Data;

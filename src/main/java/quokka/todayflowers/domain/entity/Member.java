@@ -26,17 +26,30 @@ public class Member extends BaseTimeEntity {
     private LocalDateTime loginDate; // 로그인 시간
     private LocalDateTime lockDate; // 계정 잠긴 시간
     private Integer loginFailCount; // 로그인 실패 횟수
+    @Enumerated(EnumType.STRING)
+    private SocialType socialType; // 소셜 로그인 타입
+    private String socialName; // 소셜 로그인 name
     @OneToMany(mappedBy = "member")
     private List<FlowerLike> flowerLikes = new ArrayList<>();
 
-    public static Member createNewMember(String userId, String password, String email) {
+    public static Member createNewMember(String userId, String password, String email, SocialType socialType) {
         Member member = new Member();
+
         member.userId = userId;
         member.password = password;
         member.email = email;
         member.role = ConstMember.ROLE;
         member.hits = 0L;
         member.loginFailCount = 0;
+        member.socialType = socialType;
+
+        return member;
+    }
+
+    // 소셜 로그인 회원 생성
+    public static Member createSocialMember(String userId, String socialName, String password, String email, SocialType socialType) {
+        Member member = createNewMember(userId, password, email, socialType);
+        member.socialName = socialName;
 
         return member;
     }
