@@ -45,7 +45,7 @@ public class SecurityConfig {
                                 "/",
                                 "/profile",
                                 "/user/invalid",
-                                "/user/login", "/user/signup", "/user/login-fail", "/user/find-userId", "/user/find-password", "/user/send-email",
+                                "/user/login/**", "/user/signup", "/user/login-fail", "/user/find-userId", "/user/find-password", "/user/send-email",
                                 "/today-flower/today",
                                 "/kakao/user/**",
                                 "/css/**", "/image/**").permitAll()
@@ -67,7 +67,8 @@ public class SecurityConfig {
         http.oauth2Login(oauth2 -> oauth2.userInfoEndpoint(
                 userInfoEndpointConfig -> userInfoEndpointConfig
                         .userService(customMemberOAuth2Service)
-                ).defaultSuccessUrl("/")
+                ).loginPage("/user/login")
+                .defaultSuccessUrl("/")
         );  // OAuth2 Connect
 
 
