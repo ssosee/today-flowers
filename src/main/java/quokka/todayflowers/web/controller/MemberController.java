@@ -1,17 +1,23 @@
 package quokka.todayflowers.web.controller;
 
 import jakarta.mail.MessagingException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import quokka.todayflowers.domain.entity.Member;
+import quokka.todayflowers.domain.entity.SocialType;
 import quokka.todayflowers.domain.service.MemberService;
 import quokka.todayflowers.global.common.SimpleCommonMethod;
 import quokka.todayflowers.global.constant.ConstMember;
@@ -68,7 +74,7 @@ public class MemberController {
         }
 
         // 회원가입 로직 수행
-        Boolean serviceResult = memberService.join(form.getUserId(), form.getPassword1(), form.getEmail());
+        Boolean serviceResult = memberService.join(form.getUserId(), form.getPassword1(), form.getEmail(), SocialType.NONE);
 
         // 회원가입이 불가능 하면
         if(!serviceResult) {
@@ -82,7 +88,16 @@ public class MemberController {
 
     // 회원 탈퇴
     @PostMapping("/withdrawal")
-    public String withdrawal(@ModelAttribute("userId") String userId, BindingResult bindingResult) {
+    public String withdrawal(@ModelAttribute("form") WithdrawalForm form, BindingResult bindingResult,
+                             HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
+
+        String userId = form.getUserId();
+
+        // 소셜 로그인일 경우
+        if(authentication instanceof OAuth2AuthenticationToken) {
+            userId = form.getSocialId();
+        }
+
         // 회원 탈퇴 로직
         Boolean serviceResult = memberService.withdrawalMember(userId);
 
@@ -90,17 +105,27 @@ public class MemberController {
             bindingResult.reject("user_not_found", ConstMember.MEMBER_NOT_FOUND);
         }
 
-        return "redirect:/user/signup";
+        // 인증정보 삭제 및 세션 정보 삭제
+        SecurityContextHolder.clearContext();
+        new SecurityContextLogoutHandler().logout(request, response, authentication);
+
+        return "redirect:/user/login";
     }
 
     // 내정보
     @GetMapping("/mypage")
-    public String myPage(Model model) {
+    public String myPage(Model model, Authentication authentication) {
         // 스프링시큐리티 컨테스트에서 userId 꺼내기
         String userId = simpleCommonMethod.getCurrentUserId();
 
         // 회원 조회
         MyPageForm form = memberService.findMember(userId);
+
+        // 인증 정보 구분
+        if(authentication instanceof UsernamePasswordAuthenticationToken) {
+            model.addAttribute("authType", "formLogin");
+        }
+
         model.addAttribute("form", form);
 
         return "member/mypage";

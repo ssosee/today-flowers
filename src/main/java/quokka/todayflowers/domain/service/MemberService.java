@@ -2,6 +2,7 @@ package quokka.todayflowers.domain.service;
 
 import jakarta.mail.MessagingException;
 import quokka.todayflowers.domain.entity.Member;
+import quokka.todayflowers.domain.entity.SocialType;
 import quokka.todayflowers.web.response.MyPageForm;
 
 import java.util.List;
@@ -9,7 +10,7 @@ import java.util.concurrent.Future;
 
 public interface MemberService {
     // 회원가입
-    Boolean join(String userId, String password, String email);
+    Boolean join(String userId, String password, String email, SocialType socialType);
     // 로그인
     Boolean login(String userId, String password);
     // 회원탈퇴

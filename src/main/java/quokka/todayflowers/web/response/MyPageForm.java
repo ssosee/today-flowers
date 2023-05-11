@@ -10,6 +10,7 @@ public class MyPageForm {
     private Long hits;
     private String joinDate;
     private Long likeCount;
+    private String socialId;
 
     public MyPageForm() {
         this.userId = "검색 결과가 없습니다.";
@@ -20,11 +21,12 @@ public class MyPageForm {
     }
 
     @Builder
-    public MyPageForm(String userId, String email, Long hits, String joinDate, Long likeCount) {
+    public MyPageForm(String userId, String email, Long hits, String joinDate, Long likeCount, String socialId) {
         this.userId = userId;
         this.email = email;
         this.hits = hits;
         this.joinDate = joinDate;
         this.likeCount = likeCount;
+        this.socialId = socialId;
     }
 }

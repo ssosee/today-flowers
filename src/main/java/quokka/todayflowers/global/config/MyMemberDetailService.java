@@ -9,13 +9,11 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 import quokka.todayflowers.domain.entity.Member;
 import quokka.todayflowers.domain.repository.MemberRepository;
 import quokka.todayflowers.global.constant.ConstMember;
 
 import java.time.Duration;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Optional;
 

@@ -12,10 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring6.SpringTemplateEngine;
-import quokka.todayflowers.domain.entity.EmailLog;
-import quokka.todayflowers.domain.entity.EmailType;
-import quokka.todayflowers.domain.entity.FlowerLike;
-import quokka.todayflowers.domain.entity.Member;
+import quokka.todayflowers.domain.entity.*;
 import quokka.todayflowers.domain.repository.EmailLogRepository;
 import quokka.todayflowers.domain.repository.FlowerLikeRepository;
 import quokka.todayflowers.domain.repository.MemberRepository;
@@ -51,8 +48,8 @@ public class MemberServiceImpl implements MemberService {
 
     // 회원 가입
     @Override
-    public Boolean join(String userId, String password1, String email) {
-        Optional<Member> optionalMember = memberRepository.findByUserId(userId);
+    public Boolean join(String userId, String password1, String email, SocialType socialType) {
+        Optional<Member> optionalMember = memberRepository.findByUserIdAndSocialType(userId, socialType);
 
         // 해당 아이디로 이미 회원이 있다면
         if(optionalMember.isPresent()) {
@@ -62,7 +59,7 @@ public class MemberServiceImpl implements MemberService {
         // 비밀번호 암호화
         String encode = passwordEncoder.encode(password1);
         // 회원 가입 수행
-        Member member = Member.createNewMember(userId, encode, email);
+        Member member = Member.createNewMember(userId, encode, email, socialType);
         memberRepository.save(member);
 
         return true;
@@ -133,11 +130,12 @@ public class MemberServiceImpl implements MemberService {
         }
 
         MyPageForm myPageForm = MyPageForm.builder()
-                .userId(findMember.getUserId())
+                .userId(findMember.getSocialType().equals(SocialType.NONE) ? findMember.getUserId() : findMember.getSocialName())
                 .email(findMember.getEmail())
                 .hits(findMember.getHits())
                 .joinDate(simpleConvert.convertLocalDateTimeToString(findMember.getCreateDate()))
                 .likeCount(findMember.getFlowerLikes().stream().count())
+                .socialId(findMember.getUserId())
                 .build();
 
         return myPageForm;

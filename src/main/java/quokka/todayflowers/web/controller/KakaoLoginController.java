@@ -29,6 +29,7 @@ public class KakaoLoginController {
         KakaoTokenResponse response = kakaoLoginService.getToken(code);
         kakaoLoginService.kakaoLogin(response);
 
+
         return "/home";
     }
 

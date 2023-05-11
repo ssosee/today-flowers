@@ -4,6 +4,9 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.web.client.RestTemplate;
 import quokka.todayflowers.global.common.SimpleCommonMethod;
 import quokka.todayflowers.global.common.SimpleConvert;
@@ -31,5 +34,16 @@ public class AppConfig {
     @Bean
     public SimpleCommonMethod simpleCommonMethod() {
         return new SimpleCommonMethod();
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public CookieCsrfTokenRepository cookieCsrfTokenRepository() {
+        // httpOnly true를 사용한다.
+        return new CookieCsrfTokenRepository();
     }
 }

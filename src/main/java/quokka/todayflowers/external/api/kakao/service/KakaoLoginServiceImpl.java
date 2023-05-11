@@ -77,6 +77,8 @@ public class KakaoLoginServiceImpl implements KakaoLoginService {
 
         HttpEntity request = new HttpEntity(sb.toString(), httpHeaders);
 
+        System.out.println(sb.toString());
+
         // 카카오 서버로 인가 코드 요청
         ResponseEntity<KakaoTokenResponse> response = restTemplate.exchange(kakaoTokenHost, HttpMethod.POST, request, KakaoTokenResponse.class);
 
@@ -96,6 +98,6 @@ public class KakaoLoginServiceImpl implements KakaoLoginService {
 
         ResponseEntity<String> exchange = restTemplate.exchange(kakaoUserHost, HttpMethod.GET, request, String.class);
 
-
+        // System.out.println(exchange);
     }
 }
