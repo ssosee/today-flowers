@@ -67,13 +67,14 @@
                             <button type="submit" class="btn btn-primary button-login-signup" style="color: #ffffff">로그인</button>
                         </div>
                         <!-- 회원가입 버튼 -->
+
                         <div class="button-login-box">
                             <button type="button" class="btn button-login-signup" style="background-color: powderblue" th:onclick="|location.href='@{/user/signup}'|">10초 회원가입</button>
                         </div>
                         <!-- 카카오톡 회원가입 버튼 -->
                         <div class="button-login-box">
                             <button type="button" class="btn button-login-kakao" th:onclick="|location.href='@{/oauth2/authorization/kakao}'|"></button>
-                        </div>
+
                         <!-- 아이디 찾기 버튼 -->
                         <div class="button-login-box">
                             <button type="button" class="btn button-login-signup" style="background-color: plum" th:onclick="|location.href='@{/user/find-userId}'|">아이디 찾기</button>
