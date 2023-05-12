@@ -13,7 +13,7 @@ public class SimpleExHandler {
     @ExceptionHandler(HttpClientErrorException.class)
     public String kakaoExHandler(HttpClientErrorException e, Model model) {
 
-        model.addAttribute(e.getMessage());
-        return "/error/4xx";
+        model.addAttribute("error", e.getMessage());
+        return "error/5xx";
     }
 }
