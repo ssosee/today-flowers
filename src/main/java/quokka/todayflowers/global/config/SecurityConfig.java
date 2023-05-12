@@ -45,11 +45,6 @@ public class SecurityConfig {
     private final CustomMemberDetailService customMemberDetailService;
     private final CookieCsrfTokenRepository cookieCsrfTokenRepository;
 
-    @Bean
-    public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web -> web.ignoring().requestMatchers("/css/**", "/image/**", "/favicon.ico", "/resources/**"));
-    }
-
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -58,7 +53,7 @@ public class SecurityConfig {
                 .addFilter(corsFilter)
                 .csrf().csrfTokenRepository(cookieCsrfTokenRepository).and()
                 .authorizeHttpRequests(requests -> requests
-                        .shouldFilterAllDispatcherTypes(true)
+                        .shouldFilterAllDispatcherTypes(false)
                         .dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll()
                         .requestMatchers("/",
                                 "/profile",
