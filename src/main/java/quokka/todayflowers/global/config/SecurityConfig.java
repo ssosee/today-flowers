@@ -1,15 +1,21 @@
 package quokka.todayflowers.global.config;
 
 import jakarta.servlet.DispatcherType;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.SecurityFilterChain;
 
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.web.filter.CorsFilter;
@@ -17,12 +23,15 @@ import quokka.todayflowers.global.config.handler.SimpleAuthenticationFailureHand
 import quokka.todayflowers.global.config.handler.SimpleAuthenticationSuccessHandler;
 import quokka.todayflowers.oauth2.service.CustomMemberOAuth2Service;
 
+import java.io.IOException;
+
 /**
  * <a href="https://nahwasa.com/entry/%EC%8A%A4%ED%94%84%EB%A7%81%EB%B6%80%ED%8A%B8-30%EC%9D%B4%EC%83%81-Spring-Security-%EA%B8%B0%EB%B3%B8-%EC%84%B8%ED%8C%85-%EC%8A%A4%ED%94%84%EB%A7%81-%EC%8B%9C%ED%81%90%EB%A6%AC%ED%8B%B0">참고</a>
  */
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
+@Slf4j
 public class SecurityConfig {
     // 로그인 실패 처리 핸들러
     private final SimpleAuthenticationFailureHandler simpleAuthenticationFailureHandler;
@@ -70,10 +79,18 @@ public class SecurityConfig {
                                 .permitAll()
                 ).userDetailsService(customMemberDetailService);
 
-        http.oauth2Login(oauth2 -> oauth2.userInfoEndpoint(
+        http
+                .oauth2Login(oauth2 -> oauth2.userInfoEndpoint(
                 userInfoEndpointConfig -> userInfoEndpointConfig
                         .userService(customMemberOAuth2Service)
-                ).loginPage("/user/login")
+                ).failureHandler(new AuthenticationFailureHandler() {
+                            @Override
+                            public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
+                                log.error("OAuth2 로그인 실패");
+                                response.sendRedirect("/");
+                            }
+                        })
+                        .loginPage("/user/login")
                 .defaultSuccessUrl("/")
         );  // OAuth2 Connect
 
