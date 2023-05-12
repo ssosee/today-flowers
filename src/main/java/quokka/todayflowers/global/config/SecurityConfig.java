@@ -85,9 +85,13 @@ public class SecurityConfig {
                         .userInfoEndpoint().userService(customMemberOAuth2Service)
                         .and()
                         .defaultSuccessUrl("/").failureUrl("/user/login").permitAll();
+
         http.headers()
-                        .httpStrictTransportSecurity()
-                                .preload(true);
+                .httpStrictTransportSecurity()
+                .maxAgeInSeconds(31536000)
+                .includeSubDomains(true)
+                .preload(true)
+                .and();
 
 
         // 자동 로그인 설정
@@ -101,7 +105,7 @@ public class SecurityConfig {
                 .logoutUrl("/logout-process")
                 .logoutSuccessUrl("/user/login")
                 .deleteCookies("remember-me")
-                .deleteCookies("JSESSIONID");
+                .deleteCookies("jsessionid");
 
         // 세션 정책 설정
         http
