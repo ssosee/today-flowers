@@ -19,7 +19,8 @@ public class CorsConfig {
         config.addAllowedMethod("*");
         config.addExposedHeader("Authorization");
         config.addExposedHeader("Origin");
-        source.registerCorsConfiguration("https://kauth.kakao.com", config);
+        source.registerCorsConfiguration("https://kapi.kakao.com/v2/user/me", config);
+        // source.registerCorsConfiguration("https://kauth.kakao.com", config);
 
         return new CorsFilter(source);
     }
