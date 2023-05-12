@@ -85,6 +85,9 @@ public class SecurityConfig {
                         .userInfoEndpoint().userService(customMemberOAuth2Service)
                         .and()
                         .defaultSuccessUrl("/").failureUrl("/user/login").permitAll();
+        http.headers()
+                        .httpStrictTransportSecurity()
+                                .preload(true);
 
 
         // 자동 로그인 설정
