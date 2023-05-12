@@ -49,8 +49,13 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-        http.headers()
-                .httpStrictTransportSecurity().disable();
+        http
+                .headers()
+                .httpStrictTransportSecurity()
+                .maxAgeInSeconds(31536000)
+                .includeSubDomains(true)
+                .preload(true)
+                .and();
 
         http
                 .addFilter(corsFilter)
