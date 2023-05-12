@@ -12,10 +12,12 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.SecurityFilterChain;
 
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.web.filter.CorsFilter;
@@ -86,12 +88,17 @@ public class SecurityConfig {
                 ).failureHandler(new AuthenticationFailureHandler() {
                             @Override
                             public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
-                                log.error("OAuth2 로그인 실패");
+                                log.trace("OAuth2 로그인 실패");
                                 response.sendRedirect("/");
                             }
                         })
-                        .loginPage("/user/login")
-                .defaultSuccessUrl("/")
+                        .successHandler(new AuthenticationSuccessHandler() {
+                            @Override
+                            public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+                                log.trace("OAuth2 로그인 성공");
+                                response.sendRedirect("/");
+                            }
+                        })
         );  // OAuth2 Connect
 
 
