@@ -88,14 +88,20 @@ public class SecurityConfig {
                 ).failureHandler(new AuthenticationFailureHandler() {
                             @Override
                             public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
-                                log.trace("OAuth2 로그인 실패");
+                                log.info("OAuth2 로그인 실패");
+                                log.info(request.getRequestURI());
+                                log.info(request.getQueryString());
+
                                 response.sendRedirect("/");
                             }
                         })
                         .successHandler(new AuthenticationSuccessHandler() {
                             @Override
                             public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-                                log.trace("OAuth2 로그인 성공");
+                                log.info("OAuth2 로그인 성공");
+                                log.info(request.getRequestURI());
+                                log.info(request.getQueryString());
+
                                 response.sendRedirect("/");
                             }
                         })

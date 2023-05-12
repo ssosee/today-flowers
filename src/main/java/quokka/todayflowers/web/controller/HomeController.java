@@ -1,6 +1,7 @@
 package quokka.todayflowers.web.controller;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContext;
@@ -18,6 +19,7 @@ import java.security.Principal;
 import java.util.Map;
 
 @Controller
+@Slf4j
 public class HomeController {
 
     // 홈
@@ -25,5 +27,13 @@ public class HomeController {
     public String home() {
 
         return "home";
+    }
+
+    @GetMapping("/error?continue")
+    public String error() {
+
+        log.error("에러페이지를 받음");
+
+        return "redirect:/";
     }
 }
