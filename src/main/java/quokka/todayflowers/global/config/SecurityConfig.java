@@ -83,14 +83,14 @@ public class SecurityConfig {
                 ).userDetailsService(customMemberDetailService);
 
         http
-                .oauth2Login(oauth2 -> oauth2.userInfoEndpoint(
-                userInfoEndpointConfig -> userInfoEndpointConfig
-                        .userService(customMemberOAuth2Service)
-                ).authorizationEndpoint().baseUri("/oauth2/authorization")
+                .oauth2Login().authorizationEndpoint().baseUri("/oauth2/authorization")
                         .and()
                         .redirectionEndpoint().baseUri("/*/oauth2/code/*")
+                        .and()
+                        .userInfoEndpoint().userService(customMemberOAuth2Service)
+                        .and()
+                        .defaultSuccessUrl("/");
 
-        );
 
 
 
