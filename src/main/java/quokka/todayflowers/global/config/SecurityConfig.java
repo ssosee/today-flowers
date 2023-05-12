@@ -60,8 +60,8 @@ public class SecurityConfig {
                                 "/user/invalid",
                                 "/user/login/**", "/user/signup", "/user/login-fail", "/user/find-userId", "/user/find-password", "/user/send-email",
                                 "/today-flower/today",
-                                "/kakao/user/**", "/login/oauth2/code/**", "/oauth2/authorize/**",
-                                "/css/**", "/image/**", "/favicon.ico", "/resources/**").permitAll()
+                                "/kakao/user/**", "/login/oauth2/code/**", "/oauth2/authorize/**", "/*/oauth2/code/*",
+                                "/css/**", "/image/**", "/resources/**", "/error").permitAll()
                         .anyRequest().authenticated()
                 );
 
