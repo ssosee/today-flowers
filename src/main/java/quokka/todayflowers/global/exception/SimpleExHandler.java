@@ -17,9 +17,9 @@ public class SimpleExHandler {
         return ResponseEntity.badRequest().build();
     }
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<String> exHandler(Exception e) {
-        log.error(e.getMessage());
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<String> exHandler(RuntimeException e) {
+        log.error("에러 발생={}", e.getMessage());
 
         return ResponseEntity.badRequest().build();
     }

@@ -47,7 +47,7 @@ public class SecurityConfig {
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web -> web.ignoring().requestMatchers("/css/**", "/image/**", "/favicon.ico", "/resources/**", "/error"));
+        return (web -> web.ignoring().requestMatchers("/css/**", "/image/**", "/favicon.ico", "/resources/**"));
     }
 
 
@@ -65,8 +65,8 @@ public class SecurityConfig {
                                 "/user/invalid",
                                 "/user/login/**", "/user/signup", "/user/login-fail", "/user/find-userId", "/user/find-password", "/user/send-email",
                                 "/today-flower/today",
-                                "/kakao/user/**", "/login/oauth2/code/**",
-                                "/css/**", "/image/**", "/favicon.ico", "/resources/**", "/error").permitAll()
+                                "/kakao/user/**", "/login/oauth2/code/**", "/oauth2/authorize/**",
+                                "/css/**", "/image/**", "/favicon.ico", "/resources/**").permitAll()
                         .anyRequest().authenticated()
                 );
 
@@ -86,27 +86,9 @@ public class SecurityConfig {
                 .oauth2Login(oauth2 -> oauth2.userInfoEndpoint(
                 userInfoEndpointConfig -> userInfoEndpointConfig
                         .userService(customMemberOAuth2Service)
-                ).failureHandler(new AuthenticationFailureHandler() {
-                            @Override
-                            public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
-                                log.info("OAuth2 로그인 실패");
-                                log.info(request.getRequestURI());
-                                log.info(request.getQueryString());
-
-                                response.sendRedirect("/");
-                            }
-                        })
-                        .successHandler(new AuthenticationSuccessHandler() {
-                            @Override
-                            public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-                                log.info("OAuth2 로그인 성공");
-                                log.info(request.getRequestURI());
-                                log.info(request.getQueryString());
-
-                                response.sendRedirect("/");
-                            }
-                        })
-                        .authorizationEndpoint().baseUri("/oauth2/authorize")
+                ).authorizationEndpoint().baseUri("/oauth2/authorization")
+                        .and()
+                        .redirectionEndpoint().baseUri("/*/oauth2/code/*")
 
         );
 

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import quokka.todayflowers.domain.repository.MemberRepository;
 import quokka.todayflowers.domain.service.MemberService;
 
@@ -27,13 +28,5 @@ public class HomeController {
     public String home() {
 
         return "home";
-    }
-
-    @GetMapping("/error?continue")
-    public String error() {
-
-        log.error("에러페이지를 받음");
-
-        return "redirect:/";
     }
 }
