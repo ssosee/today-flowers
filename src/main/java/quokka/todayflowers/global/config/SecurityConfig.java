@@ -106,7 +106,10 @@ public class SecurityConfig {
                                 response.sendRedirect("/");
                             }
                         })
-        );  // OAuth2 Connect
+                        .authorizationEndpoint().baseUri("/oauth2/authorize")
+
+        );
+
 
 
         // 자동 로그인 설정
@@ -119,7 +122,8 @@ public class SecurityConfig {
                 .logout()
                 .logoutUrl("/logout-process")
                 .logoutSuccessUrl("/user/login")
-                .deleteCookies("remember-me");
+                .deleteCookies("remember-me")
+                .deleteCookies("JSESSIONID");
 
         // 세션 정책 설정
         http
