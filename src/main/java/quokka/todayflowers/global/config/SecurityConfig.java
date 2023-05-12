@@ -49,6 +49,9 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
+        http.headers()
+                .httpStrictTransportSecurity().disable();
+
         http
                 .addFilter(corsFilter)
                 .csrf().csrfTokenRepository(cookieCsrfTokenRepository).and()
@@ -86,12 +89,6 @@ public class SecurityConfig {
                         .and()
                         .defaultSuccessUrl("/").failureUrl("/user/login").permitAll();
 
-        http.headers()
-                .httpStrictTransportSecurity()
-                .maxAgeInSeconds(31536000)
-                .includeSubDomains(true)
-                .preload(true)
-                .and();
 
 
         // 자동 로그인 설정
