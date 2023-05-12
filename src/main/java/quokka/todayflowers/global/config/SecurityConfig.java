@@ -53,7 +53,7 @@ public class SecurityConfig {
                                 "/user/invalid",
                                 "/user/login/**", "/user/signup", "/user/login-fail", "/user/find-userId", "/user/find-password", "/user/send-email",
                                 "/today-flower/today",
-                                "/kakao/user/**",
+                                "/kakao/user/**", "/login/oauth2/code/**",
                                 "/css/**", "/image/**", "/favicon.ico", "/resources/**", "/error").permitAll()
                         .anyRequest().authenticated()
                 );
