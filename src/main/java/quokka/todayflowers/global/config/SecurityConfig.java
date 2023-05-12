@@ -58,6 +58,7 @@ public class SecurityConfig {
                 .addFilter(corsFilter)
                 .csrf().csrfTokenRepository(cookieCsrfTokenRepository).and()
                 .authorizeHttpRequests(requests -> requests
+                        .shouldFilterAllDispatcherTypes(true)
                         .dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll()
                         .requestMatchers("/",
                                 "/profile",
