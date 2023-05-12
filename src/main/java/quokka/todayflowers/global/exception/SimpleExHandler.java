@@ -1,6 +1,7 @@
 package quokka.todayflowers.global.exception;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -11,9 +12,15 @@ import org.springframework.web.client.HttpClientErrorException;
 public class SimpleExHandler {
 
     @ExceptionHandler(HttpClientErrorException.class)
-    public String kakaoExHandler(HttpClientErrorException e, Model model) {
+    public ResponseEntity<String> kakaoExHandler(HttpClientErrorException e, Model model) {
 
-        model.addAttribute("error", e.getMessage());
-        return "error/5xx";
+        return ResponseEntity.badRequest().build();
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<String> exHandler(Exception e) {
+        log.error(e.getMessage());
+
+        return ResponseEntity.badRequest().build();
     }
 }
