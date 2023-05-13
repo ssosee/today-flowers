@@ -70,7 +70,7 @@ public class SecurityConfig {
                                 "/user/invalid",
                                 "/user/login/**", "/user/signup", "/user/login-fail", "/user/find-userId", "/user/find-password", "/user/send-email",
                                 "/today-flower/today",
-                                "/kakao/user/**", "/login/oauth2/code/**", "/oauth2/authorize/**", "/login/oauth2/code/**",
+                                "/kakao/user/**",
                                 "/css/**", "/image/**", "/resources/**", "/error").permitAll()
                         .anyRequest().authenticated()
                 );
@@ -85,17 +85,21 @@ public class SecurityConfig {
                                 .successHandler(simpleAuthenticationSuccessHandler)
                                 .failureHandler(simpleAuthenticationFailureHandler) // 로그인 실패 처리
                                 .permitAll()
-                ).userDetailsService(customMemberDetailService);
+                );
 
-        http
-                .oauth2Login().authorizationEndpoint().baseUri("/oauth2/authorization")
-                        .and()
-                        .redirectionEndpoint().baseUri("/login/oauth2/code/**")
-                        .and()
-                        .userInfoEndpoint().userService(customMemberOAuth2Service)
-                        .and()
-                        .defaultSuccessUrl("/", true).failureUrl("/user/login").permitAll();
+        http.oauth2Login(oauth2 -> oauth2.userInfoEndpoint(
+                userInfoEndpointConfig -> userInfoEndpointConfig.userService(customMemberOAuth2Service)));
 
+        http.userDetailsService(customMemberDetailService);
+
+//        http
+//                .oauth2Login().authorizationEndpoint().baseUri("/oauth2/authorization")
+//                        .and()
+//                        .redirectionEndpoint().baseUri("/login/oauth2/code/**")
+//                        .and()
+//                        .userInfoEndpoint().userService(customMemberOAuth2Service)
+//                        .and()
+//                        .defaultSuccessUrl("/", true).failureUrl("/user/login").permitAll();
 
 
         // 자동 로그인 설정
