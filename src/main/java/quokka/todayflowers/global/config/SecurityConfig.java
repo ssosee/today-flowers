@@ -49,13 +49,15 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-        http
-                .headers()
-                .httpStrictTransportSecurity()
-                .maxAgeInSeconds(31536000)
-                .includeSubDomains(true)
-                .preload(true)
-                .and();
+        http.headers().httpStrictTransportSecurity().disable();
+
+//        http
+//                .headers()
+//                .httpStrictTransportSecurity()
+//                .maxAgeInSeconds(31536000)
+//                .includeSubDomains(true)
+//                .preload(true)
+//                .and();
 
         http
                 .addFilter(corsFilter)
@@ -68,7 +70,7 @@ public class SecurityConfig {
                                 "/user/invalid",
                                 "/user/login/**", "/user/signup", "/user/login-fail", "/user/find-userId", "/user/find-password", "/user/send-email",
                                 "/today-flower/today",
-                                "/kakao/user/**", "/login/oauth2/code/**", "/oauth2/authorize/**", "/*/oauth2/code/*",
+                                "/kakao/user/**", "/login/oauth2/code/**", "/oauth2/authorize/**", "/login/oauth2/code/**",
                                 "/css/**", "/image/**", "/resources/**", "/error").permitAll()
                         .anyRequest().authenticated()
                 );
@@ -88,11 +90,11 @@ public class SecurityConfig {
         http
                 .oauth2Login().authorizationEndpoint().baseUri("/oauth2/authorization")
                         .and()
-                        .redirectionEndpoint().baseUri("/*/oauth2/code/*")
+                        .redirectionEndpoint().baseUri("/login/oauth2/code/**")
                         .and()
                         .userInfoEndpoint().userService(customMemberOAuth2Service)
                         .and()
-                        .defaultSuccessUrl("/").failureUrl("/user/login").permitAll();
+                        .defaultSuccessUrl("/", true).failureUrl("/user/login").permitAll();
 
 
 
