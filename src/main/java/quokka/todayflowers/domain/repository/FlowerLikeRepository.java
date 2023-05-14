@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface FlowerLikeRepository extends JpaRepository<FlowerLike, Long> {
+    @EntityGraph(attributePaths = {"flower"})
     List<FlowerLike> findAllByMember(Member member);
     @Query("select fl from FlowerLike fl" +
             " where fl.member.userId = :userId" +

@@ -15,6 +15,7 @@ import org.thymeleaf.spring6.SpringTemplateEngine;
 import quokka.todayflowers.domain.entity.*;
 import quokka.todayflowers.domain.repository.EmailLogRepository;
 import quokka.todayflowers.domain.repository.FlowerLikeRepository;
+import quokka.todayflowers.domain.repository.FlowerRepository;
 import quokka.todayflowers.domain.repository.MemberRepository;
 import quokka.todayflowers.global.constant.ConstEmail;
 import quokka.todayflowers.global.constant.ConstMember;
@@ -38,6 +39,7 @@ public class MemberServiceImpl implements MemberService {
     private final FlowerLikeRepository flowerLikeRepository;
     private final EmailLogRepository emailLogRepository;
     private final PasswordEncoder passwordEncoder;
+    private final FlowerRepository flowerRepository;
     private final SimpleConvert simpleConvert;
 
 
@@ -97,11 +99,15 @@ public class MemberServiceImpl implements MemberService {
 
         // 사용자가 누른 좋아요 꽃 목록
         List<FlowerLike> flowerLikes = flowerLikeRepository.findAllByMember(findMember);
+        // 좋아요 감소
+        for (FlowerLike flowerLike : flowerLikes) {
+            flowerLike.getFlower().totalLikeLogic(false);
+        }
 
-        // 회원 삭제
-        memberRepository.delete(findMember);
         // 좋아요 삭제
         flowerLikeRepository.deleteAll(flowerLikes);
+        // 회원 삭제
+        memberRepository.delete(findMember);
 
         return true;
     }

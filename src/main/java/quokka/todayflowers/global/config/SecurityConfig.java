@@ -49,15 +49,15 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-        http.headers().httpStrictTransportSecurity().disable();
+        //http.headers().httpStrictTransportSecurity().disable();
 
-//        http
-//                .headers()
-//                .httpStrictTransportSecurity()
-//                .maxAgeInSeconds(31536000)
-//                .includeSubDomains(true)
-//                .preload(true)
-//                .and();
+        http
+                .headers()
+                .httpStrictTransportSecurity()
+                .maxAgeInSeconds(31536000)
+                .includeSubDomains(true)
+                .preload(true)
+                .and();
 
         http
                 .addFilter(corsFilter)
@@ -75,7 +75,7 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
                 );
 
-        // 로그인 설정
+        // formLogin 로그인 설정
         http
                 .formLogin(login -> login
                                 .loginPage("/user/login")
@@ -87,19 +87,11 @@ public class SecurityConfig {
                                 .permitAll()
                 );
 
+        // oauth2Login 설정
         http.oauth2Login(oauth2 -> oauth2.userInfoEndpoint(
                 userInfoEndpointConfig -> userInfoEndpointConfig.userService(customMemberOAuth2Service)));
 
         http.userDetailsService(customMemberDetailService);
-
-//        http
-//                .oauth2Login().authorizationEndpoint().baseUri("/oauth2/authorization")
-//                        .and()
-//                        .redirectionEndpoint().baseUri("/login/oauth2/code/**")
-//                        .and()
-//                        .userInfoEndpoint().userService(customMemberOAuth2Service)
-//                        .and()
-//                        .defaultSuccessUrl("/", true).failureUrl("/user/login").permitAll();
 
 
         // 자동 로그인 설정
