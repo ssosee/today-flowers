@@ -54,22 +54,25 @@
             <form action="/user/withdrawal" method="post">
                 <div class="mt-5 mb-3 row">
                     <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <button type="button" class="btn btn-primary" th:onclick="|location.href='@{/user/change-email}'|"
+                        th:text="${form.email == ''} ? '이메일 추가' : '이메일 변경'">
+                        </button>
                         <button th:if="${authType == 'formLogin'}" type="button" class="btn btn-success" th:onclick="|location.href='@{/user/change-password}'|">
                             비밀번호 변경
                         </button>
                         <!--회원 탈퇴-->
-                        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#goodbyeMemberBackdrop">
                             오늘의 꽃 탈퇴
                         </button>
                     </div>
                 </div>
 
-                <!-- Modal 시작 -->
-                <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <!-- 회원 탈퇴 Modal 시작 -->
+                <div class="modal fade" id="goodbyeMemberBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h1 class="modal-title fs-5" id="staticBackdropLabel">오늘의 꽃 탈퇴 확인</h1>
+                                <h1 class="modal-title fs-5" id="goodbyeMemberBackdropLabel">오늘의 꽃 탈퇴 확인</h1>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
@@ -88,7 +91,8 @@
                         </div>
                     </div>
                 </div>
-                <!-- Modal 종료 -->
+                <!-- 회원 탈퇴 Modal 종료 -->
+
             </form>
          </div>
   </div>

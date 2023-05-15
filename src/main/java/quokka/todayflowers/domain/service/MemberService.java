@@ -25,5 +25,8 @@ public interface MemberService {
     void sendMailForCreateTemporaryPassword(String userId, String FromEmail, String toEmail) throws MessagingException;
     // 비밀번호 변경
     Boolean changePassword(String userId, String email, String oldPassword, String newPassword);
+    // 회원 검증
     Member validationMemberByUserIdAndEmail(String userId, String toEmail);
+    // 이메일 변경
+    Boolean changeEmail(String userId, String email);
 }

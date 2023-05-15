@@ -56,8 +56,7 @@ public class SecurityConfig {
                 .httpStrictTransportSecurity()
                 .maxAgeInSeconds(31536000)
                 .includeSubDomains(true)
-                .preload(true)
-                .and();
+                .preload(true);
 
         http
                 .addFilter(corsFilter)

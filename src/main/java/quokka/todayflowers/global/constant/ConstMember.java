@@ -14,4 +14,6 @@ public class ConstMember {
     public static final String CHANGE_PASSWORD_SUCCESS = "비밀번호 변경이 완료 되었습니다.";
     public static final String CHANGE_PASSWORD_FAIL = "아이디 또는 이메일 또는 비밀번호를 확인해주세요.";
     public static final String INVALID_LOGIN = "다른 곳에서 로그인하여 로그인 인증이 만료 되었습니다.";
+    public static final String CHANGE_EMAIL_SUCCESS = "이메일 변경이 완료 되었습니다.";
+    public static final String CHANGE_EMAIL_FAIL = "이메일을 확인해주세요.";
 }

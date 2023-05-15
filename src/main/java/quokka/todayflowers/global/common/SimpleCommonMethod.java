@@ -12,7 +12,7 @@ import java.util.Map;
 
 public class SimpleCommonMethod {
     public String getCurrentUserId() {
-        // 스프링시큐리티 컨테스트에서 userId 꺼내기
+        // 스프링시큐리티 컨텍스트에서 userId 꺼내기
         SecurityContext context = SecurityContextHolder.getContext();
         Authentication authentication = context.getAuthentication();
         String userId = authentication.getName();
