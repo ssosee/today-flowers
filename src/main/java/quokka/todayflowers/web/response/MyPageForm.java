@@ -5,6 +5,7 @@ import lombok.Data;
 
 @Data
 public class MyPageForm {
+    private Long memberId;
     private String userId;
     private String email;
     private Long hits;
@@ -21,7 +22,8 @@ public class MyPageForm {
     }
 
     @Builder
-    public MyPageForm(String userId, String email, Long hits, String joinDate, Long likeCount, String socialId) {
+    public MyPageForm(Long memberId, String userId, String email, Long hits, String joinDate, Long likeCount, String socialId) {
+        this.memberId = memberId;
         this.userId = userId;
         this.email = email;
         this.hits = hits;

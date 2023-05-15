@@ -228,4 +228,35 @@ public class MemberController {
 
         return "member/login";
     }
+
+    // 이메일 변경
+    @GetMapping("/change-email")
+    public String changeEmail(@ModelAttribute("form") ChangeEmailForm form) {
+
+        return "member/changeEmail";
+    }
+
+    // 이메일 변경
+    @PostMapping("/change-email")
+    public String changeEmail(@Validated @ModelAttribute("form") ChangeEmailForm form,
+                              BindingResult bindingResult,
+                              Model model) {
+
+        if(bindingResult.hasErrors()) {
+            return "member/changeEmail";
+        }
+
+        // 회원 아이디 찾기
+        String userId = simpleCommonMethod.getCurrentUserId();
+
+        // 이메일 변경
+        Boolean serviceResult = memberService.changeEmail(userId, form.getEmail());
+        if(!serviceResult) {
+            bindingResult.reject("change_email_error", ConstMember.CHANGE_EMAIL_FAIL);
+            return "member/changeEmail";
+        }
+
+        model.addAttribute("changeEmailSuccess", ConstMember.CHANGE_EMAIL_SUCCESS);
+        return "redirect:/user/mypage";
+    }
 }

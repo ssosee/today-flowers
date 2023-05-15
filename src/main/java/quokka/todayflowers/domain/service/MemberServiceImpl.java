@@ -136,6 +136,7 @@ public class MemberServiceImpl implements MemberService {
         }
 
         MyPageForm myPageForm = MyPageForm.builder()
+                .memberId(findMember.getId())
                 .userId(findMember.getSocialType().equals(SocialType.NONE) ? findMember.getUserId() : findMember.getSocialName())
                 .email(findMember.getEmail())
                 .hits(findMember.getHits())
@@ -257,6 +258,19 @@ public class MemberServiceImpl implements MemberService {
         }
 
         return findMember;
+    }
+
+    @Override
+    public Boolean changeEmail(String userId, String email) {
+        // 회원 조회
+        Member findMember = validationMemberByUserId(userId);
+        if(findMember == null) {
+            return false;
+        }
+
+        findMember.changeEmail(email);
+
+        return true;
     }
 
     // 임시 비밀번호 생성

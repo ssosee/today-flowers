@@ -87,6 +87,11 @@ public class Member extends BaseTimeEntity {
         this.lockDate = null;
     }
 
+    // 이메일 변경
+    public void changeEmail(String email) {
+        this.email = email;
+    }
+
     // 연관관계 편의 메소드
     public void changeFlowerLike(FlowerLike flowerLike) {
         flowerLikes.add(flowerLike);
