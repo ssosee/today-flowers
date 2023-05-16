@@ -49,14 +49,14 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-        //http.headers().httpStrictTransportSecurity().disable();
+        http.headers().httpStrictTransportSecurity().disable();
 
-        http
-                .headers()
-                .httpStrictTransportSecurity()
-                .maxAgeInSeconds(31536000)
-                .includeSubDomains(true)
-                .preload(true);
+//        http
+//                .headers()
+//                .httpStrictTransportSecurity()
+//                .maxAgeInSeconds(31536000)
+//                .includeSubDomains(true)
+//                .preload(true);
 
         http
                 .addFilter(corsFilter)
@@ -70,7 +70,7 @@ public class SecurityConfig {
                                 "/user/login/**", "/user/signup", "/user/login-fail", "/user/find-userId", "/user/find-password", "/user/send-email",
                                 "/today-flower/today",
                                 "/kakao/user/**",
-                                "/css/**", "/image/**", "/resources/**", "/error").permitAll()
+                                "/css/**", "/image/**", "/error").permitAll()
                         .anyRequest().authenticated()
                 );
 
@@ -103,8 +103,10 @@ public class SecurityConfig {
                 .logout()
                 .logoutUrl("/logout-process")
                 .logoutSuccessUrl("/user/login")
+                .invalidateHttpSession(true)
+                .clearAuthentication(true)
                 .deleteCookies("remember-me")
-                .deleteCookies("jsessionid");
+                .deleteCookies("JSESSIONID");
 
         // 세션 정책 설정
         http

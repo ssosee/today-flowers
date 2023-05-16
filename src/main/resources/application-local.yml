@@ -27,6 +27,8 @@ spring:
     defer-datasource-initialization: false
     show-sql: true
 
-#  sql:
-#    init:
-#      mode: always
+logging:
+  level:
+    org.springframework.web: INFO
+    org.hibernate: ERROR
+    org.springframework.security: WARN
