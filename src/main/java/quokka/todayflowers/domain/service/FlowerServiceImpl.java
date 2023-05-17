@@ -15,11 +15,10 @@ import quokka.todayflowers.domain.repository.MemberRepository;
 import quokka.todayflowers.global.common.SimpleCommonMethod;
 import quokka.todayflowers.global.constant.ConstFlower;
 import quokka.todayflowers.global.constant.ConstMember;
-import quokka.todayflowers.global.exception.BasicException;
-import quokka.todayflowers.web.response.BirthFlowerForm;
-import quokka.todayflowers.web.response.FlowerLikeResponse;
-import quokka.todayflowers.web.response.FlowerListForm;
-import quokka.todayflowers.web.response.TodayFlowerForm;
+import quokka.todayflowers.global.exception.BirthException;
+import quokka.todayflowers.global.exception.LangException;
+import quokka.todayflowers.global.exception.NameException;
+import quokka.todayflowers.web.response.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -34,6 +33,24 @@ public class FlowerServiceImpl implements FlowerService {
     private final FlowerRepository flowerRepository;
     private final SimpleCommonMethod simpleCommonMethod;
     private final FlowerLikeRepository flowerLikeRepository;
+
+    // 꽃 리스트 DTO로 변환
+    private static List<FlowerListForm> getFlowerList(List<Flower> flowerList) {
+
+        List<FlowerListForm> flowerListFormList = flowerList.stream()
+                .map(fl -> FlowerListForm.builder()
+                        .id(fl.getId())
+                        .lang(fl.getFlowerLang())
+                        .path(fl.getFlowerPhotos().get(0).getPath()) // 사진 1개만 표시
+                        .totalLike(fl.getTotalLike())
+                        .name(fl.getName())
+                        .hits(fl.getHits())
+                        .build()
+                )
+                .collect(Collectors.toList());
+
+        return flowerListFormList;
+    }
 
     // 쿼리 3개 발생
     @Override
@@ -133,16 +150,12 @@ public class FlowerServiceImpl implements FlowerService {
     // 생일의 꽃 조회
     @Override
     public BirthFlowerForm findBirthFlower(String birth) {
+        // 입력값 자르기
         Integer month = Integer.parseInt(birth.substring(2, 4));
         Integer day = Integer.parseInt(birth.substring(4, 6));
 
         Optional<Flower> optionalFlower = flowerRepository.findFlowerByMonthAndDay(month, day);
-        Flower findFlower = optionalFlower.orElse(null);
-
-        // 생일의 꽃이 없을 경우
-        if(findFlower == null) {
-            return null;
-        }
+        Flower findFlower = optionalFlower.orElseThrow(() -> new BirthException(ConstFlower.BIRTH_FLOWER_NOT_FOUND));
 
         // 조회수 증가
         findFlower.increaseHits();
@@ -178,25 +191,6 @@ public class FlowerServiceImpl implements FlowerService {
                 .build();
 
         return birthFlowerForm;
-    }
-
-    // 꽃 리스트 DTO로 변환
-    @Override
-    public List<FlowerListForm> getFlowerList(List<Flower> flowerList) {
-
-        List<FlowerListForm> flowerListFormList = flowerList.stream()
-                .map(fl -> FlowerListForm.builder()
-                        .id(fl.getId())
-                        .lang(fl.getFlowerLang())
-                        .path(fl.getFlowerPhotos().get(0).getPath()) // 사진 1개만 표시
-                        .totalLike(fl.getTotalLike())
-                        .name(fl.getName())
-                        .hits(fl.getHits())
-                        .build()
-                )
-                .collect(Collectors.toList());
-
-        return flowerListFormList;
     }
 
 
@@ -245,6 +239,113 @@ public class FlowerServiceImpl implements FlowerService {
                 .build();
 
         return response;
+    }
+
+    // 꽃말의 꽃 조회
+    @Override
+    public BasicFlowerForm findLangFlower(Pageable pageable, String lang) {
+
+        // 꽃말로 꽃 조회
+        Page<Flower> pageFlower;
+        if(lang == null) {
+            // 전체 꽃 조회
+            pageFlower = flowerRepository.findFlowerByOrderByFlowerLang(pageable);
+        } else {
+            pageFlower = flowerRepository.findFlowerByFlowerLangContainingOrderByFlowerLang(pageable, lang);
+        }
+
+        // 꽃말을 가진 꽃이 없으면
+        if(pageFlower.getContent().isEmpty()) {
+            StringBuilder sb = new StringBuilder();
+            sb.append("'").append(lang).append("'").append(ConstFlower.LANG_FLOWER_NOT_FOUND);
+
+            throw new LangException(sb.toString());
+        }
+
+        // DTO 변환
+        List<FlowerListForm> flowerList = getFlowerList(pageFlower.getContent());
+
+        // 일정 범위의 페이지네이션을 보여주기 위한 변수
+        int currentPage = pageFlower.getNumber();
+        int totalPages = pageFlower.getTotalPages();
+        // 시작 페이지 끝 페이지 계산
+        PageDto pageDto = simpleCommonMethod.getPageDto(totalPages, currentPage);
+
+        // DTO 변환
+        BasicFlowerForm basicFlowerForm = BasicFlowerForm.builder()
+                .flowerList(flowerList)
+                .currentPage(currentPage)
+                .totalPages(totalPages)
+                .startPage(pageDto.getStartPage())
+                .endPage(pageDto.getEndPage())
+                .build();
+
+        return basicFlowerForm;
+    }
+
+    @Override
+    public BasicFlowerForm findNameFlower(Pageable pageable, String name) {
+        // 꽃말로 꽃 조회
+        Page<Flower> pageFlower;
+        if(name == null) {
+            // 전체 꽃 조회
+            pageFlower = flowerRepository.findFlowerByOrderByName(pageable);
+        } else {
+            pageFlower = flowerRepository.findFlowerByNameContainingOrderByName(pageable, name);
+        }
+
+        // 꽃말을 가진 꽃이 없으면
+        if(pageFlower.getContent().isEmpty()) {
+            StringBuilder sb = new StringBuilder();
+            sb.append("'").append(name).append("'").append(ConstFlower.NAME_FLOWER_NOT_FOUND);
+
+            throw new NameException(sb.toString());
+        }
+
+        // DTO 변환
+        List<FlowerListForm> flowerList = getFlowerList(pageFlower.getContent());
+
+        // 일정 범위의 페이지네이션을 보여주기 위한 변수
+        int currentPage = pageFlower.getNumber();
+        int totalPages = pageFlower.getTotalPages();
+        // 시작 페이지 끝 페이지 계산
+        PageDto pageDto = simpleCommonMethod.getPageDto(totalPages, currentPage);
+
+        // DTO 변환
+        BasicFlowerForm basicFlowerForm = BasicFlowerForm.builder()
+                .flowerList(flowerList)
+                .currentPage(currentPage)
+                .totalPages(totalPages)
+                .startPage(pageDto.getStartPage())
+                .endPage(pageDto.getEndPage())
+                .build();
+
+        return basicFlowerForm;
+    }
+
+    @Override
+    public BasicFlowerForm findLikeFlower(Pageable pageable) {
+        // 좋아요 갯수 내림차순으로 조회
+        Page<Flower> pageFlower = flowerRepository.findFlowerByOrderByTotalLikeDesc(pageable);
+        // DTO로 변환
+        List<FlowerListForm> flowerList = getFlowerList(pageFlower.getContent());
+
+        // 일정 범위의 페이지네이션을 보여주기 위한 변수
+        int currentPage = pageFlower.getNumber();
+        int totalPages = pageFlower.getTotalPages();
+        // 시작 페이지 끝 페이지 계산
+        PageDto pageDto = simpleCommonMethod.getPageDto(totalPages, currentPage);
+
+        // DTO 변환
+        BasicFlowerForm basicFlowerForm = BasicFlowerForm.builder()
+                .flowerList(flowerList)
+                .currentPage(currentPage)
+                .totalPages(totalPages)
+                .startPage(pageDto.getStartPage())
+                .endPage(pageDto.getEndPage())
+                .build();
+
+        return basicFlowerForm;
     }
 }
 

@@ -15,20 +15,15 @@ import org.thymeleaf.spring6.SpringTemplateEngine;
 import quokka.todayflowers.domain.entity.*;
 import quokka.todayflowers.domain.repository.EmailLogRepository;
 import quokka.todayflowers.domain.repository.FlowerLikeRepository;
-import quokka.todayflowers.domain.repository.FlowerRepository;
 import quokka.todayflowers.domain.repository.MemberRepository;
 import quokka.todayflowers.global.constant.ConstEmail;
 import quokka.todayflowers.global.constant.ConstMember;
 import quokka.todayflowers.global.common.SimpleConvert;
-import quokka.todayflowers.global.exception.BasicException;
 import quokka.todayflowers.web.response.MyPageForm;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.Callable;
-import java.util.concurrent.Future;
-import java.util.concurrent.FutureTask;
 import java.util.stream.Collectors;
 
 @Service
@@ -201,7 +196,7 @@ public class MemberServiceImpl implements MemberService {
             context.setVariable("authenticationNumber", authenticationNumber);
 
             // html 생성
-            String html = templateEngine.process("/mail/authentication-mail", context);
+            String html = templateEngine.process("mail/authentication-mail", context);
             mimeMessageHelper.setText(html, true);
 
             // 메일 전송

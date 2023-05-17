@@ -20,7 +20,7 @@
 
       <!-- 꽃 목록 -->
       <div class="row row-cols-1 row-cols-lg-3 align-items-stretch g-4 pt-5">
-          <div th:each="fl, flStat : ${flowerList}" class="col pb-4">
+          <div th:each="fl, flStat : ${basicFlowerForm.flowerList}" class="col pb-4">
               <a th:href="@{/today-flower/today/{param} (param=${fl.id})}" style="text-decoration: none">
                   <!--&quot;는 " 이다.-->
                 <div class="card card-cover h-100 overflow-hidden text-bg-dark rounded-4 shadow-lg"
@@ -50,14 +50,14 @@
     <!-- 페이지네이션 시작 -->
     <nav aria-label="Page navigation">
       <ul class="pb-4 pagination justify-content-center">
-          <li th:class="${currentPage == 0} ? 'page-item disabled' : 'page-item'">
+          <li th:class="${basicFlowerForm.currentPage == 0} ? 'page-item disabled' : 'page-item'">
               <a class="page-link" th:href="@{/today-flower/like-rank-list(page=0)}">&laquo;</a>
           </li>
-          <li th:each="page : ${#numbers.sequence(startPage, endPage)}" th:class="${currentPage == page} ? 'page-item active' : 'page-item'">
+          <li th:each="page : ${#numbers.sequence(basicFlowerForm.startPage, basicFlowerForm.endPage)}" th:class="${basicFlowerForm.currentPage == page} ? 'page-item active' : 'page-item'">
               <a class="page-link" th:href="@{/today-flower/like-rank-list(page=${page})}" th:text="${page+1}"></a>
           </li>
-          <li th:class="${currentPage == totalPages-1} ? 'page-item disabled' : 'page-item'">
-              <a class="page-link" th:href="@{/today-flower/like-rank-list(page=${totalPages-1})}">&raquo;</a>
+          <li th:class="${basicFlowerForm.currentPage == basicFlowerForm.totalPages - 1} ? 'page-item disabled' : 'page-item'">
+              <a class="page-link" th:href="@{/today-flower/like-rank-list(page=${basicFlowerForm.totalPages - 1})}">&raquo;</a>
           </li>
       </ul>
     </nav>
