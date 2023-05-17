@@ -34,6 +34,7 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 @RequiredArgsConstructor
+@Slf4j
 public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
     private final FlowerLikeRepository flowerLikeRepository;
@@ -178,6 +179,7 @@ public class MemberServiceImpl implements MemberService {
         // 회원 검증
         Member findMember = validationMemberByUserIdAndEmail(userId, toEmail);
         if (findMember == null) {
+            log.info("임시비밀번호를 전송할 회원이 없습니다.");
             return;
         }
 
@@ -216,10 +218,12 @@ public class MemberServiceImpl implements MemberService {
 
             EmailLog emailLog = EmailLog.createEmailLog(EmailType.CHANGE_PASSWORD, ConstEmail.SUCCESS, findMember);
             emailLogRepository.save(emailLog);
+            log.info("임시 비밀번호 전송 완료");
 
         } catch (MessagingException e) {
             EmailLog emailLog = EmailLog.createEmailLog(EmailType.CHANGE_PASSWORD, ConstEmail.FAIL, findMember);
             emailLogRepository.save(emailLog);
+            log.error("임시 비밀번호 전송 실패");
         }
     }
 

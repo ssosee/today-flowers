@@ -1,8 +1,8 @@
 spring:
   profiles:
-    active: local
+    active: prod1
     include:
-      - oauth-local
+      - oauth-prod
   config:
     import:
       - 'classpath:mail-config.yml'

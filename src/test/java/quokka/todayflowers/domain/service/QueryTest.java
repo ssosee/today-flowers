@@ -59,7 +59,7 @@ class withdrawalMemberQueryTest {
      *
      * 따라서 2가지 방법이 존재합니다.
      * 1. 부모(flowerLike) 엔티티를 먼저 삭제한다.
-     * 2. 자식과의 연관관계를 끊은 후에, Member와 FlowerLike를 삭제한다.
+     * 2. 자식과의 연관관계를 끊은 후에, Member와 FlowerLike를 삭제한다.(CASCADE 이용)
      */
 
     @Test
@@ -89,7 +89,7 @@ class withdrawalMemberQueryTest {
     @Test
     @DisplayName("부모(FlowerLike)보다 자식(Member)을 먼저 삭제했을 때")
     @Transactional
-    void 회원탈퇴_쿼리_확인() {
+    void 회원탈퇴_쿼리_확인_flowerLike에_update발생안함() {
         // 회원 조회
         Optional<Member> optionalMember = memberRepository.findByUserId(userId);
         Member findMember = optionalMember.orElse(null);
