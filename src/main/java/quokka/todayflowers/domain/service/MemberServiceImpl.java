@@ -201,7 +201,7 @@ public class MemberServiceImpl implements MemberService {
             context.setVariable("authenticationNumber", authenticationNumber);
 
             // html 생성
-            String html = templateEngine.process("/mail/authentication-mail", context);
+            String html = templateEngine.process("mail/authentication-mail", context);
             mimeMessageHelper.setText(html, true);
 
             // 메일 전송
