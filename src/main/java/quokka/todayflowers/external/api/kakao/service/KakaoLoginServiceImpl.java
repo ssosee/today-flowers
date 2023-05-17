@@ -15,7 +15,7 @@ import quokka.todayflowers.external.api.kakao.response.KakaoUserInfoResponse;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-@Service
+// @Service
 @RequiredArgsConstructor
 public class KakaoLoginServiceImpl implements KakaoLoginService {
 

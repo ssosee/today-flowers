@@ -97,4 +97,9 @@ public class Member extends BaseTimeEntity {
         flowerLikes.add(flowerLike);
         flowerLike.setMember(this);
     }
+
+    public void removeFlowerLike(FlowerLike flowerLike) {
+        flowerLikes.remove(flowerLike);
+        flowerLike.setMember(null);
+    }
 }

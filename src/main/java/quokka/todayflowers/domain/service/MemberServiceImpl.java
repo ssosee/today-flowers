@@ -39,7 +39,6 @@ public class MemberServiceImpl implements MemberService {
     private final FlowerLikeRepository flowerLikeRepository;
     private final EmailLogRepository emailLogRepository;
     private final PasswordEncoder passwordEncoder;
-    private final FlowerRepository flowerRepository;
     private final SimpleConvert simpleConvert;
 
 
@@ -104,10 +103,24 @@ public class MemberServiceImpl implements MemberService {
             flowerLike.getFlower().totalLikeLogic(false);
         }
 
+        /**
+         * 먼저 Member와 flowerLike는 양방향 관계이다.
+         * Member를 먼저 삭제하면
+         * flowerLike 에 update Query가 발생한다.
+         * 그 이유는 연관관계의 주인이 flowerLike인데
+         * Member가 삭제되었으니, 이를 JPA가 반영하는 것 입니다.
+         *
+         * 따라서 2가지 방법이 존재합니다.
+         * 1. 부모 엔티티를 먼저 삭제한다.
+         * 2. 자식과의 연관관계를 끊은 후에, Member와 FlowerLike를 삭제한다.
+         */
+
+
+        memberRepository.delete(findMember);
         // 좋아요 삭제
         flowerLikeRepository.deleteAll(flowerLikes);
         // 회원 삭제
-        memberRepository.delete(findMember);
+        // memberRepository.delete(findMember);
 
         return true;
     }

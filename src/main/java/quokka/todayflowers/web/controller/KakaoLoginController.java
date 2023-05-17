@@ -8,7 +8,7 @@ import quokka.todayflowers.external.api.kakao.service.KakaoLoginService;
 
 import java.net.MalformedURLException;
 
-@Controller
+// @Controller
 @RequiredArgsConstructor
 @RequestMapping("/kakao/user")
 public class KakaoLoginController {
