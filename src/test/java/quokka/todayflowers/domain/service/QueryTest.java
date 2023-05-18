@@ -88,7 +88,6 @@ class withdrawalMemberQueryTest {
     // @Disabled
     @Test
     @DisplayName("부모(FlowerLike)보다 자식(Member)을 먼저 삭제했을 때")
-    @Transactional
     void 회원탈퇴_쿼리_확인_flowerLike에_update발생안함() {
         // 회원 조회
         Optional<Member> optionalMember = memberRepository.findByUserId(userId);

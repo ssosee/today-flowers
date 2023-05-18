@@ -54,35 +54,35 @@ public class MemberController {
 
     // 회원 가입
     @GetMapping("/signup")
-    public String signup(@ModelAttribute("form") SignupForm form) {
+    public String signup(@ModelAttribute("form") SignupForm form,
+                         @RequestParam(value = "error", required = false) String error,
+                         @RequestParam(value = "exception", required = false) String exception,
+                         Model model) {
+
+        // 에러 정보를 model에 저장
+        model.addAttribute("error", error);
+        model.addAttribute("exception", exception);
+
         return "member/signup";
     }
 
     // 회원 가입
     @PostMapping("/signup")
-    public String signup(@Validated @ModelAttribute("form") SignupForm form, BindingResult bindingResult) {
+    public String signup(@Validated @ModelAttribute("form") SignupForm form,
+                         BindingResult bindingResult,
+                         Model model) {
 
         // 요청메시지 검증
         if(bindingResult.hasErrors()) {
-            return "member/signup";
-        }
+            // 에러 정보를 model에 저장
+            model.addAttribute("error", false);
+            model.addAttribute("exception", null);
 
-        // 비밀번호 일치 로직
-        if(!form.getPassword1().equals(form.getPassword2())) {
-            bindingResult.reject("password_not_same", ConstMember.PASSWORD_NOT_SAME);
             return "member/signup";
         }
 
         // 회원가입 로직 수행
-        Boolean serviceResult = memberService.join(form.getUserId(), form.getPassword1(), form.getEmail(), SocialType.NONE);
-
-        // 회원가입이 불가능 하면
-        if(!serviceResult) {
-            // 글로벌 오류 생성
-            bindingResult.reject("duplicate_user_id", ConstMember.DUPLICATE_USER_ID);
-            return "member/signup";
-        }
-
+        memberService.join(form.getUserId(), form.getPassword1(), form.getPassword2(), form.getEmail(), SocialType.NONE);
         return "redirect:/user/login";
     }
 
@@ -99,11 +99,7 @@ public class MemberController {
         }
 
         // 회원 탈퇴 로직
-        Boolean serviceResult = memberService.withdrawalMember(userId);
-
-        if(!serviceResult) {
-            bindingResult.reject("user_not_found", ConstMember.MEMBER_NOT_FOUND);
-        }
+        memberService.withdrawalMember(userId);
 
         // 인증정보 삭제 및 세션 정보 삭제
         SecurityContextHolder.clearContext();
@@ -177,13 +173,6 @@ public class MemberController {
             return "member/findUserPassword";
         }
 
-        // 회원 조회
-        Member findMember = memberService.validationMemberByUserIdAndEmail(form.getUserId(), form.getEmail());
-        if (findMember == null) {
-            bindingResult.reject("send_email_fail", ConstMember.MEMBER_NOT_FOUND);
-            return "member/findUserPassword";
-        }
-
         // 메일 전송(임시 비밀번호)
         memberService.sendMailForCreateTemporaryPassword(form.getUserId(), adminEmail, form.getEmail());
 
@@ -194,7 +183,14 @@ public class MemberController {
 
     // 비밀번호 변경
     @GetMapping("/change-password")
-    public String changePassword(@ModelAttribute("form") ChangePasswordForm form) {
+    public String changePassword(@ModelAttribute("form") ChangePasswordForm form,
+                                 @RequestParam(value = "error", required = false) String error,
+                                 @RequestParam(value = "exception", required = false) String exception,
+                                 Model model) {
+
+        model.addAttribute("error", error);
+        model.addAttribute("exception", exception);
+
         return "member/changePassword";
     }
 
@@ -203,18 +199,18 @@ public class MemberController {
                                  BindingResult bindingResult,
                                  Model model) {
 
+        // 요청정보 검증
         if(bindingResult.hasErrors()) {
+            // 에러 정보를 model에 저장
+            model.addAttribute("error", false);
+            model.addAttribute("exception", null);
             return "member/changePassword";
         }
 
-        Boolean serviceResult = memberService.changePassword(form.getUserId(), form.getEmail(), form.getOldPassword(), form.getNewPassword());
-        if(!serviceResult) {
-            bindingResult.reject("change_password_fail", ConstMember.CHANGE_PASSWORD_FAIL);
-            return "member/changePassword";
-        }
-
-
+        // 비밀번호 변경 로직
+        memberService.changePassword(form.getUserId(), form.getEmail(), form.getOldPassword(), form.getNewPassword());
         model.addAttribute("changePasswordSuccess", ConstMember.CHANGE_PASSWORD_SUCCESS);
+
         return "member/changePassword";
     }
 
@@ -231,7 +227,13 @@ public class MemberController {
 
     // 이메일 변경
     @GetMapping("/change-email")
-    public String changeEmail(@ModelAttribute("form") ChangeEmailForm form) {
+    public String changeEmail(@ModelAttribute("form") ChangeEmailForm form,
+                              @RequestParam(value = "error", required = false) String error,
+                              @RequestParam(value = "exception", required = false) String exception,
+                              Model model) {
+
+        model.addAttribute("error", error);
+        model.addAttribute("exception", exception);
 
         return "member/changeEmail";
     }
@@ -243,18 +245,16 @@ public class MemberController {
                               Model model) {
 
         if(bindingResult.hasErrors()) {
+            model.addAttribute("error", false);
+            model.addAttribute("exception", null);
             return "member/changeEmail";
         }
 
-        // 회원 아이디 찾기
+        // 스프링시큐리티 컨테스트에서 userId 꺼내기
         String userId = simpleCommonMethod.getCurrentUserId();
 
         // 이메일 변경
-        Boolean serviceResult = memberService.changeEmail(userId, form.getEmail());
-        if(!serviceResult) {
-            bindingResult.reject("change_email_error", ConstMember.CHANGE_EMAIL_FAIL);
-            return "member/changeEmail";
-        }
+        memberService.changeEmail(userId, form.getEmail());
 
         model.addAttribute("changeEmailSuccess", ConstMember.CHANGE_EMAIL_SUCCESS);
         return "redirect:/user/mypage";
