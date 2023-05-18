@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default_layout}">
+
+<th:block layout:fragment="css"></th:block>
+<div layout:fragment="content">
+  <div th:class="container">
+      <h2>오류가 발생했습니다. 😅</h2><br /><br />
+      <div class="is-valid">
+        <div th:if="${error}" th:text="${exception}"></div>
+      </div>
+      <br /><br />
+      <p>지속적인 오류가 발생할 경우 <b>관리자에게 📞 문의</b> 주세요.</p>
+  </div>
+</div>
+</html>

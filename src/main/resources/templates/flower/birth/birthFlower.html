@@ -13,6 +13,7 @@
               <div class="is-valid">
                   <div th:if="${#fields.hasGlobalErrors()}"><span class="is-valid" th:each="err : ${#fields.globalErrors()}" th:text="${err}">전체 오류 메시지</span></div>
                   <div th:errors="${form.birth}"></div>
+                  <div th:if="${error}" th:text="${exception}"></div>
               </div>
 
               <div class="pt-3 pb-3 px-4">

@@ -21,6 +21,7 @@ import quokka.todayflowers.domain.service.MemberService;
 import quokka.todayflowers.global.common.SimpleCommonMethod;
 import quokka.todayflowers.global.constant.ConstFlower;
 import quokka.todayflowers.web.request.FlowerLikeForm;
+import quokka.todayflowers.web.response.BasicFlowerForm;
 import quokka.todayflowers.web.response.FlowerLikeResponse;
 import quokka.todayflowers.web.response.FlowerListForm;
 import quokka.todayflowers.web.response.PageDto;
@@ -34,9 +35,7 @@ import java.util.stream.Collectors;
 public class FlowerLIkeController {
 
     private final FlowerService flowerService;
-    private final FlowerLikeRepository flowerLikeRepository;
     private final FlowerLikeService flowerLikeService;
-    private final SimpleCommonMethod simpleCommonMethod;
 
     // 좋아요 클릭
     @ResponseBody
@@ -49,29 +48,12 @@ public class FlowerLIkeController {
 
     // 사용자가 누른 좋아요 목록
     @GetMapping("/like-list")
-    public String flowerLikeList(@PageableDefault(size = 6) Pageable pageable, Model model) {
+    public String flowerLikeList(@PageableDefault(size = 6) Pageable pageable,
+                                 Model model) {
 
-        String userId = simpleCommonMethod.getCurrentUserId();
-
-        Page<FlowerLike> pageFlowerLike = flowerLikeRepository.findByUserId(pageable, userId);
-        List<FlowerListForm> flowerList = flowerLikeService.getFlowerListForm(pageFlowerLike.getContent());
-
-        if(flowerList.isEmpty()) {
-            model.addAttribute("error", "좋아요를 누른 꽃이 없습니다!");
-            return "member/likeFlowerList";
-        }
-
-        // 일정 범위의 페이지네이션을 보여주기 위한 변수
-        int currentPage = pageFlowerLike.getNumber();
-        int totalPages = pageFlowerLike.getTotalPages();
-        // 시작 페이지 끝 페이지 계산
-        PageDto pageDto = simpleCommonMethod.getPageDto(totalPages, currentPage);
-
-        model.addAttribute("flowerList", flowerList); // 페이지에 들어갈 내용
-        model.addAttribute("currentPage", currentPage); // 현재 페이지
-        model.addAttribute("totalPages", pageFlowerLike.getTotalPages()); // 전체 페이지
-        model.addAttribute("startPage", pageDto.getStartPage()); // 시작 페이지
-        model.addAttribute("endPage", pageDto.getEndPage()); // 끝 페이지
+        // 사용자가 누른 좋아요 출력
+        BasicFlowerForm basicFlowerForm = flowerLikeService.findFlowerLikeListByMember(pageable);
+        model.addAttribute("basicFlowerForm", basicFlowerForm);
 
         return "member/likeFlowerList";
     }

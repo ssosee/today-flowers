@@ -15,6 +15,7 @@ import quokka.todayflowers.domain.service.FlowerService;
 import quokka.todayflowers.global.common.SimpleCommonMethod;
 import quokka.todayflowers.global.constant.ConstFlower;
 import quokka.todayflowers.web.request.NameFlowerForm;
+import quokka.todayflowers.web.response.BasicFlowerForm;
 import quokka.todayflowers.web.response.FlowerListForm;
 import quokka.todayflowers.web.response.PageDto;
 
@@ -35,31 +36,17 @@ public class NameFlowerController {
     @GetMapping("/name-list")
     public String nameFlowerList(@ModelAttribute("form") NameFlowerForm form,
                                  @RequestParam(value = "name", required = false) String name,
+                                 @RequestParam(value = "error", required = false) String error,
+                                 @RequestParam(value = "exception", required = false) String exception,
                                  @PageableDefault(size = 6) Pageable pageable,
                                  Model model) {
 
-        Page<Flower> pageFlower;
-        if(name == null) {
-            // 꽃 리스트 조회(이름 내림차순)
-            pageFlower = flowerRepository.findFlowerByOrderByName(pageable);
-        } else {
-            pageFlower = flowerRepository.findFlowerByNameContainingOrderByName(pageable, form.getName());
-            model.addAttribute("name", name);
-        }
-        // DTO로 변환
-        List<FlowerListForm> flowerList = flowerService.getFlowerList(pageFlower.getContent());
+        // 꽃말의 꽃 조회
+        BasicFlowerForm basicFlowerForm = flowerService.findNameFlower(pageable, name);
 
-        // 일정 범위의 페이지네이션을 보여주기 위한 변수
-        int currentPage = pageFlower.getNumber();
-        int totalPages = pageFlower.getTotalPages();
-        // 시작 페이지 끝 페이지 계산
-        PageDto pageDto = simpleCommonMethod.getPageDto(totalPages, currentPage);
-
-        model.addAttribute("flowerList", flowerList); // 페이지에 들어갈 내용
-        model.addAttribute("currentPage", currentPage); // 현재 페이지
-        model.addAttribute("totalPages", pageFlower.getTotalPages()); // 전체 페이지
-        model.addAttribute("startPage", pageDto.getStartPage()); // 시작 페이지
-        model.addAttribute("endPage", pageDto.getEndPage()); // 끝 페이지
+        model.addAttribute("error", error);
+        model.addAttribute("exception", exception);
+        model.addAttribute("basicFlowerForm", basicFlowerForm);
 
         return "flower/name/nameFlowerList";
 
@@ -69,17 +56,20 @@ public class NameFlowerController {
     @PostMapping("/name-list")
     public String findNameFlowerList(@Validated @ModelAttribute("form") NameFlowerForm form,
                                      BindingResult bindingResult,
-                                     @PageableDefault(size = 6) Pageable pageable) {
+                                     @PageableDefault(size = 6) Pageable pageable,
+                                     Model model) {
 
-        // 꽃 리스트 이름으로 조회
-        Page<Flower> pageFlower = flowerRepository.findFlowerByNameContainingOrderByName(pageable, form.getName());
-
-        if(pageFlower.getContent().isEmpty()) {
-            bindingResult.reject("name_flower_not_found", "'" + form.getName() + ConstFlower.NAME_FLOWER_NOT_FOUND);
+        // 요청 데이터 검증
+        if(bindingResult.hasErrors()) {
+            model.addAttribute("error", false);
+            model.addAttribute("exception", null);
             return "flower/name/nameFlowerList";
         }
 
-        String encode = URLEncoder.encode(form.getName(), StandardCharsets.UTF_8);
-        return "redirect:/today-flower/name-list?page=0&name="+encode;
+        // 꽃말의 꽃 조회
+        BasicFlowerForm basicFlowerForm = flowerService.findNameFlower(pageable, form.getName());
+
+        model.addAttribute("basicFlowerForm", basicFlowerForm);
+        return "flower/name/nameFlowerList";
     }
 }

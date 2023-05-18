@@ -12,7 +12,8 @@ public class ConstMember {
     public static final String SEND_EMAIL_FAIL = "이메일 전송에 실패했습니다. 관리자에게 문의 주세요.";
     public static final String SEND_EMAIL_SUCCESS = "이메일로 임시 비밀번호를 보내드렸습니다. 만약 이메일이 없다면 5분후에 다시 시도하거나 관리자에게 문의 주세요.";
     public static final String CHANGE_PASSWORD_SUCCESS = "비밀번호 변경이 완료 되었습니다.";
-    public static final String CHANGE_PASSWORD_FAIL = "아이디 또는 이메일 또는 비밀번호를 확인해주세요.";
+    public static final String CHANGE_PASSWORD_FAIL_FOR_USERID_AND_EMAIL = "아이디와 이메일을 확인해주세요.";
+    public static final String CHANGE_PASSWORD_FAIL_FOR_OLD_PASSWORD = "기존 비밀번호를 확인해주세요.";
     public static final String INVALID_LOGIN = "다른 곳에서 로그인하여 로그인 인증이 만료 되었습니다.";
     public static final String CHANGE_EMAIL_SUCCESS = "이메일 변경이 완료 되었습니다.";
     public static final String CHANGE_EMAIL_FAIL = "이메일을 확인해주세요.";

@@ -45,3 +45,6 @@ src/main/resources/kakao-api-config.yml
 src/main/resources/application-oauth-local.yml
 src/main/resources/application-oauth-prod.yml
 nginx.conf
+
+# 테스트 설정 정보
+src/test/resources/mail-config.yml

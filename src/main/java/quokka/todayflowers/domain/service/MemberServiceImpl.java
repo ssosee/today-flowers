@@ -15,31 +15,30 @@ import org.thymeleaf.spring6.SpringTemplateEngine;
 import quokka.todayflowers.domain.entity.*;
 import quokka.todayflowers.domain.repository.EmailLogRepository;
 import quokka.todayflowers.domain.repository.FlowerLikeRepository;
-import quokka.todayflowers.domain.repository.FlowerRepository;
 import quokka.todayflowers.domain.repository.MemberRepository;
 import quokka.todayflowers.global.constant.ConstEmail;
 import quokka.todayflowers.global.constant.ConstMember;
 import quokka.todayflowers.global.common.SimpleConvert;
-import quokka.todayflowers.global.exception.BasicException;
+import quokka.todayflowers.global.exception.ChangeEmailException;
+import quokka.todayflowers.global.exception.ChangePasswordException;
+import quokka.todayflowers.global.exception.JoinException;
+import quokka.todayflowers.global.exception.CommonException;
 import quokka.todayflowers.web.response.MyPageForm;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.Callable;
-import java.util.concurrent.Future;
-import java.util.concurrent.FutureTask;
 import java.util.stream.Collectors;
 
 @Service
 @Transactional
 @RequiredArgsConstructor
+@Slf4j
 public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
     private final FlowerLikeRepository flowerLikeRepository;
     private final EmailLogRepository emailLogRepository;
     private final PasswordEncoder passwordEncoder;
-    private final FlowerRepository flowerRepository;
     private final SimpleConvert simpleConvert;
 
 
@@ -50,12 +49,17 @@ public class MemberServiceImpl implements MemberService {
 
     // 회원 가입
     @Override
-    public Boolean join(String userId, String password1, String email, SocialType socialType) {
-        Optional<Member> optionalMember = memberRepository.findByUserIdAndSocialType(userId, socialType);
+    public void join(String userId, String password1, String password2, String email, SocialType socialType) {
 
-        // 해당 아이디로 이미 회원이 있다면
+        // 비밀번호가 다르면
+        if(!password1.equals(password2)) {
+            throw new JoinException(ConstMember.PASSWORD_NOT_SAME);
+        }
+
+        // 회원 조회(중복 회원 검증)
+        Optional<Member> optionalMember = memberRepository.findByUserIdAndSocialType(userId, socialType);
         if(optionalMember.isPresent()) {
-            return false;
+            throw new JoinException(ConstMember.DUPLICATE_USER_ID);
         }
 
         // 비밀번호 암호화
@@ -63,11 +67,11 @@ public class MemberServiceImpl implements MemberService {
         // 회원 가입 수행
         Member member = Member.createNewMember(userId, encode, email);
         memberRepository.save(member);
-
-        return true;
     }
 
     // 로그인
+    // 스프링 시큐리티 FormLogin, OAuth2Login으로 불필요함
+    @Deprecated
     @Override
     public Boolean login(String userId, String password) {
         Optional<Member> optionalMember = memberRepository.findByUserId(userId);
@@ -87,14 +91,14 @@ public class MemberServiceImpl implements MemberService {
 
     // 회원 삭제
     @Override
-    public Boolean withdrawalMember(String userId) {
+    public void withdrawalMember(String userId) {
         // 회원 조회
         Optional<Member> optionalMember = memberRepository.findByUserId(userId);
         Member findMember = optionalMember.orElse(null);
 
         // 회원이 없으면
         if(findMember == null) {
-            return false;
+            throw new CommonException(ConstMember.MEMBER_NOT_FOUND);
         }
 
         // 사용자가 누른 좋아요 꽃 목록
@@ -104,12 +108,23 @@ public class MemberServiceImpl implements MemberService {
             flowerLike.getFlower().totalLikeLogic(false);
         }
 
+        /**
+         * 먼저 Member와 flowerLike는 양방향 관계이다.
+         * Member를 먼저 삭제하면
+         * flowerLike 에 update Query가 발생한다.
+         * 그 이유는 연관관계의 주인이 flowerLike인데
+         * Member가 삭제되었으니, 이를 JPA가 반영하는 것 입니다.
+         *
+         * 이를 해결하기 위해서는 2가지 방법이 존재합니다.
+         * 1. 부모 엔티티(FlowerLike)를 먼저 삭제한다.
+         * 2. 자식과의 연관관계를 끊은 후에, Member와 FlowerLike를 삭제한다.(CASCADE 사용해야함)
+         *  현재 FlowerLike는 Member, Flower 두 테이블과 연관관계가 있어 부적절하다고 판단.
+         */
+
         // 좋아요 삭제
         flowerLikeRepository.deleteAll(flowerLikes);
         // 회원 삭제
         memberRepository.delete(findMember);
-
-        return true;
     }
 
     // 회원 아이디 찾기
@@ -152,7 +167,7 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public void hitsUp(String userId) {
         Optional<Member> memberOptional = memberRepository.findByUserId(userId);
-        Member findMember = memberOptional.orElseThrow(() -> new BasicException(ConstMember.MEMBER_NOT_FOUND));
+        Member findMember = memberOptional.orElseThrow(() -> new CommonException(ConstMember.MEMBER_NOT_FOUND));
 
         findMember.changeHits(1L);
     }
@@ -164,11 +179,9 @@ public class MemberServiceImpl implements MemberService {
 
         // 회원 검증
         Member findMember = validationMemberByUserIdAndEmail(userId, toEmail);
-        if (findMember == null) {
-            return;
-        }
 
         try {
+
             // 메일 발신 로직
             MimeMessage mimeMessage = javaMailSender.createMimeMessage();
             MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
@@ -212,36 +225,27 @@ public class MemberServiceImpl implements MemberService {
 
     // 비밀번호 변경
     @Override
-    public Boolean changePassword(String userId, String email, String oldPassword, String newPassword) {
+    public void changePassword(String userId, String email, String oldPassword, String newPassword) {
 
         // 회원 조회
-        Member findMember = validationMemberByUserIdAndEmail(userId, email);
-        if (findMember == null) {
-            return false;
-        }
+        Optional<Member> optionalMember = memberRepository.findByUserIdAndEmail(userId, email);
+        Member findMember = optionalMember.orElseThrow(() -> new ChangePasswordException(ConstMember.CHANGE_PASSWORD_FAIL_FOR_USERID_AND_EMAIL));
 
         // 비밀번호 확인
         boolean matches = passwordEncoder.matches(oldPassword, findMember.getPassword());
         if(!matches) {
-            return false;
+            throw new ChangePasswordException(ConstMember.CHANGE_PASSWORD_FAIL_FOR_OLD_PASSWORD);
         }
 
         // 비밀번호 변경
         findMember.changePassword(passwordEncoder.encode(newPassword));
-
-        return true;
     }
 
     // 회원 검증
     private Member validationMemberByUserId(String userId) {
         // 회원 조회
-        Optional<Member> memberOptional = memberRepository.findMemberAndFlowerLikeByUserId(userId);
-        Member findMember = memberOptional.orElse(null);
-
-        // 회원이 없으면
-        if(findMember == null) {
-            return null;
-        }
+        Optional<Member> optionalMember = memberRepository.findMemberAndFlowerLikeByUserId(userId);
+        Member findMember = optionalMember.orElseThrow(() -> new CommonException(ConstMember.MEMBER_NOT_FOUND));
 
         return findMember;
     }
@@ -250,31 +254,24 @@ public class MemberServiceImpl implements MemberService {
     public Member validationMemberByUserIdAndEmail(String userId, String toEmail) {
         // 회원 조회
         Optional<Member> optionalMember = memberRepository.findByUserIdAndEmail(userId, toEmail);
-        Member findMember = optionalMember.orElse(null);
-
-        // 회원이 없으면
-        if(findMember == null) {
-            return null;
-        }
+        Member findMember = optionalMember.orElseThrow(() -> new CommonException(ConstMember.MEMBER_NOT_FOUND));
 
         return findMember;
     }
 
+    // 이메일 변경
     @Override
-    public Boolean changeEmail(String userId, String email) {
+    public void changeEmail(String userId, String email) {
         // 회원 조회
-        Member findMember = validationMemberByUserId(userId);
-        if(findMember == null) {
-            return false;
-        }
+        Optional<Member> optionalMember = memberRepository.findByUserId(userId);
+        Member findMember = optionalMember.orElseThrow(() -> new ChangeEmailException(ConstMember.CHANGE_EMAIL_FAIL));
 
+        // 이메일 변경
         findMember.changeEmail(email);
-
-        return true;
     }
 
     // 임시 비밀번호 생성
-    private String createAuthenticationNumber() {
+    private static String createAuthenticationNumber() {
         UUID uuid = UUID.randomUUID();
         return uuid.toString().substring(0, 8);
     }
