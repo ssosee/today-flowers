@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import quokka.todayflowers.domain.entity.Flower;
 import quokka.todayflowers.domain.entity.FlowerLike;
 import quokka.todayflowers.domain.repository.FlowerLikeRepository;
 import quokka.todayflowers.global.common.SimpleCommonMethod;

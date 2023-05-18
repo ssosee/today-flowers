@@ -1,17 +1,13 @@
 package quokka.todayflowers.domain.service;
 
 import jakarta.persistence.EntityManager;
-import org.hamcrest.Matcher;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.parameters.P;
 import org.springframework.transaction.annotation.Transactional;
-import quokka.ServiceAppTest;
+import quokka.AppTest;
 import quokka.todayflowers.domain.entity.Flower;
 import quokka.todayflowers.domain.entity.FlowerLike;
 import quokka.todayflowers.domain.entity.FlowerPhoto;
@@ -24,14 +20,13 @@ import quokka.todayflowers.global.constant.ConstFlower;
 import quokka.todayflowers.web.response.*;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 import static com.nimbusds.oauth2.sdk.util.JSONObjectUtils.getList;
 import static org.junit.jupiter.api.Assertions.*;
 
-@ServiceAppTest
+@AppTest
 @Transactional
 class FlowerServiceImplTest {
 
@@ -102,7 +97,7 @@ class FlowerServiceImplTest {
         Optional<Flower> optionalFlower = flowerRepository.findFlowerByMonthAndDay(month, day);
         Flower flower = optionalFlower.get();
 
-        TodayFlowerForm todayFlower = flowerService.findFlower(flower.getId(), userId);
+        TodayFlowerForm todayFlower = flowerService.findFlowerByFlowerId(flower.getId(), userId);
         assertAll(
                 () -> assertEquals(flower.getId(), todayFlower.getFlowerId()),
                 () -> assertEquals(userId, todayFlower.getUserId()),
@@ -224,7 +219,7 @@ class FlowerServiceImplTest {
 
     @Test
     @DisplayName("좋아요 랭킹 조회")
-    void findFlowerLikeListByMember() {
+    void findLikeFlowerRank() {
 
         // 좋아요 랭킹 조회
         Pageable pageable = PageRequest.of(0, 6);
