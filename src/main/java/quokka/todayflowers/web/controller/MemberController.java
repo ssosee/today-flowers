@@ -88,8 +88,7 @@ public class MemberController {
 
     // 회원 탈퇴
     @PostMapping("/withdrawal")
-    public String withdrawal(@ModelAttribute("form") WithdrawalForm form, BindingResult bindingResult,
-                             HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
+    public String withdrawal(@ModelAttribute("form") WithdrawalForm form, Authentication authentication) {
 
         String userId = form.getUserId();
 
@@ -103,7 +102,6 @@ public class MemberController {
 
         // 인증정보 삭제 및 세션 정보 삭제
         SecurityContextHolder.clearContext();
-        new SecurityContextLogoutHandler().logout(request, response, authentication);
 
         return "redirect:/user/login";
     }
@@ -175,9 +173,8 @@ public class MemberController {
 
         // 메일 전송(임시 비밀번호)
         memberService.sendMailForCreateTemporaryPassword(form.getUserId(), adminEmail, form.getEmail());
-
-
         model.addAttribute("sendEmailSuccess", ConstMember.SEND_EMAIL_SUCCESS);
+
         return "member/findUserPassword";
     }
 
@@ -255,8 +252,8 @@ public class MemberController {
 
         // 이메일 변경
         memberService.changeEmail(userId, form.getEmail());
-
         model.addAttribute("changeEmailSuccess", ConstMember.CHANGE_EMAIL_SUCCESS);
+
         return "redirect:/user/mypage";
     }
 }

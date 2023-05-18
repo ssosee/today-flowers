@@ -15,6 +15,7 @@
                     <div th:if="${#fields.hasGlobalErrors()}"><span class="is-valid" th:each="err : ${#fields.globalErrors()}" th:text="${err}">전체 오류 메시지</span></div>
                     <!--요청 검증 에러-->
                     <div th:errors="${form.email}"></div>
+                    <div th:if="${error}" th:text="${exception}"></div>
                 </div>
 
                 <!-- 이메일 변경 완료 알림 -->

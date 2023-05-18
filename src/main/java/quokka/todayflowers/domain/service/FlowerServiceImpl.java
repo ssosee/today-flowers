@@ -16,6 +16,7 @@ import quokka.todayflowers.global.common.SimpleCommonMethod;
 import quokka.todayflowers.global.constant.ConstFlower;
 import quokka.todayflowers.global.constant.ConstMember;
 import quokka.todayflowers.global.exception.BirthException;
+import quokka.todayflowers.global.exception.CommonException;
 import quokka.todayflowers.global.exception.LangException;
 import quokka.todayflowers.global.exception.NameException;
 import quokka.todayflowers.web.response.*;
@@ -52,6 +53,31 @@ public class FlowerServiceImpl implements FlowerService {
         return flowerListFormList;
     }
 
+    // 회원이 꽃에 좋아요 눌렀는지 확인
+    private TodayFlowerForm getTodayFlowerForm(Flower findFlower, String userId) {
+        Optional<FlowerLike> optionalFlowerLike = flowerLikeRepository.findByUserIdAndFlowerId(userId, findFlower.getId());
+
+        Boolean like = false;
+        // 좋아요
+        if(optionalFlowerLike.isPresent()) {
+            like = true;
+        }
+
+        // dto로 변환
+        return TodayFlowerForm.builder()
+                .flowerId(findFlower.getId())
+                .flowerLang(findFlower.getFlowerLang())
+                .photoPath(findFlower.getFlowerPhotos().stream()
+                        .map(fp -> fp.getPath()).collect(Collectors.toList()))
+                .totalLike(findFlower.getTotalLike())
+                .name(findFlower.getName())
+                .hits(findFlower.getHits())
+                .description(findFlower.getDescription())
+                .userId(userId)
+                .like(like)
+                .build();
+    }
+
     // 쿼리 3개 발생
     @Override
     public TodayFlowerForm findTodayFlower() {
@@ -75,30 +101,7 @@ public class FlowerServiceImpl implements FlowerService {
         String userId = simpleCommonMethod.getCurrentUserId();
 
         // 회원이 꽃에 좋아요 눌렀는지 확인
-        Optional<FlowerLike> optionalFlowerLike = flowerLikeRepository.findByUserIdAndFlowerId(userId, findFlower.getId());
-        FlowerLike findFlowerLike = optionalFlowerLike.orElse(null);
-
-        Boolean like = false;
-        // 좋아요
-        if(findFlowerLike != null) {
-            like = true;
-        }
-
-        // dto로 변환
-        TodayFlowerForm todayFlowerForm = TodayFlowerForm.builder()
-                .flowerId(findFlower.getId())
-                .flowerLang(findFlower.getFlowerLang())
-                .photoPath(findFlower.getFlowerPhotos().stream()
-                        .map(fp -> fp.getPath()).collect(Collectors.toList()))
-                .totalLike(findFlower.getTotalLike())
-                .name(findFlower.getName())
-                .hits(findFlower.getHits())
-                .description(findFlower.getDescription())
-                .userId(userId)
-                .like(like)
-                .build();
-
-        return todayFlowerForm;
+        return getTodayFlowerForm(findFlower, userId);
     }
 
     // 쿼리 3개 발생
@@ -107,12 +110,7 @@ public class FlowerServiceImpl implements FlowerService {
 
         // 아이디로 꽃 조회
         Optional<Flower> optionalFlower = flowerRepository.findFlowerById(flowerId);
-        Flower findFlower = optionalFlower.orElse(null);
-
-        // 꽃이 없으면
-        if(findFlower == null) {
-            return null;
-        }
+        Flower findFlower = optionalFlower.orElseThrow(() -> new CommonException(ConstFlower.FLOWER_NOT_FOUND));
 
         // 조회수 증가
         findFlower.increaseHits();
@@ -121,30 +119,7 @@ public class FlowerServiceImpl implements FlowerService {
         String userId = simpleCommonMethod.getCurrentUserId();
 
         // 회원이 꽃에 좋아요 눌렀는지 확인
-        Optional<FlowerLike> optionalFlowerLike = flowerLikeRepository.findByUserIdAndFlowerId(userId, findFlower.getId());
-        FlowerLike findFlowerLike = optionalFlowerLike.orElse(null);
-
-        Boolean like = false;
-        // 좋아요
-        if(findFlowerLike != null) {
-            like = true;
-        }
-
-        // dto로 변환
-        TodayFlowerForm todayFlowerForm = TodayFlowerForm.builder()
-                .flowerId(findFlower.getId())
-                .flowerLang(findFlower.getFlowerLang())
-                .photoPath(findFlower.getFlowerPhotos().stream()
-                        .map(fp -> fp.getPath()).collect(Collectors.toList()))
-                .totalLike(findFlower.getTotalLike())
-                .name(findFlower.getName())
-                .hits(findFlower.getHits())
-                .description(findFlower.getDescription())
-                .userId(userId)
-                .like(like)
-                .build();
-
-        return todayFlowerForm;
+        return getTodayFlowerForm(findFlower, userId);
     }
 
     // 생일의 꽃 조회
@@ -165,11 +140,10 @@ public class FlowerServiceImpl implements FlowerService {
 
         // 회원이 꽃에 좋아요 눌렀는지 확인
         Optional<FlowerLike> optionalFlowerLike = flowerLikeRepository.findByUserIdAndFlowerId(userId, findFlower.getId());
-        FlowerLike findFlowerLike = optionalFlowerLike.orElse(null);
 
         Boolean like = false;
         // 좋아요
-        if(findFlowerLike != null) {
+        if(optionalFlowerLike.isPresent()) {
             like = true;
         }
 
