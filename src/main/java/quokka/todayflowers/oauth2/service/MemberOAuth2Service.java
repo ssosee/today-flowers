@@ -17,6 +17,7 @@ public class MemberOAuth2Service {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
 
+    // OAuth2 회원가입 로직
     public Member join(String userId, String socialName, String password1, String email, SocialType socialType) {
 
         Optional<Member> optionalMember = memberRepository.findByUserIdAndSocialType(userId, socialType);

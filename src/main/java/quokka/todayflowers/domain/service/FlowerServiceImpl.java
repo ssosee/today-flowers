@@ -15,10 +15,7 @@ import quokka.todayflowers.domain.repository.MemberRepository;
 import quokka.todayflowers.global.common.SimpleCommonMethod;
 import quokka.todayflowers.global.constant.ConstFlower;
 import quokka.todayflowers.global.constant.ConstMember;
-import quokka.todayflowers.global.exception.BirthException;
-import quokka.todayflowers.global.exception.CommonException;
-import quokka.todayflowers.global.exception.LangException;
-import quokka.todayflowers.global.exception.NameException;
+import quokka.todayflowers.global.exception.*;
 import quokka.todayflowers.web.response.*;
 
 import java.time.LocalDateTime;
@@ -54,7 +51,7 @@ public class FlowerServiceImpl implements FlowerService {
     }
 
     // 회원이 꽃에 좋아요 눌렀는지 확인
-    private TodayFlowerForm getTodayFlowerForm(Flower findFlower, String userId) {
+    private TodayFlowerForm checkTodayFlowerForm(Flower findFlower, String userId) {
         Optional<FlowerLike> optionalFlowerLike = flowerLikeRepository.findByUserIdAndFlowerId(userId, findFlower.getId());
 
         Boolean like = false;
@@ -80,7 +77,7 @@ public class FlowerServiceImpl implements FlowerService {
 
     // 쿼리 3개 발생
     @Override
-    public TodayFlowerForm findTodayFlower() {
+    public TodayFlowerForm findTodayFlower(String userId) {
         // 현재 시간 조회
         LocalDateTime now = LocalDateTime.now();
         int day = now.getDayOfMonth();
@@ -88,43 +85,33 @@ public class FlowerServiceImpl implements FlowerService {
 
         // 오늘의 꽃 조회
         Optional<Flower> optionalFlower = flowerRepository.findFlowerByMonthAndDay(month, day);
-        Flower findFlower = optionalFlower.orElse(null);
-
-        if (findFlower == null) {
-            return null;
-        }
+        Flower findFlower = optionalFlower.orElseThrow(() -> new TodayException(ConstFlower.FLOWER_NOT_FOUND));
 
         // 조회수 증가
         findFlower.increaseHits();
 
-        // 스프링시큐리티 컨테스트에서 userId 꺼내기
-        String userId = simpleCommonMethod.getCurrentUserId();
-
         // 회원이 꽃에 좋아요 눌렀는지 확인
-        return getTodayFlowerForm(findFlower, userId);
+        return checkTodayFlowerForm(findFlower, userId);
     }
 
     // 쿼리 3개 발생
     @Override
-    public TodayFlowerForm findFlower(Long flowerId) {
+    public TodayFlowerForm findFlowerByFlowerId(Long flowerId, String userId) {
 
         // 아이디로 꽃 조회
         Optional<Flower> optionalFlower = flowerRepository.findFlowerById(flowerId);
-        Flower findFlower = optionalFlower.orElseThrow(() -> new CommonException(ConstFlower.FLOWER_NOT_FOUND));
+        Flower findFlower = optionalFlower.orElseThrow(() -> new TodayException(ConstFlower.FLOWER_NOT_FOUND));
 
         // 조회수 증가
         findFlower.increaseHits();
 
-        // 스프링시큐리티 컨테스트에서 userId 꺼내기
-        String userId = simpleCommonMethod.getCurrentUserId();
-
         // 회원이 꽃에 좋아요 눌렀는지 확인
-        return getTodayFlowerForm(findFlower, userId);
+        return checkTodayFlowerForm(findFlower, userId);
     }
 
     // 생일의 꽃 조회
     @Override
-    public BirthFlowerForm findBirthFlower(String birth) {
+    public BirthFlowerForm findBirthFlower(String birth, String userId) {
         // 입력값 자르기
         Integer month = Integer.parseInt(birth.substring(2, 4));
         Integer day = Integer.parseInt(birth.substring(4, 6));
@@ -134,9 +121,6 @@ public class FlowerServiceImpl implements FlowerService {
 
         // 조회수 증가
         findFlower.increaseHits();
-
-        // 스프링시큐리티 컨테스트에서 userId 꺼내기
-        String userId = simpleCommonMethod.getCurrentUserId();
 
         // 회원이 꽃에 좋아요 눌렀는지 확인
         Optional<FlowerLike> optionalFlowerLike = flowerLikeRepository.findByUserIdAndFlowerId(userId, findFlower.getId());
@@ -170,7 +154,7 @@ public class FlowerServiceImpl implements FlowerService {
 
     // 좋아요
     @Override
-    public FlowerLikeResponse likeFlower(Long flowerId, Boolean like) {
+    public FlowerLikeResponse likeFlower(Long flowerId, String userId, Boolean like) {
 
         // 꽃 조회
         Optional<Flower> optionalFlower = flowerRepository.findById(flowerId);
@@ -183,8 +167,6 @@ public class FlowerServiceImpl implements FlowerService {
         // 좋아요 증감
         findFlower.totalLikeLogic(like);
 
-        // 스프링시큐리티 컨테스트에서 userId 꺼내기
-        String userId = simpleCommonMethod.getCurrentUserId();
         // 회원 조회
         Optional<Member> optionalMember = memberRepository.findByUserId(userId);
         Member findMember = optionalMember.orElseThrow(() -> new BasicException(ConstMember.MEMBER_NOT_FOUND));
@@ -298,7 +280,7 @@ public class FlowerServiceImpl implements FlowerService {
     }
 
     @Override
-    public BasicFlowerForm findLikeFlower(Pageable pageable) {
+    public BasicFlowerForm findLikeFlowerRank(Pageable pageable) {
         // 좋아요 갯수 내림차순으로 조회
         Page<Flower> pageFlower = flowerRepository.findFlowerByOrderByTotalLikeDesc(pageable);
         // DTO로 변환

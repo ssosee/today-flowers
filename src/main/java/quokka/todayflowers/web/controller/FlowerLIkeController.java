@@ -36,12 +36,17 @@ public class FlowerLIkeController {
 
     private final FlowerService flowerService;
     private final FlowerLikeService flowerLikeService;
+    private final SimpleCommonMethod simpleCommonMethod;
 
     // 좋아요 클릭
     @ResponseBody
     @PostMapping(value = "/like")
     public ResponseEntity<FlowerLikeResponse> flowerLike(@RequestBody FlowerLikeForm form) {
-        FlowerLikeResponse flowerLikeResponse = flowerService.likeFlower(form.getFlowerId(), form.getLike());
+
+        // 스프링시큐리티 컨테스트에서 userId 꺼내기
+        String userId = simpleCommonMethod.getCurrentUserId();
+        // 좋아요 클릭 로직 수행
+        FlowerLikeResponse flowerLikeResponse = flowerService.likeFlower(form.getFlowerId(), userId, form.getLike());
 
         return new ResponseEntity<>(flowerLikeResponse, HttpStatus.OK);
     }
@@ -51,8 +56,11 @@ public class FlowerLIkeController {
     public String flowerLikeList(@PageableDefault(size = 6) Pageable pageable,
                                  Model model) {
 
+        // 스프링시큐리티 컨테스트에서 userId 꺼내기
+        String userId = simpleCommonMethod.getCurrentUserId();
+
         // 사용자가 누른 좋아요 출력
-        BasicFlowerForm basicFlowerForm = flowerLikeService.findFlowerLikeListByMember(pageable);
+        BasicFlowerForm basicFlowerForm = flowerLikeService.findFlowerLikeListByMember(pageable, userId);
         model.addAttribute("basicFlowerForm", basicFlowerForm);
 
         return "member/likeFlowerList";

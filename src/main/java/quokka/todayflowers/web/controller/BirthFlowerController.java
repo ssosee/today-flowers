@@ -18,6 +18,7 @@ import quokka.todayflowers.web.response.TodayFlowerForm;
 public class BirthFlowerController {
 
     private final FlowerService flowerService;
+    private final SimpleCommonMethod simpleCommonMethod;
 
     // 생일의 꽃
     @GetMapping("/birth")
@@ -44,8 +45,11 @@ public class BirthFlowerController {
             return "flower/birth/birthFlower";
         }
 
+        // 스프링시큐리티 컨테스트에서 userId 꺼내기
+        String userId = simpleCommonMethod.getCurrentUserId();
+
         // 생일의 꽃 조회
-        BirthFlowerForm birthFlower = flowerService.findBirthFlower(form.getBirth());
+        BirthFlowerForm birthFlower = flowerService.findBirthFlower(form.getBirth(), userId);
 
         model.addAttribute("form", birthFlower);
 

@@ -17,6 +17,17 @@ public class ControllerExHandler {
         return "redirect:/common?error=true&exception="+encode;
     }
 
+    // 오늘의 꽃 예외 처리
+    @ExceptionHandler(TodayException.class)
+    public ModelAndView exTodayHandler(TodayException e) {
+        ModelAndView mv = new ModelAndView();
+        mv.setViewName("flower/today/todayFlower");
+        mv.addObject("error", true);
+        mv.addObject("exception", e.getMessage());
+
+        return mv;
+    }
+
     // 생일의 꽃 예외 처리
     @ExceptionHandler(BirthException.class)
     public String exBirthHandler(BirthException e) {

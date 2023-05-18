@@ -12,7 +12,7 @@ public class FlowerPhoto extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String path;
+    private String path = "/image/flower-today.jpg";
     private String reference;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "flower_id")

@@ -9,5 +9,5 @@ import java.util.List;
 
 public interface FlowerLikeService {
 
-    BasicFlowerForm findFlowerLikeListByMember(Pageable pageable);
+    BasicFlowerForm findFlowerLikeListByMember(Pageable pageable, String userId);
 }

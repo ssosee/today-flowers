@@ -30,7 +30,7 @@ public class LikeRankController {
     public String rankList(@PageableDefault(size = 6) Pageable pageable, Model model) {
 
         // 좋아요 랭킹 조회
-        BasicFlowerForm basicFlowerForm = flowerService.findLikeFlower(pageable);
+        BasicFlowerForm basicFlowerForm = flowerService.findLikeFlowerRank(pageable);
         model.addAttribute("basicFlowerForm", basicFlowerForm);
 
         return "flower/like-rank/likeRankFlowerList";

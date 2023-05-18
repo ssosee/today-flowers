@@ -11,18 +11,16 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 
-import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.SecurityFilterChain;
 
-import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.web.filter.CorsFilter;
-import quokka.todayflowers.global.config.handler.SimpleAuthenticationFailureHandler;
-import quokka.todayflowers.global.config.handler.SimpleAuthenticationSuccessHandler;
+import quokka.todayflowers.global.config.handler.SimpleFormLoginAuthenticationFailureHandler;
+import quokka.todayflowers.global.config.handler.SimpleFormLoginAuthenticationSuccessHandler;
+import quokka.todayflowers.global.config.handler.SimpleOAuth2LoginAuthenticationSuccessHandler;
 import quokka.todayflowers.oauth2.service.CustomMemberOAuth2Service;
 
 import java.io.IOException;
@@ -36,9 +34,10 @@ import java.io.IOException;
 @Slf4j
 public class SecurityConfig {
     // 로그인 실패 처리 핸들러
-    private final SimpleAuthenticationFailureHandler simpleAuthenticationFailureHandler;
+    private final SimpleFormLoginAuthenticationFailureHandler simpleFormLoginAuthenticationFailureHandler;
     // 로그인 성공 처리 핸들러
-    private final SimpleAuthenticationSuccessHandler simpleAuthenticationSuccessHandler;
+    private final SimpleFormLoginAuthenticationSuccessHandler simpleFormLoginAuthenticationSuccessHandler;
+    private final SimpleOAuth2LoginAuthenticationSuccessHandler simpleOAuth2LoginAuthenticationSuccessHandler;
     private final CorsFilter corsFilter;
 
     private final CustomMemberOAuth2Service customMemberOAuth2Service;
@@ -81,14 +80,15 @@ public class SecurityConfig {
                                 .loginProcessingUrl("/login-process")
                                 .usernameParameter("userId")
                                 .passwordParameter("password")
-                                .successHandler(simpleAuthenticationSuccessHandler)
-                                .failureHandler(simpleAuthenticationFailureHandler) // 로그인 실패 처리
+                                .successHandler(simpleFormLoginAuthenticationSuccessHandler)
+                                .failureHandler(simpleFormLoginAuthenticationFailureHandler) // 로그인 실패 처리
                                 .permitAll()
                 );
 
         // oauth2Login 설정
         http.oauth2Login(oauth2 -> oauth2.userInfoEndpoint(
-                userInfoEndpointConfig -> userInfoEndpointConfig.userService(customMemberOAuth2Service)));
+                userInfoEndpointConfig -> userInfoEndpointConfig.userService(customMemberOAuth2Service))
+                .successHandler(simpleOAuth2LoginAuthenticationSuccessHandler));
 
         http.userDetailsService(customMemberDetailService);
 

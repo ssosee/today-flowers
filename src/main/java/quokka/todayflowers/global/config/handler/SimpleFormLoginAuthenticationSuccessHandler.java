@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
+import org.springframework.security.web.savedrequest.RequestCache;
 import org.springframework.security.web.savedrequest.SavedRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,9 +21,11 @@ import java.util.Optional;
 @Component
 @RequiredArgsConstructor
 @Transactional
-public class SimpleAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
+public class SimpleFormLoginAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 
     private final MemberRepository memberRepository;
+    private RequestCache requestCache = new HttpSessionRequestCache();
+
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
 
@@ -34,6 +38,19 @@ public class SimpleAuthenticationSuccessHandler implements AuthenticationSuccess
         // 로그인 실패 초기화
         findMember.initLoginFailCount();
 
-        response.sendRedirect("/");
+        // 이전 요청에 대한 정보
+        SavedRequest savedRequest = requestCache.getRequest(request, response);
+        // 로그인 전 방문한 URL이 없는 경우
+        // 즉, 어떤 자원에 접근하다가 예외가 발생한 경우 아닌 경우
+        if(savedRequest == null) {
+            // Home으로 보낸다.
+            response.sendRedirect("/");
+            return;
+        }
+
+        // 어떤 자원에 접근하다가 인증 예외가 발생한 경우
+        String redirectUrl = savedRequest.getRedirectUrl();
+        // 어떤 자원으로 보내준다.
+        response.sendRedirect(redirectUrl);
     }
 }

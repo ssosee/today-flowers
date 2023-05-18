@@ -42,8 +42,7 @@ public class FlowerLikeServiceImpl implements FlowerLikeService {
 
     // 좋아요 누른 꽃 조회
     @Override
-    public BasicFlowerForm findFlowerLikeListByMember(Pageable pageable) {
-        String userId = simpleCommonMethod.getCurrentUserId();
+    public BasicFlowerForm findFlowerLikeListByMember(Pageable pageable, String userId) {
 
         Page<FlowerLike> pageFlowerLike = flowerLikeRepository.findByUserId(pageable, userId);
         List<FlowerListForm> flowerList = getFlowerListForm(pageFlowerLike.getContent());

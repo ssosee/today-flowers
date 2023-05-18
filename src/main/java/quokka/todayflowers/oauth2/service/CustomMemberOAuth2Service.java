@@ -23,9 +23,11 @@ public class CustomMemberOAuth2Service implements OAuth2UserService<OAuth2UserRe
     private final MemberOAuth2Service memberOAuth2Service;
     private final MemberGlobalService memberGlobalService;
 
+    // OAuth2 회원가입 로직
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
 
+        // 소셜로 정보를 얻음
         ClientRegistration clientRegistration = userRequest.getClientRegistration();
         OAuth2UserService<OAuth2UserRequest, OAuth2User> oAuth2UserService= new DefaultOAuth2UserService();
         OAuth2User oAuth2User = oAuth2UserService.loadUser(userRequest);

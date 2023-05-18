@@ -15,7 +15,6 @@ import quokka.todayflowers.domain.entity.Member;
 import quokka.todayflowers.domain.repository.MemberRepository;
 import quokka.todayflowers.global.constant.ConstMember;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -24,7 +23,7 @@ import java.util.Optional;
 @Component
 @RequiredArgsConstructor
 @Transactional
-public class SimpleAuthenticationFailureHandler implements AuthenticationFailureHandler {
+public class SimpleFormLoginAuthenticationFailureHandler implements AuthenticationFailureHandler {
 
     private final MemberRepository memberRepository;
 
