@@ -1,0 +1,32 @@
+spring:
+  config:
+    activate:
+      on-profile: test
+
+  security:
+    oauth2:
+      client:
+        registration:
+          # 엔트포인트 정보: https://kauth.kakao.com/.well-known/openid-configuration
+          kakao:
+            client-id: 80cc8b82bb623aa1a2e5da13caab1ca9
+            client-secret: M1zgPzqoLRJ8fYXKVjegLmgy7iumGrgP
+            authorization-grant-type: authorization_code
+            client-authentication-method: client_secret_post
+            client-name: 2dayflower
+            redirect-uri: http://localhost:8080/login/oauth2/code/kakao
+            #                        scope: openid,profile_nickname,profile_image,account_email
+            scope: profile_nickname,profile_image,account_email
+
+        provider:
+          kakao:
+            # OpenID Connect 일 경우 jwkSet URI 를 가져와야 하기 때문에 필수항목
+            issuer-uri: https://kauth.kakao.com
+            authorization-uri: https://kauth.kakao.com/oauth/authorize
+            token-uri: https://kauth.kakao.com/oauth/token
+            user-info-uri: https://kapi.kakao.com/v2/user/me
+            user-name-attribute: id # OpenID Connect 로 인가서버와 통신하지 않을 경우
+
+            # OpenID Connect 일 경우 nameAttributeKey 가 sub 이기 때문에 별도의 커스트 마이징이 필요
+            # CustomOidcUserService 참조
+            # user-name-attribute: sub

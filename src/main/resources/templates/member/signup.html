@@ -48,6 +48,7 @@
                     <div th:errors="${form.password1}"></div>
                     <div th:errors="${form.password2}"></div>
                     <div th:errors="${form.email}"></div>
+                    <div th:if="${error}" th:text="${exception}"></div>
                 </div>
 
                 <div id="inputBox">

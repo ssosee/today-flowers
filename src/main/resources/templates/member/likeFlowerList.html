@@ -6,22 +6,21 @@
 
 <th:block layout:fragment="css"></th:block>
 <div layout:fragment="content">
-<form th:object="${form}">
   <div th:class="container">
 
     <!--글로벌 에러 생성-->
     <div class="is-valid">
-      <div th:if="${error}"><span class="is-valid" th:text="${error}">오류 메시지</span></div>
+      <div th:if="${error}"><span class="is-valid" th:text="${exception}">오류 메시지</span></div>
     </div>
 
-    <div th:unless="${error}">
+    <div th:if="${error} == null">
         <!--카드 시작-->
         <div class="px-4 py-5" id="custom-cards">
             <h2 class="pb-2 border-bottom">당신이 🫰 좋아한 <strong class="todayFlowerTitle" style="font-size: 30px">꽃</strong> 입니다.</h2>
 
             <!-- 꽃 목록 시작-->
             <div class="row row-cols-1 row-cols-lg-3 align-items-stretch g-4 pt-5">
-                <div th:each="fl, flStat : ${flowerList}" class="col pb-4">
+                <div th:each="fl, flStat : ${basicFlowerForm.flowerList}" class="col pb-4">
                     <a th:href="@{/today-flower/today/{param} (param=${fl.id})}" style="text-decoration: none">
                         <!--&quot;는 " 이다.-->
                         <div class="card card-cover h-100 overflow-hidden text-bg-dark rounded-4 shadow-lg"
@@ -59,21 +58,21 @@
         <!-- 페이지네이션 시작 -->
         <nav aria-label="Page navigation">
             <ul class="pb-4 pagination justify-content-center">
-                <li th:class="${currentPage == 0} ? 'page-item disabled' : 'page-item'">
+                <li th:class="${basicFlowerForm.currentPage == 0} ? 'page-item disabled' : 'page-item'">
                     <a class="page-link" th:href="@{/flower/like-list(page=0)}">&laquo;</a>
                 </li>
-                <li th:each="page : ${#numbers.sequence(startPage, endPage)}" th:class="${currentPage == page} ? 'page-item active' : 'page-item'">
+                <li th:each="page : ${#numbers.sequence(basicFlowerForm.startPage, basicFlowerForm.endPage)}" th:class="${basicFlowerForm.currentPage == page} ? 'page-item active' : 'page-item'">
                     <a class="page-link" th:href="@{/flower/like-list(page=${page})}" th:text="${page+1}"></a>
                 </li>
-                <li th:class="${currentPage == totalPages-1} ? 'page-item disabled' : 'page-item'">
-                    <a class="page-link" th:href="@{/flower/like-list(page=${totalPages-1})}">&raquo;</a>
+                <li th:class="${basicFlowerForm.currentPage == basicFlowerForm.totalPages - 1} ? 'page-item disabled' : 'page-item'">
+                    <a class="page-link" th:href="@{/flower/like-list(page=${basicFlowerForm.totalPages - 1})}">&raquo;</a>
                 </li>
             </ul>
         </nav>
         <!-- 페이지네이션 끝 -->
+
     </div>
 
   </div>
-</form>
 </div>
 </html>

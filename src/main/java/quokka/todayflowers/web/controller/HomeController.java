@@ -20,7 +20,6 @@ import java.security.Principal;
 import java.util.Map;
 
 @Controller
-@Slf4j
 public class HomeController {
 
     // 홈

@@ -18,7 +18,9 @@ import quokka.todayflowers.domain.repository.FlowerRepository;
 import quokka.todayflowers.domain.service.FlowerService;
 import quokka.todayflowers.global.common.SimpleCommonMethod;
 import quokka.todayflowers.global.constant.ConstFlower;
+import quokka.todayflowers.global.exception.LangException;
 import quokka.todayflowers.web.request.LangFlowerForm;
+import quokka.todayflowers.web.response.BasicFlowerForm;
 import quokka.todayflowers.web.response.FlowerListForm;
 import quokka.todayflowers.web.response.PageDto;
 
@@ -39,32 +41,17 @@ public class LangFlowerController {
     @GetMapping("/lang-list")
     public String langFlowerList(@ModelAttribute("form") LangFlowerForm form,
                                  @RequestParam(value = "lang", required = false) String lang,
+                                 @RequestParam(value = "error", required = false) String error,
+                                 @RequestParam(value = "exception", required = false) String exception,
                                  @PageableDefault(size = 6) Pageable pageable,
                                  Model model) {
 
-        Page<Flower> pageFlower;
-        if(lang == null) {
-            // 전체 꽃 조회
-            pageFlower = flowerRepository.findFlowerByOrderByFlowerLang(pageable);
-        } else {
-            pageFlower = flowerRepository.findFlowerByFlowerLangContainingOrderByFlowerLang(pageable, lang);
-            model.addAttribute("lang", lang);
-        }
+        // 꽃말의 꽃 조회
+        BasicFlowerForm basicFlowerForm = flowerService.findLangFlower(pageable, lang);
 
-        // DTO 변환
-        List<FlowerListForm> flowerList = flowerService.getFlowerList(pageFlower.getContent());
-
-        // 일정 범위의 페이지네이션을 보여주기 위한 변수
-        int currentPage = pageFlower.getNumber();
-        int totalPages = pageFlower.getTotalPages();
-        // 시작 페이지 끝 페이지 계산
-        PageDto pageDto = simpleCommonMethod.getPageDto(totalPages, currentPage);
-
-        model.addAttribute("flowerList", flowerList); // 페이지에 들어갈 내용
-        model.addAttribute("currentPage", currentPage); // 현재 페이지
-        model.addAttribute("totalPages", pageFlower.getTotalPages()); // 전체 페이지
-        model.addAttribute("startPage", pageDto.getStartPage()); // 시작 페이지
-        model.addAttribute("endPage", pageDto.getEndPage()); // 끝 페이지
+        model.addAttribute("error", error);
+        model.addAttribute("exception", exception);
+        model.addAttribute("basicFlowerForm", basicFlowerForm);
 
         return "flower/lang/langFlowerList";
     }
@@ -73,17 +60,21 @@ public class LangFlowerController {
     @PostMapping("/lang-list")
     public String findLangFlowerList(@Validated @ModelAttribute("form") LangFlowerForm form,
                                      BindingResult bindingResult,
-                                     @PageableDefault(size = 6) Pageable pageable) {
-        // 꽃말로 꽃 조회
-        Page<Flower> pageFlower = flowerRepository.findFlowerByFlowerLangContainingOrderByFlowerLang(pageable, form.getLang());
+                                     @PageableDefault(size = 6) Pageable pageable,
+                                     Model model) {
 
-        // 꽃말을 가진 꽃이 없으면
-        if(pageFlower.getContent().isEmpty()) {
-            bindingResult.reject("lang_flower_not_found", "'"+form.getLang() + ConstFlower.LANG_FLOWER_NOT_FOUND);
+        // 요청 데이터 검증
+        if(bindingResult.hasErrors()) {
+            model.addAttribute("error", false);
+            model.addAttribute("exception", null);
             return "flower/lang/langFlowerList";
         }
 
-        String encode = URLEncoder.encode(form.getLang(), StandardCharsets.UTF_8);
-        return "redirect:/today-flower/lang-list?page=0&lang="+encode;
+        // 꽃말의 꽃 조회
+        BasicFlowerForm basicFlowerForm = flowerService.findLangFlower(pageable, form.getLang());
+
+        model.addAttribute("basicFlowerForm", basicFlowerForm);
+
+        return "flower/lang/langFlowerList";
     }
 }
