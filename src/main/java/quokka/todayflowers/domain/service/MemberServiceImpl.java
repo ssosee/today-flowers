@@ -146,11 +146,7 @@ public class MemberServiceImpl implements MemberService {
         // 회원 검증
         Member findMember = validationMemberByUserId(userId);
 
-        if(findMember == null) {
-            return new MyPageForm();
-        }
-
-        MyPageForm myPageForm = MyPageForm.builder()
+        return MyPageForm.builder()
                 .memberId(findMember.getId())
                 .userId(findMember.getSocialType().equals(SocialType.NONE) ? findMember.getUserId() : findMember.getSocialName())
                 .email(findMember.getEmail())
@@ -159,8 +155,6 @@ public class MemberServiceImpl implements MemberService {
                 .likeCount(findMember.getFlowerLikes().stream().count())
                 .socialId(findMember.getUserId())
                 .build();
-
-        return myPageForm;
     }
 
     // 방문 이력 증가

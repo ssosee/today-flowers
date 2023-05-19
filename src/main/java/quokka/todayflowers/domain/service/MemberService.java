@@ -6,7 +6,6 @@ import quokka.todayflowers.domain.entity.SocialType;
 import quokka.todayflowers.web.response.MyPageForm;
 
 import java.util.List;
-import java.util.concurrent.Future;
 
 public interface MemberService {
     // 회원가입
