@@ -105,15 +105,17 @@ public class MemberServiceImpl implements MemberService {
 
         /**
          * 먼저 Member와 flowerLike는 양방향 관계이다.
-         * Member를 먼저 삭제하면
-         * flowerLike 에 update Query가 발생한다.
-         * 그 이유는 연관관계의 주인이 flowerLike인데
-         * Member가 삭제되었으니, 이를 JPA가 반영하는 것 입니다.
+         * 부모 엔티티(Member)를 먼저 삭제하면
+         * flowerLike 에 UPDATE Query가 발생한다.
+         * 그 이유는 자식 엔티티가 flowerLike인데
+         * 부모 엔티티인 Member가 삭제되었으니,
+         * 고아 객체가 된 flowerLike를 Hibernate가 반영하는 것 입니다.
          *
          * 이를 해결하기 위해서는 2가지 방법이 존재합니다.
-         * 1. 부모 엔티티(FlowerLike)를 먼저 삭제한다.
-         * 2. 자식과의 연관관계를 끊은 후에, Member와 FlowerLike를 삭제한다.(CASCADE, orphanRemoval 사용해야함)
-         *  현재 FlowerLike는 Member, Flower 두 테이블과 연관관계가 있어 부적절하다고 판단.
+         * 1. 자식 엔티티(FlowerLike)를 먼저 삭제한다.
+         * 2. 자식과 연관관계를 끊은 후에, 부모 엔티티(Member)와 자식 엔티티(FlowerLike)를 삭제한다.
+         *  ㄴ CASCADE, orphanRemoval 사용해하면 편리한데,
+         *     현재 FlowerLike는 Member, Flower 두 테이블과 연관관계가 있어 부적절하다고 판단.
          */
 
         // 좋아요 삭제
