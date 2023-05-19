@@ -92,13 +92,15 @@ public class MemberServiceImpl implements MemberService {
     // 회원 삭제
     @Override
     public void withdrawalMember(String userId) {
+
         // 회원 조회
         Optional<Member> optionalMember = memberRepository.findByUserId(userId);
         Member findMember = optionalMember.orElseThrow(() -> new CommonException(ConstMember.MEMBER_NOT_FOUND));
 
-        // 사용자가 누른 좋아요 꽃 목록
+        // 사용자가 누른 좋아요 꽃 목록 조회
         List<FlowerLike> flowerLikes = flowerLikeRepository.findAllByMember(findMember);
-        // 좋아요 감소
+
+        // 좋아요 감소 수행
         for (FlowerLike flowerLike : flowerLikes) {
             flowerLike.getFlower().totalLikeLogic(false);
         }
@@ -115,12 +117,14 @@ public class MemberServiceImpl implements MemberService {
          * 1. 자식 엔티티(FlowerLike)를 먼저 삭제한다.
          * 2. 자식과 연관관계를 끊은 후에, 부모 엔티티(Member)와 자식 엔티티(FlowerLike)를 삭제한다.
          *  ㄴ CASCADE, orphanRemoval 사용해하면 편리한데,
-         *     현재 FlowerLike는 Member, Flower 두 테이블과 연관관계가 있어 부적절하다고 판단.
+         *    현재 FlowerLike는 Member, Flower 두 테이블과 연관관계가 있어 부적절하다고 판단.
+         *
+         *  1번 방법으로 진행한다.
          */
 
-        // 좋아요 삭제
+        //좋아요 삭제(부모 엔티티 먼저 삭제)
         flowerLikeRepository.deleteAll(flowerLikes);
-        // 회원 삭제
+        // 회원 삭제(자식 엔티티 삭제)
         memberRepository.delete(findMember);
     }
 
