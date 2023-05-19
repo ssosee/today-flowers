@@ -28,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @AppTest
 @Transactional
-class FlowerServiceImplTest {
+class FlowerServiceTest {
 
     @Autowired
     FlowerService flowerService;
