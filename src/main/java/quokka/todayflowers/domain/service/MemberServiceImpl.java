@@ -94,12 +94,7 @@ public class MemberServiceImpl implements MemberService {
     public void withdrawalMember(String userId) {
         // 회원 조회
         Optional<Member> optionalMember = memberRepository.findByUserId(userId);
-        Member findMember = optionalMember.orElse(null);
-
-        // 회원이 없으면
-        if(findMember == null) {
-            throw new CommonException(ConstMember.MEMBER_NOT_FOUND);
-        }
+        Member findMember = optionalMember.orElseThrow(() -> new CommonException(ConstMember.MEMBER_NOT_FOUND));
 
         // 사용자가 누른 좋아요 꽃 목록
         List<FlowerLike> flowerLikes = flowerLikeRepository.findAllByMember(findMember);
@@ -117,7 +112,7 @@ public class MemberServiceImpl implements MemberService {
          *
          * 이를 해결하기 위해서는 2가지 방법이 존재합니다.
          * 1. 부모 엔티티(FlowerLike)를 먼저 삭제한다.
-         * 2. 자식과의 연관관계를 끊은 후에, Member와 FlowerLike를 삭제한다.(CASCADE 사용해야함)
+         * 2. 자식과의 연관관계를 끊은 후에, Member와 FlowerLike를 삭제한다.(CASCADE, orphanRemoval 사용해야함)
          *  현재 FlowerLike는 Member, Flower 두 테이블과 연관관계가 있어 부적절하다고 판단.
          */
 
