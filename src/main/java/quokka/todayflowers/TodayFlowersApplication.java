@@ -7,7 +7,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
 @EnableJpaAuditing
-@EnableScheduling
 public class TodayFlowersApplication {
 
     public static void main(String[] args) {
