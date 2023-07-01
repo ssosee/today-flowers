@@ -1,7 +1,9 @@
 package quokka.todayflowers.domain.service;
 
 import jakarta.persistence.EntityManager;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -16,6 +18,7 @@ import quokka.todayflowers.domain.repository.FlowerLikeRepository;
 import quokka.todayflowers.domain.repository.FlowerPhotoRepository;
 import quokka.todayflowers.domain.repository.FlowerRepository;
 import quokka.todayflowers.domain.repository.MemberRepository;
+import quokka.todayflowers.domain.service.response.TodayFlowerResponse;
 import quokka.todayflowers.global.constant.ConstFlower;
 import quokka.todayflowers.web.response.*;
 
@@ -23,7 +26,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import static com.nimbusds.oauth2.sdk.util.JSONObjectUtils.getList;
 import static org.junit.jupiter.api.Assertions.*;
 
 @AppTest
@@ -81,7 +83,7 @@ class FlowerServiceTest {
         LocalDateTime now = LocalDateTime.now();
         int day = now.getDayOfMonth();
 
-        TodayFlowerForm todayFlower = flowerService.findTodayFlower(userId);
+        TodayFlowerResponse todayFlower = flowerService.findTodayFlower(userId);
 
         assertAll(
                 () -> assertEquals(userId, todayFlower.getUserId()),
@@ -97,7 +99,7 @@ class FlowerServiceTest {
         Optional<Flower> optionalFlower = flowerRepository.findFlowerByMonthAndDay(month, day);
         Flower flower = optionalFlower.get();
 
-        TodayFlowerForm todayFlower = flowerService.findFlowerByFlowerId(flower.getId(), userId);
+        TodayFlowerResponse todayFlower = flowerService.findFlowerByFlowerId(flower.getId(), userId);
         assertAll(
                 () -> assertEquals(flower.getId(), todayFlower.getFlowerId()),
                 () -> assertEquals(userId, todayFlower.getUserId()),

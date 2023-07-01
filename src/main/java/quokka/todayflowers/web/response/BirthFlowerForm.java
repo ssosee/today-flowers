@@ -30,7 +30,7 @@ public class BirthFlowerForm {
     private String birth;
 
     @Builder
-    public BirthFlowerForm(Long flowerId, String name, String flowerLang, String description, Long totalLike, Long hits, List<String> photoPath, String userId, Boolean like) {
+    private BirthFlowerForm(Long flowerId, String name, String flowerLang, String description, Long totalLike, Long hits, List<String> photoPath, String userId, Boolean like) {
         this.flowerId = flowerId;
         this.name = name;
         this.flowerLang = flowerLang;

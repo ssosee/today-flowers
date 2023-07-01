@@ -10,7 +10,6 @@ import quokka.todayflowers.domain.service.FlowerService;
 import quokka.todayflowers.global.common.SimpleCommonMethod;
 import quokka.todayflowers.global.constant.ConstFlower;
 import quokka.todayflowers.web.response.BirthFlowerForm;
-import quokka.todayflowers.web.response.TodayFlowerForm;
 
 @Controller
 @RequiredArgsConstructor

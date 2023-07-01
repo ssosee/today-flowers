@@ -12,6 +12,7 @@ import quokka.todayflowers.domain.entity.SocialType;
 import quokka.todayflowers.domain.repository.FlowerLikeRepository;
 import quokka.todayflowers.domain.repository.FlowerRepository;
 import quokka.todayflowers.domain.repository.MemberRepository;
+import quokka.todayflowers.domain.service.response.TodayFlowerResponse;
 import quokka.todayflowers.global.common.SimpleCommonMethod;
 import quokka.todayflowers.global.constant.ConstFlower;
 import quokka.todayflowers.global.constant.ConstMember;
@@ -51,33 +52,24 @@ public class FlowerServiceImpl implements FlowerService {
     }
 
     // 회원이 꽃에 좋아요 눌렀는지 확인
-    private TodayFlowerForm checkTodayFlowerForm(Flower findFlower, String userId) {
+    private boolean isFlowerLike(Flower findFlower, String userId) {
         Optional<FlowerLike> optionalFlowerLike = flowerLikeRepository.findByUserIdAndFlowerId(userId, findFlower.getId());
-
         Boolean like = false;
+
         // 좋아요
         if(optionalFlowerLike.isPresent()) {
             like = true;
         }
 
-        // dto로 변환
-        return TodayFlowerForm.builder()
-                .flowerId(findFlower.getId())
-                .flowerLang(findFlower.getFlowerLang())
-                .photoPath(findFlower.getFlowerPhotos().stream()
-                        .map(fp -> fp.getPath()).collect(Collectors.toList()))
-                .totalLike(findFlower.getTotalLike())
-                .name(findFlower.getName())
-                .hits(findFlower.getHits())
-                .description(findFlower.getDescription())
-                .userId(userId)
-                .like(like)
-                .build();
+        return like;
     }
 
-    // 쿼리 3개 발생
+    /**
+     * 오늘의 꽃 조회
+     * 쿼리 3개 발생
+     */
     @Override
-    public TodayFlowerForm findTodayFlower(String userId) {
+    public TodayFlowerResponse findTodayFlower(String userId) {
         // 현재 시간 조회
         LocalDateTime now = LocalDateTime.now();
         int day = now.getDayOfMonth();
@@ -91,12 +83,14 @@ public class FlowerServiceImpl implements FlowerService {
         findFlower.increaseHits();
 
         // 회원이 꽃에 좋아요 눌렀는지 확인
-        return checkTodayFlowerForm(findFlower, userId);
+        boolean flowerLike = isFlowerLike(findFlower, userId);
+
+        return TodayFlowerResponse.of(findFlower, userId, flowerLike);
     }
 
     // 쿼리 3개 발생
     @Override
-    public TodayFlowerForm findFlowerByFlowerId(Long flowerId, String userId) {
+    public TodayFlowerResponse findFlowerByFlowerId(Long flowerId, String userId) {
 
         // 아이디로 꽃 조회
         Optional<Flower> optionalFlower = flowerRepository.findFlowerById(flowerId);
@@ -106,7 +100,9 @@ public class FlowerServiceImpl implements FlowerService {
         findFlower.increaseHits();
 
         // 회원이 꽃에 좋아요 눌렀는지 확인
-        return checkTodayFlowerForm(findFlower, userId);
+        boolean flowerLike = isFlowerLike(findFlower, userId);
+
+        return TodayFlowerResponse.of(findFlower, userId, flowerLike);
     }
 
     // 생일의 꽃 조회

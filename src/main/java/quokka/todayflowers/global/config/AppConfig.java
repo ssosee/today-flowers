@@ -1,5 +1,7 @@
 package quokka.todayflowers.global.config;
 
+import com.querydsl.jpa.impl.JPAQueryFactory;
+import jakarta.persistence.EntityManager;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,6 +17,7 @@ import java.time.Duration;
 
 @Configuration
 public class AppConfig {
+
     @Bean
     public SimpleConvert simpleConvert() {
         return new SimpleConvert();
@@ -45,5 +48,10 @@ public class AppConfig {
     public CookieCsrfTokenRepository cookieCsrfTokenRepository() {
         // httpOnly true를 사용한다.
         return new CookieCsrfTokenRepository();
+    }
+
+    @Bean
+    public JPAQueryFactory jpaQueryFactory(EntityManager em) {
+        return new JPAQueryFactory(em);
     }
 }

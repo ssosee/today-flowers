@@ -1,10 +1,7 @@
 package quokka.todayflowers.domain.entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +30,21 @@ public class Flower extends BaseTimeEntity {
     @OneToMany(mappedBy = "flower")
     private List<FlowerPhoto> flowerPhotos = new ArrayList<>();
 
+    @Builder
+    private Flower(String name, String flowerLang, String description, Integer month, Integer day, String reference, Long totalLike, Long hits, List<FlowerPhoto> flowerPhotos) {
+        this.name = name;
+        this.flowerLang = flowerLang;
+        this.description = description;
+        this.month = month;
+        this.day = day;
+        this.reference = reference;
+        this.totalLike = totalLike;
+        this.hits = hits;
+        this.flowerPhotos = flowerPhotos;
+    }
+
     public static Flower createFlower(String name, String flowerLang, String description, Integer month, Integer day, String reference) {
+
         Flower flower = new Flower();
 
         flower.name = name;
@@ -46,6 +57,20 @@ public class Flower extends BaseTimeEntity {
         flower.totalLike = 0L;
 
         return flower;
+    }
+
+    public static Flower create(String name, String flowerLang, String description, Integer month, Integer day, String reference, FlowerPhoto flowerPhoto) {
+        return Flower.builder()
+                .name(name)
+                .flowerLang(flowerLang)
+                .description(description)
+                .month(month)
+                .day(day)
+                .reference(reference)
+                .hits(0L)
+                .totalLike(0L)
+                .flowerPhotos(List.of(flowerPhoto))
+                .build();
     }
 
     // 조회수 증가 로직
