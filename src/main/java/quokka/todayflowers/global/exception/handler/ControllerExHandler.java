@@ -3,6 +3,7 @@ package quokka.todayflowers.global.exception.handler;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import quokka.todayflowers.global.exception.*;
 
 import java.net.URLEncoder;
@@ -30,9 +31,13 @@ public class ControllerExHandler {
 
     // 생일의 꽃 예외 처리
     @ExceptionHandler(BirthException.class)
-    public String exBirthHandler(BirthException e) {
-        String encode = URLEncoder.encode(e.getMessage(), StandardCharsets.UTF_8);
-        return "redirect:/today-flower/birth?error=true&exception="+encode;
+    public String exBirthHandler(BirthException e, RedirectAttributes redirectAttributes) {
+        String[] errorMessage = e.getMessage().split("_");
+        redirectAttributes.addAttribute("birth");
+        redirectAttributes.addAttribute("exception", errorMessage[1]);
+        redirectAttributes.addAttribute("error", true);
+
+        return "redirect:/today-flower/birth";
     }
 
     // 꽃말의 꽃 예외 처리

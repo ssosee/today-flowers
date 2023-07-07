@@ -18,6 +18,7 @@ import quokka.todayflowers.domain.repository.FlowerLikeRepository;
 import quokka.todayflowers.domain.repository.FlowerPhotoRepository;
 import quokka.todayflowers.domain.repository.FlowerRepository;
 import quokka.todayflowers.domain.repository.MemberRepository;
+import quokka.todayflowers.domain.service.response.BirthFlowerResponse;
 import quokka.todayflowers.domain.service.response.TodayFlowerResponse;
 import quokka.todayflowers.global.constant.ConstFlower;
 import quokka.todayflowers.web.response.*;
@@ -114,7 +115,7 @@ class FlowerServiceTest {
     void findBirthFlowerTest() {
 
         String birth = getBirth();
-        BirthFlowerForm birthFlower = flowerService.findBirthFlower(birth, userId);
+        BirthFlowerResponse birthFlower = flowerService.findBirthFlower(birth, userId);
 
         Optional<Flower> optionalFlower = flowerRepository.findFlowerByMonthAndDay(month, day);
         Flower flower = optionalFlower.get();

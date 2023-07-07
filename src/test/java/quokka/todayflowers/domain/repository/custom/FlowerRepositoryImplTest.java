@@ -69,7 +69,7 @@ class FlowerRepositoryImplTest {
     }
 
     @Test
-    @DisplayName("회원이 좋아요를 누른 꽃이 아닐때 파라미터로 회원 아이디, 월, 일을 받아 flower, flowerLike, flowerPhoto 테이블을 조회하면 예외가 발생한다.")
+    @DisplayName("회원이 좋아요를 누른 꽃이 아닐때 파라미터로 회원 아이디, 월, 일을 받아 flower, flowerLike, flowerPhoto 테이블을 조회하면 NULL이 반환된다.")
     void NoData_findFlowerBy() {
         // given
         Member member = Member.createNewMember(userId, "123", "user@kakao.com");
@@ -92,5 +92,31 @@ class FlowerRepositoryImplTest {
 
         // then
         assertThat(findFlower).isNull();
+    }
+
+    @Test
+    @DisplayName("파라미터로 월, 일을 받아 flower, flowerLike, flowerPhoto 테이블을 조회하면 예외가 발생한다.")
+    void NoUserId_findFlowerBy() {
+        // given
+        Member member = Member.createNewMember(userId, "123", "user@kakao.com");
+        memberRepository.save(member);
+
+        FlowerPhoto flowerPhoto = FlowerPhoto.createFlowerPhoto("path", "장세웅");
+        flowerPhotoRepository.save(flowerPhoto);
+
+        // 시간 조회
+        LocalDateTime date = now.plusDays(0);
+        int day = date.getDayOfMonth();
+        int month = date.getMonthValue();
+
+        Flower flower = Flower.createFlower("꽃"+day, "이쁜꽃"+day, "꽃"+day+" 입니다.", month, day, "장세웅");
+        flowerRepository.save(flower);
+        flower.changeFlowerPhoto(flowerPhoto);
+
+        // when
+        Flower findFlower = flowerRepositoryImpl.findFlowerBy(month, day, "").orElse(null);
+
+        // then
+        assertThat(findFlower).isNotNull();
     }
 }

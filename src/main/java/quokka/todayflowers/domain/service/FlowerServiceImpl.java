@@ -12,6 +12,7 @@ import quokka.todayflowers.domain.entity.SocialType;
 import quokka.todayflowers.domain.repository.FlowerLikeRepository;
 import quokka.todayflowers.domain.repository.FlowerRepository;
 import quokka.todayflowers.domain.repository.MemberRepository;
+import quokka.todayflowers.domain.service.response.BirthFlowerResponse;
 import quokka.todayflowers.domain.service.response.TodayFlowerResponse;
 import quokka.todayflowers.global.common.SimpleCommonMethod;
 import quokka.todayflowers.global.constant.ConstFlower;
@@ -88,7 +89,10 @@ public class FlowerServiceImpl implements FlowerService {
         return TodayFlowerResponse.of(findFlower, userId, flowerLike);
     }
 
-    // 쿼리 3개 발생
+    /**
+     * 꽃 상세 조회
+     * 쿼리 3개 발생
+     */
     @Override
     public TodayFlowerResponse findFlowerByFlowerId(Long flowerId, String userId) {
 
@@ -107,44 +111,29 @@ public class FlowerServiceImpl implements FlowerService {
 
     // 생일의 꽃 조회
     @Override
-    public BirthFlowerForm findBirthFlower(String birth, String userId) {
+    public BirthFlowerResponse findBirthFlower(String birth, String userId) {
         // 입력값 자르기
-        Integer month = Integer.parseInt(birth.substring(2, 4));
-        Integer day = Integer.parseInt(birth.substring(4, 6));
+        int month = Integer.parseInt(birth.substring(2, 4));
+        int day = Integer.parseInt(birth.substring(4, 6));
 
+        // 꽃 조회
         Optional<Flower> optionalFlower = flowerRepository.findFlowerByMonthAndDay(month, day);
-        Flower findFlower = optionalFlower.orElseThrow(() -> new BirthException(ConstFlower.BIRTH_FLOWER_NOT_FOUND));
+        Flower findFlower = optionalFlower.orElseThrow(() -> new BirthException(
+                new StringBuilder(birth)
+                        .append("_")
+                        .append(ConstFlower.BIRTH_FLOWER_NOT_FOUND).toString())
+        );
 
         // 조회수 증가
         findFlower.increaseHits();
 
         // 회원이 꽃에 좋아요 눌렀는지 확인
-        Optional<FlowerLike> optionalFlowerLike = flowerLikeRepository.findByUserIdAndFlowerId(userId, findFlower.getId());
-
-        Boolean like = false;
-        // 좋아요
-        if(optionalFlowerLike.isPresent()) {
-            like = true;
-        }
+        boolean flowerLike = isFlowerLike(findFlower, userId);
 
         // 회원 조회(시큐리티 컨텍스트에 userId가 있기 때문에 Member는 항상 존재)
-        Optional<Member> findMember = memberRepository.findByUserId(userId);
+        Member findMember = memberRepository.findByUserId(userId).get();
 
-        // dto로 변환
-        BirthFlowerForm birthFlowerForm = BirthFlowerForm.builder()
-                .flowerId(findFlower.getId())
-                .flowerLang(findFlower.getFlowerLang())
-                .photoPath(findFlower.getFlowerPhotos().stream()
-                        .map(fp -> fp.getPath()).collect(Collectors.toList()))
-                .totalLike(findFlower.getTotalLike())
-                .name(findFlower.getName())
-                .hits(findFlower.getHits())
-                .description(findFlower.getDescription())
-                .like(like)
-                .userId(findMember.get().getSocialType().equals(SocialType.NONE) ? userId : findMember.get().getSocialName())
-                .build();
-
-        return birthFlowerForm;
+        return BirthFlowerResponse.of(findFlower, findMember, flowerLike);
     }
 
 

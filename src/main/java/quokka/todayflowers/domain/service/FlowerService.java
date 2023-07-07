@@ -1,6 +1,7 @@
 package quokka.todayflowers.domain.service;
 
 import org.springframework.data.domain.Pageable;
+import quokka.todayflowers.domain.service.response.BirthFlowerResponse;
 import quokka.todayflowers.domain.service.response.TodayFlowerResponse;
 import quokka.todayflowers.web.response.*;
 
@@ -12,7 +13,7 @@ public interface FlowerService {
     // 오늘의 꽃 아이디로 조회
     TodayFlowerResponse findFlowerByFlowerId(Long flowerId, String userId);
     // 생일의 꽃 조회
-    BirthFlowerForm findBirthFlower(String birth, String userId);
+    BirthFlowerResponse findBirthFlower(String birth, String userId);
     // 좋아요
     FlowerLikeResponse likeFlower(Long flowerId, String userId, Boolean like);
     // 꽃말의 꽃 조회

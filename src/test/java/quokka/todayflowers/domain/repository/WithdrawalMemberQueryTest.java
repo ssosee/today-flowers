@@ -1,4 +1,4 @@
-package quokka.todayflowers.domain.service;
+package quokka.todayflowers.domain.repository;
 
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,6 +14,7 @@ import quokka.todayflowers.domain.entity.Member;
 import quokka.todayflowers.domain.repository.FlowerLikeRepository;
 import quokka.todayflowers.domain.repository.FlowerRepository;
 import quokka.todayflowers.domain.repository.MemberRepository;
+import quokka.todayflowers.domain.service.MemberService;
 
 import java.util.List;
 import java.util.Optional;

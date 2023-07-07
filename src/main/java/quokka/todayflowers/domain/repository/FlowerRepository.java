@@ -19,7 +19,7 @@ import java.util.Optional;
  */
 public interface FlowerRepository extends JpaRepository<Flower, Long> {
     @EntityGraph(attributePaths = {"flowerPhotos"})
-    Optional<Flower> findFlowerByMonthAndDay(Integer month, Integer day);
+    Optional<Flower> findFlowerByMonthAndDay(int month, int day);
 
     @Query("select f from Flower f" +
             " left join fetch FlowerPhoto fp" +
@@ -27,8 +27,8 @@ public interface FlowerRepository extends JpaRepository<Flower, Long> {
             " where f.month = :month" +
             " and f.day = :day" +
             " and fl.member.userId = :userId")
-    Optional<Flower> findFlowerBy(@Param("month") Integer month,
-                                  @Param("day") Integer day,
+    Optional<Flower> findFlowerBy(@Param("month") int month,
+                                  @Param("day") int day,
                                   @Param("userId") String userId);
 
     @EntityGraph(attributePaths = {"flowerPhotos"})

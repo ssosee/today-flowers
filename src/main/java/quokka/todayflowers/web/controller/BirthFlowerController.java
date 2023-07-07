@@ -8,8 +8,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import quokka.todayflowers.domain.service.FlowerService;
 import quokka.todayflowers.global.common.SimpleCommonMethod;
-import quokka.todayflowers.global.constant.ConstFlower;
-import quokka.todayflowers.web.response.BirthFlowerForm;
+import quokka.todayflowers.domain.service.response.BirthFlowerResponse;
+import quokka.todayflowers.web.request.BirthFlowerForm;
 
 @Controller
 @RequiredArgsConstructor
@@ -20,8 +20,8 @@ public class BirthFlowerController {
     private final SimpleCommonMethod simpleCommonMethod;
 
     // 생일의 꽃
-    @GetMapping("/birth")
-    public String birthFlower(@ModelAttribute("form") BirthFlowerForm form,
+    // @GetMapping("/birth")
+    public String birthFlower(@ModelAttribute("response") BirthFlowerResponse response,
                               @RequestParam(value = "error", required = false) String error,
                               @RequestParam(value = "exception", required = false) String exception,
                               Model model) {
@@ -33,14 +33,16 @@ public class BirthFlowerController {
         return "flower/birth/birthFlower";
     }
 
-    @PostMapping("/birth")
+    @GetMapping("/birth")
     public String findBirthFlower(@Validated @ModelAttribute("form") BirthFlowerForm form,
                                   BindingResult bindingResult,
+                                  @RequestParam(value = "error", required = false) String error,
+                                  @RequestParam(value = "exception", required = false) String exception,
                                   Model model) {
         // 요청 데이터 검증
         if(bindingResult.hasErrors()) {
-            model.addAttribute("error", false);
-            model.addAttribute("exception", null);
+            model.addAttribute("error", true);
+            model.addAttribute("exception", exception);
             return "flower/birth/birthFlower";
         }
 
@@ -48,9 +50,11 @@ public class BirthFlowerController {
         String userId = simpleCommonMethod.getCurrentUserId();
 
         // 생일의 꽃 조회
-        BirthFlowerForm birthFlower = flowerService.findBirthFlower(form.getBirth(), userId);
+        BirthFlowerResponse birthFlower = flowerService.findBirthFlower(form.getBirth(), userId);
 
-        model.addAttribute("form", birthFlower);
+        model.addAttribute("response", birthFlower);
+        model.addAttribute("error", false);
+        model.addAttribute("exception");
 
         return "flower/birth/birthFlower";
     }
