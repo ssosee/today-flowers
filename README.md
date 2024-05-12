@@ -1,4 +1,4 @@
-# 🪻 [오늘의 꽃](https://2dayflower.com/)
+# 🪻 [오늘의 꽃(서비스 종료)](https://2dayflower.com/)
 ## 목차
 * 오늘의 꽃 소개
 * 분류
